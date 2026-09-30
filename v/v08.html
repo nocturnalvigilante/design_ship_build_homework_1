@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v08 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* v08 — scrolling data story. One sticky figure, one claim per screen; the scan
+   redraws as you move down so the reader SEES the prediction inflate rather than
+   reading that it did. This is the only version where JavaScript earns its place:
+   an IntersectionObserver setting one attribute, everything else CSS. Degrades to
+   a readable stack with the figure pinned at step 4 if JS never runs. */
+:root{
+  --bg:#f4f5f3; --ink:#14181c; --dim:#6b7480; --hair:#d8dcd8;
+  --gt:#0f9d8f; --pred:#e2581f; --ok:#2f6fd0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 "Space Grotesk","Helvetica Neue",Arial,sans-serif}
+a{color:var(--pred)}
+.w{max-width:1240px;margin:0 auto;padding:0 38px}
+.mono{font-family:"IBM Plex Mono",monospace}
+.lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--dim);margin:0}
+
+.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-top:16px;padding-bottom:16px;border-bottom:1px solid var(--hair)}
+.top a{color:var(--dim);text-decoration:none}
+
+.intro{padding:76px 0 60px;border-bottom:1px solid var(--hair)}
+h1{font-size:clamp(38px,6.6vw,84px);line-height:.98;letter-spacing:-.035em;
+  font-weight:700;margin:14px 0 0;max-width:15ch}
+h1 b{color:var(--pred);font-weight:700}
+.intro p{max-width:54ch;color:var(--dim);margin:24px 0 0;font-size:18.5px}
+.scrollhint{margin-top:44px;display:flex;align-items:center;gap:10px;color:var(--dim);
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase}
+.scrollhint i{display:block;width:34px;height:1px;background:var(--dim)}
+
+/* --- the scrollytelling shell --- */
+.story{display:grid;grid-template-columns:1fr 440px;gap:60px;align-items:start}
+.stage{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:30px 0}
+.scan{border:1px solid var(--hair);background:#fff;aspect-ratio:1/1;width:100%;
+  max-width:520px;margin:0 auto}
+.scan svg{width:100%;height:100%;display:block}
+.readout{max-width:520px;margin:14px auto 0;display:flex;justify-content:space-between;
+  gap:14px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--dim)}
+.readout b{color:var(--ink);font-weight:500}
+.readout b.bad{color:var(--pred)}
+.readout b.good{color:var(--gt)}
+
+.steps{padding:9vh 0 26vh}
+.step{min-height:74vh;display:flex;flex-direction:column;justify-content:center;
+  opacity:.3;transition:opacity .35s ease}
+.step.on{opacity:1}
+.step .n{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
+  color:var(--pred);margin:0 0 12px}
+.step h2{font-size:clamp(25px,3.3vw,36px);line-height:1.12;letter-spacing:-.022em;
+  margin:0 0 14px;font-weight:700;max-width:19ch}
+.step p{margin:0;color:var(--dim);max-width:44ch}
+.step p b{color:var(--ink);font-weight:500}
+.figv{display:inline-flex;align-items:baseline;gap:9px;margin-top:18px;
+  border:1px solid var(--ink);padding:8px 13px;font-family:"IBM Plex Mono",monospace;
+  font-size:12px;letter-spacing:.08em}
+.figv b{font-size:19px;letter-spacing:-.01em}
+.figv.bad{border-color:var(--pred);color:var(--pred)}
+.figv.good{border-color:var(--gt);color:var(--gt)}
+
+/* --- figure states, one rule per step --- */
+#pred{transform-origin:392px 300px;transition:transform .55s cubic-bezier(.4,0,.2,1),
+  opacity .4s ease}
+#gt{transform-origin:392px 300px;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+#pred ellipse{transition:stroke .4s ease,fill .4s ease}
+[data-step="1"] #pred{transform:translate(-14px,-10px) scale(.72)}
+[data-step="1"] #gt{transform:scale(1.55)}
+[data-step="2"] #pred{transform:translate(-8px,-4px) scale(.80)}
+[data-step="2"] #gt{transform:scale(1.55)}
+[data-step="3"] #pred{transform:translate(6px,8px) scale(.92)}
+[data-step="3"] #gt{transform:scale(.85)}
+[data-step="4"] #pred{transform:translate(14px,18px) scale(1)}
+[data-step="4"] #gt{transform:scale(.30)}
+[data-step="5"] #pred{transform:translate(0,0) scale(.34)}
+[data-step="5"] #gt{transform:scale(.30)}
+[data-step="5"] #pred ellipse{stroke:#2f6fd0;fill:#2f6fd0}
+[data-step="6"] #pred{transform:translate(14px,18px) scale(1)}
+[data-step="6"] #gt{transform:scale(.30)}
+[data-step="7"] #pred{transform:translate(2px,3px) scale(.46)}
+[data-step="7"] #gt{transform:scale(.30)}
+[data-step="7"] #pred ellipse{stroke:#0f9d8f;fill:#0f9d8f}
+.rd{display:none}
+[data-step="1"] .rd-1,[data-step="2"] .rd-2,[data-step="3"] .rd-3,
+[data-step="4"] .rd-4,[data-step="5"] .rd-5,[data-step="6"] .rd-6,
+[data-step="7"] .rd-7{display:flex}
+
+.coda{border-top:1px solid var(--hair);padding:70px 0 0}
+.coda h2{font-size:clamp(27px,4vw,46px);line-height:1.06;letter-spacing:-.028em;
+  margin:12px 0 18px;max-width:20ch;font-weight:700}
+.coda p{max-width:56ch;color:var(--dim);margin:0 0 14px}
+.cta{display:inline-block;margin-top:20px;background:var(--ink);color:#fff;
+  padding:14px 22px;text-decoration:none;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+footer{margin-top:58px;border-top:1px solid var(--hair);padding:18px 0 64px;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--dim)}
+@media(max-width:1000px){
+  .story{grid-template-columns:1fr;gap:0}
+  .stage{height:58vh;top:0;background:var(--bg);padding:12px 0;
+    border-bottom:1px solid var(--hair);z-index:2}
+  .scan{max-width:min(340px,70vw)}.readout{max-width:min(340px,70vw)}
+  .steps{padding:8vh 0 20vh}.step{min-height:58vh}
+  .w{padding:0 22px}
+}
+@media (prefers-reduced-motion:reduce){#pred,#gt{transition:none}}
+</style>
+</head>
+<body data-step="1">
+
+<div class="w top lab">
+  <a href="../index.html">&larr; Gallery · v08 scrolling data story</a>
+  <span>BraTS2020 · held-out n = 73</span>
+</div>
+
+<div class="w intro">
+  <p class="lab">Scroll to watch it fail</p>
+  <h1>The lesion gets smaller. The guess gets <b>bigger</b>.</h1>
+  <p>Text-conditioned 3D medical models detect that a tumour is present and then
+    outline the wrong place. The smaller the lesion, the wider they miss.</p>
+  <p class="scrollhint"><i></i>Keep scrolling</p>
+</div>
+
+<div class="w story">
+  <div class="steps">
+
+    <section class="step" data-s="1">
+      <p class="n">01</p>
+      <h2>Ask it whether a tumour is present.</h2>
+      <p>It says yes, and it is right. Detection is not the problem, which is exactly
+        what makes the rest of this misleading if you only look at one number.</p>
+    </section>
+
+    <section class="step" data-s="2">
+      <p class="n">02</p>
+      <h2>On a large lesion, it does roughly fine.</h2>
+      <p>Whole tumour, largest size tercile. The outline is loose but it is in the
+        right place, and any aggregate metric will call this acceptable.</p>
+      <span class="figv"><b>0.281</b> Dice · large</span>
+    </section>
+
+    <section class="step" data-s="3">
+      <p class="n">03</p>
+      <h2>Halve the lesion and it starts drifting.</h2>
+      <p>Medium tercile. The predicted region has barely shrunk while the target
+        has, so the overlap falls faster than the lesion does.</p>
+      <span class="figv"><b>0.137</b> Dice · medium</span>
+    </section>
+
+    <section class="step" data-s="4">
+      <p class="n">04</p>
+      <h2>On a small lesion it collapses.</h2>
+      <p>Small enhancing tumour. The prediction is <b>sixteen times</b> the true
+        volume and centred two centimetres away. Dice falls <b>14.9&times;</b> from
+        the large tercile, and the decline is monotonic in every region.</p>
+      <span class="figv bad"><b>0.010</b> Dice · small ET</span>
+    </section>
+
+    <section class="step" data-s="5">
+      <p class="n">05</p>
+      <h2>But the lesion is findable.</h2>
+      <p>A plain supervised U-Net, no text involved, given the same small lesions,
+        degrades by a factor of <b>1.2</b>. The data is not the problem. Conditioning
+        on language is.</p>
+      <span class="figv good"><b>1.2&times;</b> supervised control</span>
+    </section>
+
+    <section class="step" data-s="6">
+      <p class="n">06</p>
+      <h2>And the language is doing nothing.</h2>
+      <p>Replace PubMedBERT with random vectors and almost nothing changes. The query
+        functions as an opaque class identifier that happens to be spelled in
+        English.</p>
+      <span class="figv bad"><b>&asymp;0.000</b> &Delta; Dice</span>
+    </section>
+
+    <section class="step" data-s="7">
+      <p class="n">07</p>
+      <h2>The fix cost nothing.</h2>
+      <p>The model merges overlapping sliding windows by flat averaging, which smears
+        a small lesion across everything near a window edge. Weight each window toward
+        its own centre instead: <b>+0.145 Dice, no retraining</b>. Small enhancing
+        tumour goes from 0 to 7 of 21 patients.</p>
+      <span class="figv good"><b>+0.145</b> Dice · no weights changed</span>
+    </section>
+
+  </div>
+
+  <div class="stage">
+    <div class="scan">
+      <svg viewBox="0 0 600 600" role="img"
+           aria-label="Axial brain slice. A teal outline marks the true lesion; an orange outline marks the model's predicted region. As the story advances the true lesion shrinks while the prediction stays large and drifts away from it.">
+        <rect width="600" height="600" fill="#fff"/>
+        <ellipse cx="300" cy="300" rx="212" ry="238" fill="#eceee9" stroke="#d8dcd8"/>
+        <ellipse cx="300" cy="300" rx="188" ry="212" fill="#f6f7f4" stroke="#e2e5e0"/>
+        <path d="M300 74 V526" stroke="#dfe2dd" stroke-width="2"/>
+        <ellipse cx="236" cy="252" rx="46" ry="62" fill="#e6e9e4"/>
+        <ellipse cx="364" cy="252" rx="46" ry="62" fill="#e6e9e4"/>
+        <g id="pred">
+          <ellipse cx="392" cy="300" rx="112" ry="92" fill="#e2581f" fill-opacity=".13"
+                   stroke="#e2581f" stroke-width="3" stroke-dasharray="9 7"/>
+        </g>
+        <g id="gt">
+          <circle cx="392" cy="300" r="46" fill="#0f9d8f" fill-opacity=".26"
+                  stroke="#0f9d8f" stroke-width="3.5"/>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="15">
+          <rect x="34" y="34" width="14" height="14" fill="#0f9d8f" fill-opacity=".26" stroke="#0f9d8f" stroke-width="2"/>
+          <text x="58" y="46" fill="#14181c">true lesion</text>
+          <rect x="34" y="62" width="14" height="14" fill="#e2581f" fill-opacity=".13" stroke="#e2581f" stroke-width="2" stroke-dasharray="4 3"/>
+          <text x="58" y="74" fill="#14181c">model prediction</text>
+          <text x="34" y="570" fill="#6b7480" font-size="13">SLICE 64/128 · T1CE · 128&#179;</text>
+        </g>
+      </svg>
+    </div>
+    <div class="readout">
+      <span class="rd rd-1">Task <b>detection</b></span><span class="rd rd-1">Answer <b class="good">correct</b></span>
+      <span class="rd rd-2">Lesion <b>large</b></span><span class="rd rd-2">Dice <b>0.281</b></span>
+      <span class="rd rd-3">Lesion <b>medium</b></span><span class="rd rd-3">Dice <b>0.137</b></span>
+      <span class="rd rd-4">Lesion <b>small</b></span><span class="rd rd-4">Dice <b class="bad">0.010</b></span>
+      <span class="rd rd-5">Model <b>U-Net control</b></span><span class="rd rd-5">Degradation <b class="good">1.2&times;</b></span>
+      <span class="rd rd-6">Text <b>random vectors</b></span><span class="rd rd-6">&Delta; Dice <b class="bad">&asymp;0.000</b></span>
+      <span class="rd rd-7">Merge <b>centre-weighted</b></span><span class="rd rd-7">Gain <b class="good">+0.145</b></span>
+    </div>
+  </div>
+</div>
+
+<div class="w coda">
+  <p class="lab">Where it leaves us</p>
+  <h2>A shared confound is not a cancelled confound.</h2>
+  <p>Three interventions here were reversed after a control caught the error.
+    Every stage of a pipeline is an instrument until somebody measures it.</p>
+  <p class="mono" style="font-size:13px">171 paired Wilcoxon tests · Benjamini&#8209;Hochberg
+    corrected · 9 of 9 comparisons replicated across three independent splits.</p>
+  <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper &rarr;</a>
+  <footer>
+    <span>Raj Hansini Akara · MPCS 53113 · University of Chicago</span>
+    <span>BraTS2020 · 369 patients</span>
+  </footer>
+</div>
+
+<script>
+/* One attribute on <body> drives every figure state. Without JS the page still
+   reads top to bottom with the figure showing step 1, so nothing is lost. */
+(function () {
+  var steps = document.querySelectorAll(".step");
+  if (!("IntersectionObserver" in window)) { document.body.dataset.step = "4"; return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      steps.forEach(function (s) { s.classList.remove("on"); });
+      e.target.classList.add("on");
+      document.body.dataset.step = e.target.dataset.s;
+    });
+  }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+  steps.forEach(function (s) { io.observe(s); });
+})();
+</script>
+
+</body>
+</html>
