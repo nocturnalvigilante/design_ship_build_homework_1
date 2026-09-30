@@ -23,7 +23,11 @@
 body{margin:0;background:var(--paper);color:var(--ink);
   font:19.5px/1.72 Spectral,Georgia,serif}
 a{color:var(--burnt)}
-.col{max-width:660px;margin:0 auto;padding:0 30px}
+/* The prose sits on the same left edge as the masthead and the figures; only the
+   measure is narrower. Centring it independently put a 250px step between the
+   headline and the first paragraph. */
+.col{max-width:1160px;margin:0 auto;padding:0 30px}
+.col > p,.col > .lab{max-width:33em}
 .wide{max-width:1160px;margin:0 auto;padding:0 30px}
 .sans{font-family:Archivo,sans-serif}
 .lab{font-family:Archivo,sans-serif;font-size:10.5px;letter-spacing:.2em;
@@ -44,7 +48,7 @@ h1 em{font-style:italic;font-weight:300;color:var(--burnt)}
   color:var(--faint)}
 .byline b{color:var(--ink);font-weight:600}
 
-p{margin:0 0 22px}
+p{margin:0 0 22px;max-width:33em}
 .col p:first-of-type::first-letter{float:left;font-size:72px;line-height:.76;
   padding:8px 11px 0 0;font-weight:600;color:var(--burnt)}
 h2{font-weight:600;font-size:clamp(24px,3.4vw,34px);line-height:1.16;
