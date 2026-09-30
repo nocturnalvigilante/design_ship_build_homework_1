@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v20 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* v20 — first convergence. Taking forward the three things that actually worked:
+     · v17  the whole argument in one screen, tiled
+     · v14  the overlay figure given the full measure on a strict grid
+     · v15  four hypotheses, three ruled out, one confirmed
+   Dropping: every metaphor (notebook, plate, incident report). They were fun and
+   they all cost the reader a beat of translation before the finding landed, which
+   is the one thing the brief says not to spend.
+   Light, because the audience includes admissions readers who will print it. */
+:root{
+  --paper:#fbfbf9; --panel:#fff; --ink:#111413; --dim:#5f6664; --faint:#949b98;
+  --hair:#e3e4e0; --rule:#111413; --hot:#d93a1e; --ok:#127553;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16.5px/1.6 "Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  font-variant-numeric:tabular-nums}
+a{color:var(--hot)}
+.w{max-width:1240px;margin:0 auto;padding:0 36px}
+.lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.19em;
+  text-transform:uppercase;color:var(--faint);margin:0}
+
+.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 auto;
+  padding-top:14px;padding-bottom:13px;border-bottom:1px solid var(--hair)}
+.top a{color:var(--faint);text-decoration:none}
+
+/* --- fold one: everything that matters --- */
+.fold{padding-top:44px;padding-bottom:44px}
+.head{display:grid;grid-template-columns:1.35fr 1fr;gap:56px;align-items:end;
+  padding-bottom:30px;border-bottom:2px solid var(--rule)}
+h1{font-size:clamp(33px,5vw,60px);line-height:1.01;letter-spacing:-.035em;
+  font-weight:700;margin:12px 0 0;max-width:16ch}
+h1 em{font-style:normal;color:var(--hot)}
+.head p{color:var(--dim);margin:0;max-width:40ch}
+.head p b{color:var(--ink);font-weight:600}
+
+.evid{display:grid;grid-template-columns:1.45fr 1fr;gap:0;
+  border-bottom:1px solid var(--hair)}
+.plate{border-right:1px solid var(--hair);padding:26px 34px 24px 0}
+.plate svg{width:100%;height:auto;display:block}
+.pfoot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:12px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint)}
+.nums{padding:26px 0 24px 34px}
+.kbig{font-size:clamp(56px,7.6vw,104px);line-height:.84;letter-spacing:-.05em;
+  font-weight:700;color:var(--hot);margin:8px 0 14px}
+.nums > p.s{margin:0 0 20px;color:var(--dim);max-width:32ch;font-size:15.5px}
+.nums > p.s b{color:var(--ink);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:400;
+  padding:0 9px 7px 0;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:9px 9px 9px 0;border-bottom:1px solid var(--hair)}
+tr.x td{color:var(--hot);font-weight:600}
+tr.c td{color:var(--ok)}
+
+/* --- fold two: how the cause was narrowed --- */
+section{padding-top:56px;padding-bottom:20px}
+h2{font-size:clamp(23px,3.1vw,34px);line-height:1.1;letter-spacing:-.028em;
+  font-weight:700;margin:10px 0 30px;max-width:24ch}
+.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border-top:2px solid var(--rule)}
+.hyp{padding:20px 26px 24px;border-right:1px solid var(--hair)}
+.hyp:last-child{border-right:0}.hyp:first-child{padding-left:0}.hyp:last-child{padding-right:0}
+.hyp .n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
+  color:var(--faint);margin:0 0 10px}
+.hyp h3{font-size:17.5px;font-weight:600;line-height:1.24;letter-spacing:-.012em;
+  margin:0 0 10px;max-width:22ch}
+.hyp p{font-size:14px;color:var(--dim);margin:0 0 14px}
+.hyp p b{color:var(--ink);font-weight:600}
+.v{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--hot);
+  color:var(--hot);padding:5px 10px}
+.hyp.keep .v{border-color:var(--ok);color:var(--ok)}
+.hyp.keep h3{color:var(--ink)}
+
+/* --- fold three: the repair --- */
+.fix{background:var(--ink);color:#fff;margin-top:56px}
+.fix .w{padding-top:60px;padding-bottom:64px}
+.fix h2{color:#fff;max-width:20ch;margin-bottom:20px}
+.fix h2 em{font-style:normal;color:#ff8f70}
+.fix .row{display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:start}
+.fix p{color:#a7adaa;max-width:52ch;margin:0 0 14px}
+.fix p b{color:#fff;font-weight:600}
+.gain{border-left:2px solid var(--hot);padding-left:20px}
+.gain b{display:block;font-size:52px;font-weight:700;letter-spacing:-.04em;line-height:1}
+.gain span{display:block;font-size:13.5px;color:#a7adaa;margin-top:10px}
+.cta{display:inline-block;margin-top:24px;background:#fff;color:var(--ink);
+  text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;padding:14px 22px}
+footer{padding-top:18px;padding-bottom:60px;display:flex;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  color:var(--faint)}
+@media(max-width:1000px){.head,.evid,.fix .row{grid-template-columns:1fr;gap:26px}
+  .plate{border-right:0;border-bottom:1px solid var(--hair);padding:22px 0 20px}
+  .nums{padding:22px 0 20px}
+  .chain{grid-template-columns:1fr 1fr}
+  .hyp{padding:20px 22px 24px;border-bottom:1px solid var(--hair)}
+  .hyp:nth-child(even){border-right:0;padding-right:0}
+  .hyp:nth-child(odd){padding-left:0}}
+@media(max-width:620px){.chain{grid-template-columns:1fr}
+  .hyp{padding:20px 0 22px;border-right:0}.w{padding:0 22px}}
+</style>
+</head>
+<body>
+
+<div class="w top lab">
+  <a href="../index.html">&larr; Gallery · v20 first convergence</a>
+  <span>BraTS2020 · 369 patients · held-out n = 73</span>
+</div>
+
+<div class="w fold">
+  <div class="head">
+    <div>
+      <p class="lab">Text-conditioned 3D medical localization</p>
+      <h1>It finds the lesion. It cannot <em>place</em> it.</h1>
+    </div>
+    <p>These models detect that a tumour is present, then return a region many times
+      too large and centred somewhere else. <b>The smaller the lesion, the wider the
+      miss</b> — and the small ones are the clinically urgent ones.</p>
+  </div>
+
+  <div class="evid">
+    <div class="plate">
+      <svg viewBox="0 0 880 400" role="img"
+           aria-label="Axial slice. A small solid outline marks the true lesion; a much larger dashed outline marks the model's predicted region, offset from it.">
+        <rect width="880" height="400" fill="#fff"/>
+        <g stroke="#c4c8c5" fill="none" stroke-width="1.4">
+          <ellipse cx="440" cy="200" rx="258" ry="168"/>
+          <ellipse cx="440" cy="200" rx="238" ry="148"/>
+          <path d="M440 32 V368"/>
+          <path d="M422 132 q-26 42 -17 92 q4 24 17 38 q2 -76 0 -130 z"/>
+          <path d="M458 132 q26 42 17 92 q-4 24 -17 38 q-2 -76 0 -130 z"/>
+          <path d="M252 144 q38 26 28 66"/><path d="M308 96 q26 34 13 58"/>
+          <path d="M628 144 q-38 26 -28 66"/><path d="M572 96 q-26 34 -13 58"/>
+          <path d="M270 282 q45 30 104 37"/><path d="M610 282 q-45 30 -104 37"/>
+        </g>
+        <ellipse cx="524" cy="238" rx="126" ry="94" fill="#d93a1e" fill-opacity=".08"
+                 stroke="#d93a1e" stroke-width="2.4" stroke-dasharray="9 7"/>
+        <circle cx="566" cy="192" r="15" fill="#111413" fill-opacity=".16"
+                stroke="#111413" stroke-width="2.4"/>
+        <g stroke="#111413" stroke-width="1" fill="none"><path d="M578 183 L690 122 H744"/></g>
+        <g stroke="#d93a1e" stroke-width="1" fill="none"><path d="M440 324 L300 364 H176"/></g>
+        <g font-family="IBM Plex Mono, monospace" font-size="12.5">
+          <text x="750" y="118" fill="#111413">TRUE 1.9 cm&#179;</text>
+          <text x="80" y="360" fill="#d93a1e">PREDICTED 31.4 cm&#179;</text>
+          <text x="24" y="30" fill="#949b98" font-size="11.5">SLICE 64/128 · T1CE · HELD-OUT PATIENT</text>
+          <text x="754" y="372" fill="#d93a1e" font-size="11.5">DICE 0.037</text>
+        </g>
+      </svg>
+      <div class="pfoot">
+        <span>Sixteen times the true volume, two centimetres off centre</span>
+        <span>Detection: correct</span>
+      </div>
+    </div>
+
+    <div class="nums">
+      <p class="lab">Dice degradation, large &rarr; small</p>
+      <p class="kbig">14.9&times;</p>
+      <p class="s">Enhancing tumour. A supervised U-Net on the same lesions degrades
+        <b>1.2&times;</b>, so the lesions are learnable and the conditioning is what
+        fails.</p>
+      <table>
+        <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
+        <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+        <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+        <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+        <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <section>
+    <p class="lab">How the cause was narrowed</p>
+    <h2>Four explanations. Three of them were wrong.</h2>
+    <div class="chain">
+      <div class="hyp">
+        <p class="n">01</p>
+        <h3>Small lesions are simply unfindable.</h3>
+        <p>A plain supervised U-Net, given the same lesions and no language at all,
+          degrades <b>1.2&times;</b>.</p>
+        <span class="v">Ruled out</span>
+      </div>
+      <div class="hyp">
+        <p class="n">02</p>
+        <h3>The medical text encoder is too weak.</h3>
+        <p>Replacing PubMedBERT with <b>random vectors</b> changes almost nothing. The
+          query is an opaque class identifier that happens to be spelled in English.</p>
+        <span class="v">Ruled out</span>
+      </div>
+      <div class="hyp">
+        <p class="n">03</p>
+        <h3>The model needs to be told the lesion is small.</h3>
+        <p>Size-conditioned prompting, multi-scale ensembling and scale-matched
+          retraining each traded one failure for another. <b>All three reversed.</b></p>
+        <span class="v">Ruled out</span>
+      </div>
+      <div class="hyp keep">
+        <p class="n">04</p>
+        <h3>The sliding windows are merged badly.</h3>
+        <p>Flat averaging smears a small lesion across everything near a window edge.
+          Weight each window toward its own centre.</p>
+        <span class="v">Confirmed</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="fix">
+  <div class="w">
+    <p class="lab" style="color:#6d7471">The repair</p>
+    <h2>The cheapest thing on the list beat every elaborate one.
+      <em>No retraining at all.</em></h2>
+    <div class="row">
+      <div>
+        <p>The failure was not in the model and not in the language. It sat in the
+          inference plumbing, where nobody was looking.</p>
+        <p>Three more elaborate interventions were tried first and each was reversed
+          after a control caught the error. <b>A shared confound is not a cancelled
+          confound</b>: every stage of a pipeline is an instrument until somebody
+          measures it.</p>
+        <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
+      </div>
+      <div class="gain"><b>+0.145</b><span>Dice, with no weights modified. Small
+        enhancing tumour recovered in 7 of 21 patients where the model previously found
+        none. 171 paired Wilcoxon tests, Benjamini&#8209;Hochberg corrected; 9 of 9
+        comparisons replicated across three independent splits.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="w">
+  <footer>
+    <span>Raj Hansini Akara</span>
+    <span>MPCS 53113 · University of Chicago</span>
+    <span>128&sup3; volumes</span>
+  </footer>
+</div>
+
+</body>
+</html>
