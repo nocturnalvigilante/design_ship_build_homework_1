@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v09 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* v09 — before / after. The page leads with the FIX rather than the failure, and
+   makes the reader perform the comparison with their own hand. One drag: flat
+   window averaging on the left, centre-weighted merging on the right, same patient,
+   same weights, no retraining between them.
+   The interaction is a native range input, so it is keyboard-operable and needs
+   four lines of script. */
+:root{
+  --bg:#101217; --panel:#171a21; --edge:#272c36; --txt:#e8eaee; --dim:#8a919e;
+  --gt:#24d3a5; --pred:#ff6b3d; --hair:#20242c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+  font:17px/1.6 Archivo,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--gt)}
+.w{max-width:1180px;margin:0 auto;padding:0 34px}
+.lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--dim);margin:0}
+
+.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-top:15px;padding-bottom:15px;border-bottom:1px solid var(--edge)}
+.top a{color:var(--dim);text-decoration:none}
+
+.hero{padding:54px 0 34px;display:grid;grid-template-columns:1fr 400px;gap:56px;
+  align-items:end}
+h1{font-size:clamp(34px,5.4vw,68px);line-height:.99;letter-spacing:-.035em;
+  font-weight:700;margin:12px 0 0;max-width:15ch}
+h1 em{font-style:normal;color:var(--gt)}
+.hero p{color:var(--dim);margin:0;max-width:46ch}
+.hero p b{color:var(--txt);font-weight:500}
+
+/* --- the comparison --- */
+.cmp{position:relative;border:1px solid var(--edge);background:#000;
+  aspect-ratio:2/1;overflow:hidden;--x:50%}
+.cmp .lay{position:absolute;inset:0}
+.cmp .lay svg{width:100%;height:100%;display:block}
+.cmp .after{clip-path:inset(0 0 0 var(--x))}
+.cmp .before{clip-path:inset(0 calc(100% - var(--x)) 0 0)}
+.cmp .split{position:absolute;top:0;bottom:0;left:var(--x);width:2px;
+  background:#fff;pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.5)}
+.cmp .knob{position:absolute;top:50%;left:var(--x);translate:-50% -50%;
+  width:44px;height:44px;border-radius:50%;background:#fff;color:#101217;
+  display:grid;place-items:center;font:600 15px/1 "IBM Plex Mono",monospace;
+  pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.6)}
+.cmp input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;
+  opacity:0;cursor:ew-resize;appearance:none;background:transparent}
+.cmp input:focus-visible{opacity:1;outline:3px solid var(--gt);outline-offset:-3px}
+.tag{position:absolute;top:16px;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;padding:7px 11px;
+  background:rgba(16,18,23,.82);border:1px solid var(--edge)}
+.tag.l{left:16px;color:var(--pred);border-color:var(--pred)}
+.tag.r{right:16px;color:var(--gt);border-color:var(--gt)}
+.cmpfoot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  margin-top:11px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--dim)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--edge);
+  border:1px solid var(--edge);margin:46px 0 0}
+.stat{background:var(--panel);padding:20px 20px 22px}
+.stat .v{font-size:clamp(28px,3.6vw,42px);line-height:1;font-weight:700;
+  letter-spacing:-.03em;margin:8px 0 7px;font-variant-numeric:tabular-nums}
+.stat.good .v{color:var(--gt)}.stat.bad .v{color:var(--pred)}
+.stat p{margin:0;font-size:13.5px;color:var(--dim);line-height:1.45}
+
+section{padding:64px 0;border-top:1px solid var(--edge);margin-top:64px}
+h2{font-size:clamp(24px,3.4vw,40px);line-height:1.08;letter-spacing:-.028em;
+  font-weight:700;margin:12px 0 22px;max-width:22ch}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:52px}
+.two p{color:var(--dim);margin:0 0 14px;max-width:52ch}
+.two p b{color:var(--txt);font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:400;
+  padding:0 10px 9px 0;border-bottom:1px solid var(--edge)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:11px 10px 11px 0;border-bottom:1px solid var(--hair);
+  font-variant-numeric:tabular-nums}
+tr.x td{color:var(--pred)}tr.c td{color:var(--gt)}
+
+.cta{display:inline-block;margin-top:8px;border:1px solid var(--gt);color:var(--gt);
+  padding:13px 21px;text-decoration:none;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+footer{border-top:1px solid var(--edge);padding:18px 0 60px;display:flex;
+  justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--dim)}
+@media(max-width:940px){.hero{grid-template-columns:1fr;gap:24px}
+  .stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr;gap:30px}
+  .cmp{aspect-ratio:4/3}.w{padding:0 20px}}
+</style>
+</head>
+<body>
+
+<div class="w top lab">
+  <a href="../index.html">&larr; Gallery · v09 before / after</a>
+  <span>Drag the handle</span>
+</div>
+
+<div class="w hero">
+  <div>
+    <p class="lab">The fix changed no weights</p>
+    <h1>Same model. Same scan. <em>One line of merging code.</em></h1>
+  </div>
+  <p>Text-conditioned 3D models smear small lesions across every sliding window that
+    touches them. Weight each window toward its own centre instead and the prediction
+    snaps back onto the tumour. <b>No retraining, no fine-tuning, no extra data.</b></p>
+</div>
+
+<div class="w">
+  <div class="cmp" id="cmp">
+    <div class="lay before">
+      <svg viewBox="0 0 900 450" role="img" aria-label="The model's predicted region under flat window averaging: a large diffuse outline that swallows most of one hemisphere and sits well off the true lesion.">
+        <rect width="900" height="450" fill="#0a0c0f"/>
+        <ellipse cx="450" cy="225" rx="252" ry="188" fill="#1b1f26"/>
+        <ellipse cx="450" cy="225" rx="252" ry="188" fill="none" stroke="#2b3038" stroke-width="2"/>
+        <ellipse cx="450" cy="225" rx="232" ry="168" fill="none" stroke="#242932"/>
+        <path d="M450 45 V405" stroke="#242932" stroke-width="2"/>
+        <path d="M432 150 q-30 48 -10 104 q10 26 26 34 q-6 -76 -16 -138 z" fill="#141821"/>
+        <path d="M468 150 q30 48 10 104 q-10 26 -26 34 q6 -76 16 -138 z" fill="#141821"/>
+        <g stroke="#232830" stroke-width="1.6" fill="none">
+          <path d="M240 168 q42 30 30 74"/><path d="M300 108 q30 40 12 72"/>
+          <path d="M660 168 q-42 30 -30 74"/><path d="M600 108 q-30 40 -12 72"/>
+          <path d="M262 320 q52 34 120 40"/><path d="M638 320 q-52 34 -120 40"/>
+        </g>
+        <ellipse cx="428" cy="268" rx="138" ry="104" fill="#ff6b3d" fill-opacity=".16"
+                 stroke="#ff6b3d" stroke-width="3" stroke-dasharray="10 8"/>
+        <circle cx="498" cy="214" r="15" fill="#24d3a5" fill-opacity=".34" stroke="#24d3a5" stroke-width="3"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="14" fill="#8a919e">
+          <text x="34" y="418">FLAT AVERAGING &#183; PREDICTED 31.4 cm&#179;</text>
+        </g>
+      </svg>
+    </div>
+    <div class="lay after">
+      <svg viewBox="0 0 900 450" role="img" aria-label="The same scan under centre-weighted merging: a small tight region sitting directly on the true lesion.">
+        <rect width="900" height="450" fill="#0a0c0f"/>
+        <ellipse cx="450" cy="225" rx="252" ry="188" fill="#1b1f26"/>
+        <ellipse cx="450" cy="225" rx="252" ry="188" fill="none" stroke="#2b3038" stroke-width="2"/>
+        <ellipse cx="450" cy="225" rx="232" ry="168" fill="none" stroke="#242932"/>
+        <path d="M450 45 V405" stroke="#242932" stroke-width="2"/>
+        <path d="M432 150 q-30 48 -10 104 q10 26 26 34 q-6 -76 -16 -138 z" fill="#141821"/>
+        <path d="M468 150 q30 48 10 104 q-10 26 -26 34 q6 -76 16 -138 z" fill="#141821"/>
+        <g stroke="#232830" stroke-width="1.6" fill="none">
+          <path d="M240 168 q42 30 30 74"/><path d="M300 108 q30 40 12 72"/>
+          <path d="M660 168 q-42 30 -30 74"/><path d="M600 108 q-30 40 -12 72"/>
+          <path d="M262 320 q52 34 120 40"/><path d="M638 320 q-52 34 -120 40"/>
+        </g>
+        <ellipse cx="500" cy="216" rx="27" ry="23" fill="#24d3a5" fill-opacity=".20"
+                 stroke="#24d3a5" stroke-width="3"/>
+        <circle cx="498" cy="214" r="15" fill="#24d3a5" fill-opacity=".34" stroke="#24d3a5" stroke-width="3"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="14" fill="#8a919e">
+          <text x="470" y="418">CENTRE-WEIGHTED &#183; TRUE LESION 1.9 cm&#179;</text>
+        </g>
+      </svg>
+    </div>
+    <span class="tag l">Flat averaging</span>
+    <span class="tag r">Centre-weighted</span>
+    <span class="split"></span>
+    <span class="knob">&#8596;</span>
+    <input type="range" min="0" max="100" value="50" step="0.5" id="sl"
+           aria-label="Reveal flat averaging on the left, centre-weighted merging on the right">
+  </div>
+  <div class="cmpfoot">
+    <span>Held-out patient · small enhancing tumour · slice 64/128 · T1CE</span>
+    <span>Both panels: identical weights, identical input</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat good"><p class="lab">Gain from the fix</p><p class="v">+0.145</p>
+      <p>Dice, with no retraining of any kind.</p></div>
+    <div class="stat good"><p class="lab">Small ET recovered</p><p class="v">0 &rarr; 7</p>
+      <p>of 21 patients where the model previously found nothing.</p></div>
+    <div class="stat bad"><p class="lab">Failure it repairs</p><p class="v">14.9&times;</p>
+      <p>Dice degradation from large lesions to small, enhancing tumour.</p></div>
+    <div class="stat"><p class="lab">Replication</p><p class="v">9 / 9</p>
+      <p>comparisons held across three independent splits.</p></div>
+  </div>
+</div>
+
+<div class="w">
+  <section>
+    <p class="lab">Why the cheap fix works</p>
+    <h2>Because the failure was never about language.</h2>
+    <div class="two">
+      <div>
+        <p>Localization degrades monotonically with lesion size, in every region, with
+          no recovery. Enhancing tumour falls <b>14.9&times;</b> from the large tercile
+          to the small one.</p>
+        <p>A plain supervised U-Net on the same small lesions degrades <b>1.2&times;</b>.
+          They are learnable. It is the conditioning that fails.</p>
+        <p>Replace PubMedBERT with <b>random vectors</b> and almost nothing changes.
+          The query functions as an opaque class identifier that happens to be spelled
+          in English, so no amount of better text was ever going to help.</p>
+        <p>What was left was the plumbing. The volume is processed in overlapping
+          windows and merged by flat averaging, which spreads a small lesion sitting
+          near a window edge across everything around it.</p>
+        <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper &rarr;</a>
+      </div>
+      <div>
+        <table>
+          <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
+          <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+          <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+          <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+          <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+        </table>
+        <p class="lab" style="margin-top:16px;line-height:1.7">Dice by lesion-size
+          tercile · held-out n = 73 · 171 paired Wilcoxon tests, Benjamini&#8209;Hochberg
+          corrected</p>
+        <p style="margin-top:26px;color:var(--dim);max-width:46ch">Three more elaborate
+          interventions were tried first and each was reversed after a control caught
+          the error. A shared confound is not a cancelled confound.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Raj Hansini Akara · MPCS 53113 · University of Chicago</span>
+    <span>BraTS2020 · 369 patients · 128&sup3;</span>
+  </footer>
+</div>
+
+<script>
+var sl = document.getElementById("sl"), cmp = document.getElementById("cmp");
+function draw() { cmp.style.setProperty("--x", sl.value + "%"); }
+sl.addEventListener("input", draw);
+draw();
+</script>
+
+</body>
+</html>
