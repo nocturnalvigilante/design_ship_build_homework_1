@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v05 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* v05 — terminal transcript. Not an app UI (v01 already did chrome); this is a
+   linear scrollback you read top to bottom, where the finding arrives as command
+   output and the reader watches the diagnosis get narrowed one command at a time.
+   The argument has a natural command shape: measure, control, ablate, patch. */
+:root{
+  --bg:#0b0e0c; --pane:#0f1411; --edge:#1e2a22;
+  --fg:#cfe3d4; --dim:#5f7a68; --grn:#48e07f; --amb:#ffc24a; --red:#ff5f52; --cy:#4fd7f0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:14px/1.68 "JetBrains Mono",ui-monospace,Menlo,monospace;
+  padding:26px 14px 90px}
+a{color:var(--cy)}
+.win{max-width:1000px;margin:0 auto;background:var(--pane);border:1px solid var(--edge);
+  box-shadow:0 22px 60px rgba(0,0,0,.5)}
+.bar{display:flex;align-items:center;gap:9px;padding:9px 14px;
+  border-bottom:1px solid var(--edge);background:#0c110e}
+.dot{width:11px;height:11px;border-radius:50%;background:#2c3a31}
+.dot.a{background:#ff5f56}.dot.b{background:#ffbd2e}.dot.c{background:#27c93f}
+.bar .t{flex:1;text-align:center;font-size:11.5px;color:var(--dim);letter-spacing:.05em}
+.bar .g{font-size:11px;color:var(--dim);text-decoration:none;letter-spacing:.1em}
+.body{padding:20px 22px 30px}
+
+.cmd{margin:26px 0 6px;white-space:pre-wrap;word-break:break-word}
+.cmd:first-child{margin-top:4px}
+.ps{color:var(--grn)}.ps .p{color:var(--cy)}.ps .b{color:var(--amb)}
+.cmd .c{color:#fff}
+.out{color:var(--fg);white-space:pre;overflow-x:auto;margin:0 0 4px;
+  padding-bottom:3px;font-size:13.5px}
+.co{color:var(--dim)}
+.g{color:var(--grn)}.a{color:var(--amb)}.r{color:var(--red)}.cy{color:var(--cy)}
+.b{font-weight:700}
+.wrapy{white-space:pre-wrap}
+
+h1{font-size:clamp(20px,2.8vw,29px);line-height:1.3;font-weight:700;color:#fff;
+  margin:0;letter-spacing:-.01em}
+.banner{border:1px solid var(--edge);border-left:3px solid var(--grn);
+  padding:16px 18px 17px;margin:4px 0 2px;background:#0d120f}
+.banner p{margin:10px 0 0;color:var(--dim);font-size:13.5px;max-width:70ch;
+  white-space:normal;line-height:1.6}
+.banner p em{color:var(--fg);font-style:normal}
+
+.fail{border-left:3px solid var(--red);padding-left:12px;margin:4px 0}
+.pass{border-left:3px solid var(--grn);padding-left:12px;margin:4px 0}
+.cur{display:inline-block;width:8px;height:16px;background:var(--grn);
+  translate:0 3px;animation:bl 1.05s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+.exit{margin-top:30px;padding-top:14px;border-top:1px solid var(--edge);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:12px;color:var(--dim)}
+@media(max-width:720px){body{padding:14px 8px 60px}.body{padding:14px 12px 22px}
+  .out{font-size:11px}}
+</style>
+</head>
+<body>
+
+<div class="win">
+  <div class="bar">
+    <span class="dot a"></span><span class="dot b"></span><span class="dot c"></span>
+    <span class="t">raj@gpu03 : ~/lesion-grounding &mdash; zsh</span>
+    <a class="g" href="../index.html">&larr; GALLERY · v05</a>
+  </div>
+
+  <div class="body">
+
+<div class="banner">
+  <h1>It detects the lesion. It cannot localize it.</h1>
+  <p>Text-conditioned 3D medical models collapse to oversized, imprecise regions the
+    moment a lesion is small. <em>Everything below is the session that found out
+    why.</em></p>
+</div>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">eval --dataset brats2020 --split held-out --group-by lesion-size</span></p>
+<pre class="out"><span class="co">loading 73 volumes @ 128^3 ......... ok</span>
+region              large    medium     small      ratio
+------------------------------------------------------
+whole tumour        0.281     0.137     0.057   <span class="a"> 4.9x</span>
+tumour core         0.176     0.059     0.019   <span class="a"> 9.3x</span>
+enhancing tumour    0.149     0.037     0.010   <span class="r b">14.9x</span>
+<span class="co">monotonic in lesion size for every region.</span></pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">eval --model unet-supervised   <span class="co"># is the signal even there?</span></span></p>
+<pre class="out">supervised U-Net, same lesions ........ degradation <span class="g b">1.2x</span>
+<span class="g">PASS</span>  small lesions are learnable.
+<span class="co">      so the degradation is not the data. it is the conditioning.</span></pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">ablate --text-encoder random-vectors</span></p>
+<pre class="out">swapping PubMedBERT -&gt; random gaussian vectors
+delta Dice ............................ <span class="a b">~0.000</span>
+<span class="r">FAIL</span>  the language contributes nothing measurable.
+<span class="co">      the query is an opaque class identifier that happens to be
+      spelled in English.</span></pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">patch --list --sort-by gain</span></p>
+<pre class="out">  <span class="r">x</span> size-conditioned prompting ........ helps small, breaks large
+  <span class="r">x</span> multi-scale ensembling ........... gains core, loses enhancing
+  <span class="r">x</span> scale-matched retraining ......... overfits its own tercile
+  <span class="g">&#10003;</span> <span class="b">centre-weighted window blending</span> ... <span class="g b">+0.145 Dice</span>, no retraining
+<span class="co">the cheapest patch on the list beat every elaborate one.</span></pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">patch --apply centre-weighted &amp;&amp; eval --region ET --size small</span></p>
+<pre class="out">small enhancing tumour, patients with non-zero Dice
+  before ....... <span class="r">0 / 21</span>
+  after ........ <span class="g b">7 / 21</span>
+<span class="co">no weights were modified. the fix is in how windows are merged.</span></pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">stats --paired-wilcoxon --correct bh --replicate 3</span></p>
+<pre class="out">171 paired tests, Benjamini-Hochberg corrected
+replication across three independent splits ... <span class="g b">9 / 9</span>
+<span class="g">PASS</span>  the failure reproduces.</pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">git log --oneline --grep=reverted</span></p>
+<pre class="out"><span class="a">a41c9e2</span> revert scale-matched retraining  <span class="co">(control caught it)</span>
+<span class="a">7b0d115</span> revert multi-scale ensembling    <span class="co">(control caught it)</span>
+<span class="a">2fc88a0</span> revert size-conditioned prompt   <span class="co">(control caught it)</span>
+<span class="co">three results were reversed after the fact. a shared confound is not
+a cancelled confound: every stage of a pipeline is an instrument until
+somebody measures it.</span></pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="c">open paper</span></p>
+<pre class="out wrapy"><span class="cy">&rarr;</span> <a href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization</a></pre>
+
+<p class="cmd"><span class="ps"><span class="p">~/lesion-grounding</span> <span class="b">main</span> $</span> <span class="cur"></span></p>
+
+<div class="exit">
+  <span>Raj Hansini Akara · MPCS 53113 · University of Chicago</span>
+  <span>BraTS2020 · 369 patients · exit 0</span>
+</div>
+
+  </div>
+</div>
+
+</body>
+</html>
