@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v04 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inconsolata:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* v04 — lab notebook. Quadrille paper, a red margin rule, printouts taped in,
+   annotations in pen. The point of the form: it can show work that was WRONG.
+   Three experiments in this project were reversed after controls caught errors,
+   and a notebook is the only layout where a struck-through entry is honest
+   rather than embarrassing. */
+:root{
+  --paper:#fbfaf3; --grid:#d9e3e8; --grid2:#c3d3da; --margin:#d9736a;
+  --ink:#1d2b36; --pen:#1b4f8a; --pencil:#5d6b74; --red:#b4322a; --tape:#e8dfc2;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#6d7360;padding:24px 14px 80px;
+  font:16px/1.6 Lora,Georgia,serif;color:var(--ink)}
+a{color:var(--pen)}
+.book{max-width:900px;margin:0 auto;background:var(--paper);position:relative;
+  box-shadow:0 2px 4px rgba(0,0,0,.3),0 20px 50px rgba(0,0,0,.34);
+  background-image:
+    repeating-linear-gradient(0deg,transparent 0 23px,var(--grid) 23px 24px),
+    repeating-linear-gradient(90deg,transparent 0 23px,var(--grid) 23px 24px),
+    repeating-linear-gradient(0deg,transparent 0 119px,var(--grid2) 119px 120px),
+    repeating-linear-gradient(90deg,transparent 0 119px,var(--grid2) 119px 120px);
+  padding:34px 40px 58px 84px}
+.book::before{content:"";position:absolute;top:0;bottom:0;left:60px;width:1.5px;
+  background:var(--margin);opacity:.65}
+.pen{font-family:Caveat,cursive;color:var(--pen)}
+.mono{font-family:Inconsolata,monospace}
+
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:18px;
+  flex-wrap:wrap;border-bottom:1.5px solid var(--pencil);padding-bottom:9px}
+.head .bk{font-family:Inconsolata,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--pencil)}
+.head .dt{font-family:Caveat,cursive;font-size:23px;color:var(--pen)}
+
+h1{font-family:Caveat,cursive;color:var(--pen);font-size:clamp(34px,5.4vw,56px);
+  line-height:1.02;font-weight:700;margin:26px 0 4px;max-width:18ch;
+  transform:rotate(-.5deg)}
+.under{width:min(420px,86%);height:7px;border-bottom:2.5px solid var(--margin);
+  opacity:.55;margin-bottom:22px}
+.lede{max-width:60ch;font-size:17px}
+.lede b{font-weight:600}
+
+h2{font-family:Inconsolata,monospace;font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--pencil);font-weight:600;
+  margin:44px 0 12px;display:flex;gap:10px;align-items:center}
+h2::after{content:"";flex:1;height:1px;background:var(--pencil);opacity:.4}
+
+/* taped-in printout */
+.tapein{position:relative;background:#fff;border:1px solid #cfd6da;
+  box-shadow:0 1px 2px rgba(0,0,0,.14);padding:18px 20px 16px;margin:20px 0 12px;
+  transform:rotate(-.55deg)}
+.tapein.r{transform:rotate(.7deg)}
+.tape{position:absolute;width:98px;height:25px;background:var(--tape);opacity:.78;
+  box-shadow:0 1px 1px rgba(0,0,0,.1)}
+.tape.tl{top:-11px;left:-16px;transform:rotate(-24deg)}
+.tape.tr{top:-11px;right:-16px;transform:rotate(23deg)}
+.tapein .cap{font-family:Inconsolata,monospace;font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--pencil);margin:0 0 10px}
+table{width:100%;border-collapse:collapse;font-family:Inconsolata,monospace;font-size:14px}
+th{text-align:left;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--pencil);font-weight:600;padding:0 10px 6px 0;border-bottom:1.5px solid var(--ink)}
+th.r,td.r{text-align:right}
+td{padding:7px 10px 7px 0;border-bottom:1px solid #e3e8ea}
+tr.hot td{color:var(--red);font-weight:600}
+tr.ctl td{color:var(--pencil)}
+
+.note{font-family:Caveat,cursive;color:var(--pen);font-size:22px;line-height:1.28;
+  transform:rotate(-.7deg);margin:10px 0 0}
+.note.right{text-align:right;transform:rotate(.8deg)}
+.arrow{font-family:Caveat,cursive;color:var(--margin);font-size:26px}
+
+.entry{display:grid;grid-template-columns:30px 1fr;gap:12px;
+  padding:11px 0;border-bottom:1px dashed #c9d4d9;max-width:66ch}
+.entry .n{font-family:Inconsolata,monospace;font-size:12px;color:var(--pencil);
+  padding-top:4px}
+.entry b{font-weight:600}
+.entry.dead{color:var(--pencil)}
+.entry.dead .txt{text-decoration:line-through;text-decoration-color:var(--red);
+  text-decoration-thickness:1.5px}
+.entry.dead::after{content:"reversed by control";font-family:Caveat,cursive;
+  color:var(--red);font-size:19px;grid-column:2;margin-top:-4px}
+
+.result{border:2.5px solid var(--pen);padding:18px 22px 20px;margin:26px 0 0;
+  max-width:60ch;transform:rotate(-.35deg);background:rgba(255,255,255,.55)}
+.result .k{font-family:Inconsolata,monospace;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--pencil);margin:0 0 8px}
+.result .v{font-family:Caveat,cursive;color:var(--pen);font-size:44px;line-height:1;
+  font-weight:700;margin:0 0 8px}
+.result p{margin:0;font-size:15.5px}
+
+.sign{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
+  flex-wrap:wrap;margin-top:46px;padding-top:12px;border-top:1.5px solid var(--pencil)}
+.sig{font-family:Caveat,cursive;font-size:30px;color:var(--pen);transform:rotate(-2deg)}
+.cite{font-family:Inconsolata,monospace;font-size:11px;color:var(--pencil)}
+.go{display:inline-block;font-family:Caveat,cursive;font-size:26px;color:var(--pen);
+  border-bottom:2.5px solid var(--margin);text-decoration:none;margin-top:16px}
+.back{display:block;max-width:900px;margin:0 auto 12px;color:#e2e6d8;
+  font-family:Inconsolata,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;text-decoration:none}
+@media(max-width:700px){.book{padding:26px 20px 44px 46px}
+  .book::before{left:30px}.tapein{padding:14px 13px}
+  table{font-size:12.5px}th{font-size:9px}}
+</style>
+</head>
+<body>
+
+<a class="back" href="../index.html">&larr; Gallery · v04 lab notebook</a>
+
+<div class="book">
+  <div class="head">
+    <span class="bk">Notebook 3 · pp. 41&ndash;44 · BraTS2020 · 128&sup3;</span>
+    <span class="dt">entry 41</span>
+  </div>
+
+  <h1>It finds the lesion.<br>It can&rsquo;t place it.</h1>
+  <div class="under"></div>
+  <p class="lede">Text-conditioned 3D models say <b>yes, there is a tumour</b>, then
+    hand back a region many times too large and centred somewhere else. The smaller
+    the lesion, the worse it gets, and it gets worse in a straight line.</p>
+
+  <h2>Measurements</h2>
+  <div class="tapein">
+    <span class="tape tl"></span><span class="tape tr"></span>
+    <p class="cap">Dice by lesion-size tercile · held-out n = 73</p>
+    <table>
+      <tr><th>Region</th><th class="r">Large</th><th class="r">Medium</th>
+        <th class="r">Small</th><th class="r">Ratio</th></tr>
+      <tr><td>Whole tumour</td><td class="r">0.281</td><td class="r">0.137</td><td class="r">0.057</td><td class="r">4.9&times;</td></tr>
+      <tr><td>Tumour core</td><td class="r">0.176</td><td class="r">0.059</td><td class="r">0.019</td><td class="r">9.3&times;</td></tr>
+      <tr class="hot"><td>Enhancing tumour</td><td class="r">0.149</td><td class="r">0.037</td><td class="r">0.010</td><td class="r">14.9&times;</td></tr>
+      <tr class="ctl"><td>Supervised U-Net</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">1.2&times;</td></tr>
+    </table>
+  </div>
+  <p class="note"><span class="arrow">&larr;</span> the U-Net sees the same lesions
+    and barely degrades. so they <i>are</i> learnable &mdash; it&rsquo;s the text
+    conditioning that breaks.</p>
+
+  <h2>Is the language doing anything?</h2>
+  <p class="lede">Swapped PubMedBERT for random vectors. Almost nothing changed.</p>
+  <p class="note right">so the query is an opaque class id<br>that happens to be
+    spelled in English. <span class="arrow">&rarr;</span></p>
+
+  <h2>Things I tried</h2>
+  <div class="entry dead"><span class="n">01</span>
+    <span class="txt"><b>Size-conditioned prompting.</b> Tell the model the lesion is
+    small. Helped small lesions, broke large ones.</span></div>
+  <div class="entry dead"><span class="n">02</span>
+    <span class="txt"><b>Multi-scale ensembling.</b> Averaged three resolutions. Gained
+    on core, lost the gain on enhancing tumour.</span></div>
+  <div class="entry dead"><span class="n">03</span>
+    <span class="txt"><b>Scale-matched retraining.</b> Rebalanced the sampler toward
+    small lesions. Overfit the tercile it was tuned on.</span></div>
+  <div class="entry"><span class="n">04</span>
+    <span class="txt"><b>Centre reweighting.</b> Weight each sliding window toward its
+    own centre instead of averaging flat. Touched no weights at all. <b>Worked.</b></span></div>
+
+  <div class="result">
+    <p class="k">Net effect, no retraining</p>
+    <p class="v">+0.145 Dice</p>
+    <p>Small enhancing tumour goes from 0 to 7 of 21 patients. The simplest thing on
+      the list beat every elaborate one.</p>
+  </div>
+
+  <h2>Note to self</h2>
+  <p class="lede">Three of the four entries above were reversed <i>after</i> a control
+    caught the error, not before. A shared confound is not a cancelled confound:
+    every stage of the pipeline is an instrument until somebody measures it.</p>
+  <p class="lede" style="margin-top:12px;font-family:Inconsolata,monospace;font-size:13px;color:var(--pencil)">
+    171 paired Wilcoxon tests · Benjamini&#8209;Hochberg corrected · 9 of 9 replicated
+    across three independent splits.</p>
+
+  <a class="go" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">read the write-up &rarr;</a>
+
+  <div class="sign">
+    <span class="sig">Raj Hansini Akara</span>
+    <span class="cite">MPCS 53113 · University of Chicago</span>
+  </div>
+</div>
+
+</body>
+</html>
