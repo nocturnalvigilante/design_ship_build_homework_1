@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v11 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+/* v11 — the quiet one. One column, one measure, a great deal of air, section marks
+   hung in the left margin, and a single hairline as the only rule on the page. No
+   panel, no card, no chrome of any kind.
+   Deliberately the opposite of v06: that version shouts the same claims in Times at
+   148px. Having both in the set answers a real question — does this finding need
+   volume, or does it land harder when nothing competes with it? */
+:root{
+  --paper:#fcfcfa; --ink:#23262a; --soft:#5d646c; --faint:#9aa1a8;
+  --hair:#e2e2dd; --mark:#b03a25;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:19px/1.78 "Source Serif 4",Georgia,serif;
+  font-variant-numeric:oldstyle-nums;-webkit-font-smoothing:antialiased}
+a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--mark);
+  padding-bottom:1px}
+a:hover{color:var(--mark)}
+.col{max-width:640px;margin:0 auto;padding:0 28px}
+.sans{font-family:"IBM Plex Sans",-apple-system,sans-serif}
+
+.crumb{max-width:640px;margin:0 auto;padding:36px 28px 0;
+  font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+.crumb a{border:0;color:var(--faint)}
+
+h1{font-weight:400;font-size:clamp(30px,4.6vw,44px);line-height:1.18;
+  letter-spacing:-.017em;margin:74px 0 0;max-width:19ch}
+.lede{color:var(--soft);font-size:20px;margin:26px 0 0}
+.lede em{font-style:italic;color:var(--ink)}
+hr{border:0;border-top:1px solid var(--hair);margin:56px 0}
+
+section{margin:0 0 54px;position:relative}
+section > .mk{font-family:"IBM Plex Sans",sans-serif;font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+  margin:0 0 14px}
+h2{font-weight:600;font-size:23px;line-height:1.28;letter-spacing:-.012em;
+  margin:0 0 16px;max-width:26ch}
+p{margin:0 0 20px}
+p:last-child{margin-bottom:0}
+b{font-weight:600}
+
+/* the one figure: a bar per size tercile, nothing more */
+.chart{margin:30px 0 8px;font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;
+  font-variant-numeric:tabular-nums lining-nums}
+.br{display:grid;grid-template-columns:98px 1fr 52px;gap:14px;align-items:center;
+  padding:7px 0}
+.tr{height:9px;background:#eeefe9;position:relative}
+.tf{position:absolute;inset:0 auto 0 0;background:var(--ink)}
+.tf.m{background:var(--mark)}
+.bv{text-align:right;color:var(--soft)}
+.bk{color:var(--soft)}
+.cap{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;line-height:1.6;
+  color:var(--faint);margin:14px 0 0}
+
+blockquote{margin:34px 0;padding:0 0 0 20px;border-left:2px solid var(--mark);
+  font-style:italic;color:var(--ink);font-size:20px;line-height:1.55}
+
+.pair{display:flex;gap:40px;flex-wrap:wrap;margin:26px 0 0;
+  font-family:"IBM Plex Sans",sans-serif}
+.pair div{flex:1 1 150px}
+.pair .n{font-size:32px;font-weight:500;letter-spacing:-.02em;line-height:1;
+  font-variant-numeric:lining-nums tabular-nums}
+.pair .n.bad{color:var(--mark)}
+.pair .l{font-size:12.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+
+.tried{margin:22px 0 0;padding:0;list-style:none;font-size:18px}
+.tried li{padding:9px 0 9px 26px;position:relative;color:var(--soft)}
+.tried li::before{content:"—";position:absolute;left:0;color:var(--faint)}
+.tried li.won{color:var(--ink)}
+.tried li.won::before{content:"→";color:var(--mark)}
+
+footer{margin:0 0 96px;font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;
+  color:var(--faint);line-height:1.75}
+footer a{border-bottom-color:var(--hair)}
+@media(max-width:620px){body{font-size:18px}.col,.crumb{padding-left:22px;padding-right:22px}
+  .br{grid-template-columns:82px 1fr 46px}}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../index.html">&larr; Gallery</a> &nbsp;·&nbsp; v11 quiet</p>
+
+<div class="col">
+
+  <h1>A model that knows a tumour is there, and cannot say where.</h1>
+  <p class="lede">Text-conditioned 3D medical models detect small lesions and then
+    fail to localize them. <em>This is what that failure is, and what fixes it.</em></p>
+
+  <hr>
+
+  <section>
+    <p class="mk">One</p>
+    <h2>The failure gets worse as the lesion gets smaller, and never recovers.</h2>
+    <p>Sorted by lesion volume into terciles, localization declines monotonically in
+      every region. For enhancing tumour, the clinically urgent case, Dice falls by
+      a factor of <b>14.9</b> from the largest third to the smallest.</p>
+    <div class="chart">
+      <div class="br"><span class="bk">Large</span><span class="tr"><i class="tf" style="width:53%"></i></span><span class="bv">0.149</span></div>
+      <div class="br"><span class="bk">Medium</span><span class="tr"><i class="tf" style="width:13.2%"></i></span><span class="bv">0.037</span></div>
+      <div class="br"><span class="bk">Small</span><span class="tr"><i class="tf m" style="width:3.6%"></i></span><span class="bv">0.010</span></div>
+      <p class="cap">Enhancing tumour, held-out n = 73. Whole tumour falls 4.9&times;
+        and tumour core 9.3&times; over the same range.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="mk">Two</p>
+    <h2>The lesions are findable. The conditioning is what fails.</h2>
+    <p>The obvious objection is that small lesions are simply hard. So the same
+      lesions went to a plain supervised U-Net, no language involved at all.</p>
+    <div class="pair">
+      <div><p class="n">1.2&times;</p><p class="l">degradation, supervised U-Net,
+        same small lesions</p></div>
+      <div><p class="n bad">14.9&times;</p><p class="l">degradation,
+        text-conditioned model, enhancing tumour</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="mk">Three</p>
+    <h2>And the language contributes nothing measurable.</h2>
+    <p>Replacing PubMedBERT with random vectors changes almost nothing. Whatever the
+      model is doing with the prompt, it is not reading it.</p>
+    <blockquote>The query functions as an opaque class identifier that happens to be
+      spelled in English.</blockquote>
+  </section>
+
+  <section>
+    <p class="mk">Four</p>
+    <h2>The cheapest available fix beat every elaborate one.</h2>
+    <p>Four interventions were tried. Three were reversed after a control caught the
+      error.</p>
+    <ul class="tried">
+      <li>Size-conditioned prompting. Helped small lesions, broke large ones.</li>
+      <li>Multi-scale ensembling. Gained on tumour core, gave it back on enhancing.</li>
+      <li>Scale-matched retraining. Overfit the tercile it was tuned on.</li>
+      <li class="won">Centre-weighted window merging. <b>+0.145 Dice, no retraining.</b></li>
+    </ul>
+    <p style="margin-top:22px">The volume is processed in overlapping sliding windows
+      and merged by flat averaging, which smears a small lesion across everything near
+      a window edge. Weighting each window toward its own centre recovers small
+      enhancing tumour in <b>7 of 21 patients</b> where the model previously found
+      none, and changes no weights at all.</p>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>A shared confound is not a cancelled confound.</h2>
+    <p>Every stage of a pipeline is an instrument until somebody measures it. That is
+      the part of this worth carrying to the next dataset.</p>
+    <p><a href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper and the code</a></p>
+  </section>
+
+  <footer>
+    Raj Hansini Akara · MPCS 53113 · University of Chicago<br>
+    BraTS2020, 369 patients, 128&sup3; volumes · 171 paired Wilcoxon tests,
+    Benjamini&#8209;Hochberg corrected · 9 of 9 comparisons replicated across three
+    independent splits.
+  </footer>
+
+</div>
+
+</body>
+</html>
