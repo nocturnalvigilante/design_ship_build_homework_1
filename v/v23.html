@@ -115,8 +115,11 @@ tr.c td{color:var(--ok);padding:9px 6px 9px 0}
 .fix .body p{color:#a7adaa;margin:0 0 15px}
 .fix .body p b{color:#fff;font-weight:600}
 .fix .gain{grid-column:10/span 3;border-left:2px solid var(--hot);padding-left:20px}
-.fix .gain b{display:block;font-size:clamp(38px,4.6vw,54px);font-weight:700;
+/* > b, not b: the emphasis inside the caption below was being rendered as a
+   second 54px display number. */
+.fix .gain > b{display:block;font-size:clamp(38px,4.6vw,54px);font-weight:700;
   letter-spacing:-.04em;line-height:1}
+.fix .gain span b{color:#fff;font-weight:600}
 .fix .gain span{display:block;font-size:13.5px;color:#a7adaa;margin-top:10px}
 .cta{display:inline-block;margin-top:22px;background:#fff;color:var(--ink);
   text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:11px;
