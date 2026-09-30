@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v01 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* v01 — PACS viewer. The page is the reading-room software: black ground so the
+   scan carries, monospace everywhere, amber for the model's guess and cyan for
+   ground truth, the two colours a radiologist would never confuse. */
+:root{
+  --void:#08090b; --panel:#101216; --edge:#1e2228; --edge-2:#2b3038;
+  --txt:#c9d1d9; --dim:#6a7480; --hot:#ffb020; --cool:#35d6e3; --bad:#ff4d4d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--void);color:var(--txt);
+  font:13px/1.6 "IBM Plex Mono",ui-monospace,Menlo,monospace}
+a{color:var(--cool);text-decoration:none}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:9px 16px;border-bottom:1px solid var(--edge);background:var(--panel);
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+.top b{color:var(--txt);font-weight:600}
+
+.shell{display:grid;grid-template-columns:186px 1fr 290px;min-height:calc(100vh - 35px)}
+.rail{border-right:1px solid var(--edge);padding:12px;background:var(--panel)}
+.rail h4,.meta h4{font-size:10px;letter-spacing:.14em;color:var(--dim);
+  text-transform:uppercase;margin:0 0 10px;font-weight:500}
+.thumb{border:1px solid var(--edge-2);margin-bottom:8px;padding:7px;font-size:10.5px;
+  color:var(--dim);display:flex;justify-content:space-between}
+.thumb.sel{border-color:var(--hot);color:var(--hot)}
+
+.view{padding:26px 34px;position:relative}
+.stamp{font-size:10.5px;letter-spacing:.14em;color:var(--bad);
+  border:1px solid var(--bad);display:inline-block;padding:3px 9px;margin-bottom:22px}
+h1{font-size:clamp(23px,3.1vw,36px);line-height:1.18;font-weight:600;margin:0 0 16px;
+  color:#fff;max-width:19ch;letter-spacing:-.01em}
+.sub{color:var(--dim);max-width:56ch;margin:0 0 26px}
+.sub em{color:var(--txt);font-style:normal}
+
+.scan{position:relative;border:1px solid var(--edge-2);background:#000;
+  aspect-ratio:16/9;max-width:660px;overflow:hidden}
+.scan svg{width:100%;height:100%;display:block}
+.cap{font-size:10.5px;color:var(--dim);margin-top:8px;max-width:660px}
+.key{display:flex;gap:18px;margin-top:14px;font-size:11px;color:var(--dim)}
+.key i{display:inline-block;width:10px;height:10px;margin-right:6px;translate:0 1px}
+
+.meta{border-left:1px solid var(--edge);padding:12px 14px;background:var(--panel)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;
+  border-bottom:1px solid var(--edge);font-size:11.5px}
+.row span:first-child{color:var(--dim)}
+.row b{font-weight:600}
+.row b.hot{color:var(--hot)} .row b.cool{color:var(--cool)}
+
+.acts{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.btn{border:1px solid var(--edge-2);padding:9px 15px;font-size:11px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--txt)}
+.btn.p{border-color:var(--hot);color:var(--hot)}
+.quote{margin:30px 0 0;padding-left:16px;border-left:2px solid var(--hot);
+  color:var(--txt);max-width:52ch;font-size:14px}
+@media(max-width:940px){.shell{grid-template-columns:1fr}.rail,.meta{border:0;border-top:1px solid var(--edge)}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span><a href="../index.html">&larr; Gallery</a> &nbsp; <b>STUDY</b> BraTS2020 · 369 PATIENTS</span>
+  <span>v01 · PACS READING ROOM</span>
+</div>
+
+<div class="shell">
+  <aside class="rail">
+    <h4>Series</h4>
+    <div class="thumb"><span>FLAIR</span><span>128³</span></div>
+    <div class="thumb"><span>T1</span><span>128³</span></div>
+    <div class="thumb sel"><span>T1CE</span><span>128³</span></div>
+    <div class="thumb"><span>T2</span><span>128³</span></div>
+    <div class="thumb"><span>SEG</span><span>ET/TC/WT</span></div>
+  </aside>
+
+  <main class="view">
+    <div class="stamp">FINDING · LOCALIZATION FAILURE</div>
+    <h1>It knows the lesion is there. It cannot say where.</h1>
+    <p class="sub">Text-conditioned 3D models detect that a lesion exists, then
+      collapse to an oversized, imprecise region the moment it is small.
+      <em>Dice falls 2.4&times; to 14.4&times; from large lesions to small ones.</em></p>
+
+    <div class="scan">
+      <svg viewBox="0 0 640 360" role="img" aria-label="Brain slice with a small ground-truth lesion in cyan and the model's oversized predicted region in amber.">
+        <defs>
+          <radialGradient id="br" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3a3f47"/><stop offset="72%" stop-color="#1b1f25"/>
+            <stop offset="100%" stop-color="#0a0c0f"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="320" cy="180" rx="150" ry="128" fill="url(#br)"/>
+        <ellipse cx="320" cy="180" rx="150" ry="128" fill="none" stroke="#2b3038"/>
+        <path d="M320 58 v244" stroke="#23282f" stroke-width="1.5"/>
+        <ellipse cx="272" cy="150" rx="34" ry="42" fill="#15181d"/>
+        <ellipse cx="368" cy="150" rx="34" ry="42" fill="#15181d"/>
+        <!-- model's guess: large, vague -->
+        <ellipse cx="366" cy="206" rx="86" ry="66" fill="#ffb020" fill-opacity=".14"
+                 stroke="#ffb020" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <!-- ground truth: small, tight -->
+        <circle cx="383" cy="196" r="11" fill="#35d6e3" fill-opacity=".30" stroke="#35d6e3" stroke-width="1.6"/>
+        <path d="M383 196 L470 128" stroke="#35d6e3" stroke-width="1"/>
+        <text x="476" y="125" fill="#35d6e3" font-family="IBM Plex Mono, monospace" font-size="11">GROUND TRUTH</text>
+        <text x="476" y="140" fill="#35d6e3" font-family="IBM Plex Mono, monospace" font-size="11">1.9 cm³</text>
+        <path d="M300 250 L150 292" stroke="#ffb020" stroke-width="1"/>
+        <text x="44" y="306" fill="#ffb020" font-family="IBM Plex Mono, monospace" font-size="11">PREDICTED · 31.4 cm³</text>
+        <text x="24" y="28" fill="#6a7480" font-family="IBM Plex Mono, monospace" font-size="10.5">SLICE 64/128 · T1CE</text>
+        <text x="520" y="336" fill="#6a7480" font-family="IBM Plex Mono, monospace" font-size="10.5">DICE 0.037</text>
+      </svg>
+    </div>
+    <p class="cap">Small enhancing tumour, held-out patient. The model's region is
+      sixteen times the true volume and centred two centimetres off.</p>
+    <div class="key">
+      <span><i style="background:#35d6e3"></i>Ground truth</span>
+      <span><i style="background:#ffb020"></i>Model prediction</span>
+    </div>
+
+    <blockquote class="quote">"The query functions as an opaque class identifier
+      that happens to be spelled in English."</blockquote>
+
+    <div class="acts">
+      <a class="btn p" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
+      <a class="btn" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Repository</a>
+    </div>
+  </main>
+
+  <aside class="meta">
+    <h4>Measurements</h4>
+    <div class="row"><span>Dice, large</span><b>0.281</b></div>
+    <div class="row"><span>Dice, medium</span><b>0.137</b></div>
+    <div class="row"><span>Dice, small</span><b class="hot">0.057</b></div>
+    <div class="row"><span>Degradation</span><b class="hot">4.9&times;</b></div>
+    <div class="row"><span>U-Net control</span><b class="cool">1.2&times;</b></div>
+    <h4 style="margin-top:22px">Diagnosis</h4>
+    <div class="row"><span>Small lesions learnable</span><b class="cool">YES</b></div>
+    <div class="row"><span>Language contributes</span><b class="hot">NO</b></div>
+    <div class="row"><span>Fix requires retraining</span><b class="cool">NO</b></div>
+    <h4 style="margin-top:22px">Intervention</h4>
+    <div class="row"><span>Centre reweighting</span><b class="cool">+0.145</b></div>
+    <div class="row"><span>Small ET recovered</span><b class="cool">7 / 21</b></div>
+    <h4 style="margin-top:22px">Statistics</h4>
+    <div class="row"><span>Paired Wilcoxon</span><b>171</b></div>
+    <div class="row"><span>Correction</span><b>BH</b></div>
+    <div class="row"><span>Replicated</span><b class="cool">9 / 9</b></div>
+  </aside>
+</div>
+
+</body>
+</html>
