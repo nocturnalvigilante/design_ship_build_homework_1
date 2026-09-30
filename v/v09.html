@@ -27,10 +27,10 @@ a{color:var(--gt)}
   text-transform:uppercase;color:var(--dim);margin:0}
 
 .top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  padding-top:15px;padding-bottom:15px;border-bottom:1px solid var(--edge)}
+  margin:0 auto;padding-top:15px;padding-bottom:15px;border-bottom:1px solid var(--edge)}
 .top a{color:var(--dim);text-decoration:none}
 
-.hero{padding:54px 0 34px;display:grid;grid-template-columns:1fr 400px;gap:56px;
+.hero{padding-top:54px;padding-bottom:34px;display:grid;grid-template-columns:1fr 400px;gap:56px;
   align-items:end}
 h1{font-size:clamp(34px,5.4vw,68px);line-height:.99;letter-spacing:-.035em;
   font-weight:700;margin:12px 0 0;max-width:15ch}
@@ -40,14 +40,16 @@ h1 em{font-style:normal;color:var(--gt)}
 
 /* --- the comparison --- */
 .cmp{position:relative;border:1px solid var(--edge);background:#000;
-  aspect-ratio:2/1;overflow:hidden;--x:50%}
+  aspect-ratio:2/1;overflow:hidden;--x:52%}
 .cmp .lay{position:absolute;inset:0}
 .cmp .lay svg{width:100%;height:100%;display:block}
 .cmp .after{clip-path:inset(0 0 0 var(--x))}
 .cmp .before{clip-path:inset(0 calc(100% - var(--x)) 0 0)}
 .cmp .split{position:absolute;top:0;bottom:0;left:var(--x);width:2px;
   background:#fff;pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.5)}
-.cmp .knob{position:absolute;top:50%;left:var(--x);translate:-50% -50%;
+/* 50% put the handle exactly on top of the lesion, which is the one thing the
+   reader needs to see. Parked low instead. */
+.cmp .knob{position:absolute;top:80%;left:var(--x);translate:-50% -50%;
   width:44px;height:44px;border-radius:50%;background:#fff;color:#101217;
   display:grid;place-items:center;font:600 15px/1 "IBM Plex Mono",monospace;
   pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.6)}
@@ -129,9 +131,9 @@ footer{border-top:1px solid var(--edge);padding:18px 0 60px;display:flex;
           <path d="M660 168 q-42 30 -30 74"/><path d="M600 108 q-30 40 -12 72"/>
           <path d="M262 320 q52 34 120 40"/><path d="M638 320 q-52 34 -120 40"/>
         </g>
-        <ellipse cx="428" cy="268" rx="138" ry="104" fill="#ff6b3d" fill-opacity=".16"
+        <ellipse cx="408" cy="254" rx="142" ry="108" fill="#ff6b3d" fill-opacity=".16"
                  stroke="#ff6b3d" stroke-width="3" stroke-dasharray="10 8"/>
-        <circle cx="498" cy="214" r="15" fill="#24d3a5" fill-opacity=".34" stroke="#24d3a5" stroke-width="3"/>
+        <circle cx="468" cy="206" r="16" fill="#24d3a5" fill-opacity=".34" stroke="#24d3a5" stroke-width="3"/>
         <g font-family="IBM Plex Mono, monospace" font-size="14" fill="#8a919e">
           <text x="34" y="418">FLAT AVERAGING &#183; PREDICTED 31.4 cm&#179;</text>
         </g>
@@ -151,9 +153,9 @@ footer{border-top:1px solid var(--edge);padding:18px 0 60px;display:flex;
           <path d="M660 168 q-42 30 -30 74"/><path d="M600 108 q-30 40 -12 72"/>
           <path d="M262 320 q52 34 120 40"/><path d="M638 320 q-52 34 -120 40"/>
         </g>
-        <ellipse cx="500" cy="216" rx="27" ry="23" fill="#24d3a5" fill-opacity=".20"
+        <ellipse cx="470" cy="208" rx="28" ry="24" fill="#24d3a5" fill-opacity=".20"
                  stroke="#24d3a5" stroke-width="3"/>
-        <circle cx="498" cy="214" r="15" fill="#24d3a5" fill-opacity=".34" stroke="#24d3a5" stroke-width="3"/>
+        <circle cx="468" cy="206" r="16" fill="#24d3a5" fill-opacity=".34" stroke="#24d3a5" stroke-width="3"/>
         <g font-family="IBM Plex Mono, monospace" font-size="14" fill="#8a919e">
           <text x="470" y="418">CENTRE-WEIGHTED &#183; TRUE LESION 1.9 cm&#179;</text>
         </g>
@@ -163,7 +165,7 @@ footer{border-top:1px solid var(--edge);padding:18px 0 60px;display:flex;
     <span class="tag r">Centre-weighted</span>
     <span class="split"></span>
     <span class="knob">&#8596;</span>
-    <input type="range" min="0" max="100" value="50" step="0.5" id="sl"
+    <input type="range" min="0" max="100" value="52" step="0.5" id="sl"
            aria-label="Reveal flat averaging on the left, centre-weighted merging on the right">
   </div>
   <div class="cmpfoot">
