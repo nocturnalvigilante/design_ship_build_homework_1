@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v18 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=Archivo:wght@400;500;600&display=swap">
+<style>
+/* v18 = v08 (things resolve as you scroll) x v07 (prose a non-specialist can read).
+   Prose first, one readable column, with full-bleed figure interludes that arrive
+   as you reach them: the predicted region inflates, the bars grow, the numbers land.
+   Different from v08, which pinned one figure and fed it terse claims — here the
+   argument is carried by sentences and the motion only punctuates.
+   Everything is legible with JavaScript off and motion off; the reveal adds nothing
+   the reader needs. */
+:root{
+  --paper:#fcfaf7; --ink:#14201c; --soft:#56635e; --faint:#93a09a;
+  --hair:#e0ddd6; --burnt:#bf5a25; --deep:#0f1a17;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:19.5px/1.72 Spectral,Georgia,serif}
+a{color:var(--burnt)}
+.col{max-width:660px;margin:0 auto;padding:0 30px}
+.wide{max-width:1160px;margin:0 auto;padding:0 30px}
+.sans{font-family:Archivo,sans-serif}
+.lab{font-family:Archivo,sans-serif;font-size:10.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--faint);margin:0;font-weight:600}
+
+.crumb{max-width:1160px;margin:0 auto;padding:28px 30px 0}
+.crumb a{color:var(--faint);text-decoration:none;font-family:Archivo,sans-serif;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+header{padding:56px 0 10px}
+h1{font-weight:600;font-size:clamp(36px,6.2vw,72px);line-height:1.02;
+  letter-spacing:-.028em;margin:16px 0 0;max-width:16ch}
+h1 em{font-style:italic;font-weight:300;color:var(--burnt)}
+.dek{font-size:21.5px;line-height:1.5;color:var(--soft);margin:26px 0 0;max-width:44ch}
+.dek b{color:var(--ink);font-weight:600}
+.byline{display:flex;gap:26px;flex-wrap:wrap;margin:34px 0 0;padding-top:16px;
+  border-top:1px solid var(--hair);font-family:Archivo,sans-serif;font-size:12.5px;
+  color:var(--faint)}
+.byline b{color:var(--ink);font-weight:600}
+
+p{margin:0 0 22px}
+.col p:first-of-type::first-letter{float:left;font-size:72px;line-height:.76;
+  padding:8px 11px 0 0;font-weight:600;color:var(--burnt)}
+h2{font-weight:600;font-size:clamp(24px,3.4vw,34px);line-height:1.16;
+  letter-spacing:-.022em;margin:52px 0 18px;max-width:22ch}
+b{font-weight:600}
+blockquote{margin:38px 0;padding:0;border:0;font-size:25px;line-height:1.36;
+  font-style:italic;font-weight:300;color:var(--ink);max-width:24ch}
+blockquote::before{content:"";display:block;width:56px;height:3px;
+  background:var(--burnt);margin-bottom:18px}
+
+/* --- figure interludes --- */
+.interlude{margin:52px 0;padding:38px 0 34px;background:#f5f2ec;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.interlude.dark{background:var(--deep);border-color:var(--deep)}
+.interlude .lab{margin-bottom:16px}
+.interlude.dark .lab{color:#7e8c86}
+.ifig{display:grid;grid-template-columns:1.25fr 1fr;gap:48px;align-items:center}
+.ifig svg{width:100%;height:auto;display:block}
+.ifig .say{margin:0}
+.ifig .say .n{font-size:clamp(46px,6.6vw,78px);line-height:.88;letter-spacing:-.04em;
+  font-weight:600;color:var(--burnt);margin:0 0 12px}
+.interlude.dark .ifig .say .n{color:#ff9463}
+.ifig .say p{font-size:16.5px;color:var(--soft);margin:0 0 12px;max-width:34ch}
+.interlude.dark .ifig .say p{color:#9aa8a2}
+.ifig .say p b{color:var(--ink)}
+.interlude.dark .ifig .say p b{color:#f0f3f1}
+.icap{font-family:Archivo,sans-serif;font-size:12.5px;color:var(--faint);
+  margin:20px 0 0;line-height:1.6;max-width:72ch}
+
+.bars{margin:0}
+.brow{display:grid;grid-template-columns:118px 1fr 58px;gap:14px;align-items:center;
+  padding:9px 0;font-family:Archivo,sans-serif;font-size:14px}
+.btr{height:14px;background:#e4e0d8;position:relative;overflow:hidden}
+.interlude.dark .btr{background:#1d2b27}
+.bfl{position:absolute;inset:0 auto 0 0;background:var(--ink);width:var(--x);
+  transform-origin:0 50%}
+.bfl.o{background:var(--burnt)}
+.interlude.dark .bfl{background:#f0f3f1}.interlude.dark .bfl.o{background:#ff9463}
+/* Hidden starting states are scoped to .js, set by the inline script at the top of
+   <body>. With JavaScript off that class never lands, so every bar and the predicted
+   region render at full size: the animation is an addition, never a prerequisite. */
+.js .bfl{transform:scaleX(0);transition:transform .9s cubic-bezier(.2,.7,.3,1)}
+.js .in .bfl{transform:scaleX(1)}
+.bv{text-align:right;color:var(--soft);font-variant-numeric:tabular-nums}
+.interlude.dark .bv,.interlude.dark .bk{color:#9aa8a2}
+.bk{color:var(--soft)}
+
+#predBlob{transform-origin:508px 236px}
+.js #predBlob{transform:scale(.24);opacity:0;
+  transition:transform 1.05s cubic-bezier(.2,.7,.3,1),opacity .5s ease}
+.js .in #predBlob{transform:scale(1);opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .js .bfl{transition:none;transform:scaleX(1)}
+  .js #predBlob{transition:none;transform:scale(1);opacity:1}}
+
+.close{background:var(--deep);color:#e9edeb;margin-top:60px;padding:66px 0 70px}
+.close h2{color:#fff;margin:14px 0 18px;max-width:20ch}
+.close h2 em{font-style:italic;font-weight:300;color:#ff9463}
+.close p{color:#9aa8a2;max-width:46ch}
+.close .lab{color:#7e8c86}
+.cta{display:inline-block;margin-top:16px;border-bottom:2px solid #ff9463;color:#fff;
+  text-decoration:none;font-family:Archivo,sans-serif;font-size:15px;font-weight:500;
+  padding-bottom:3px}
+footer{padding:22px 0 72px;font-family:Archivo,sans-serif;font-size:12px;
+  color:var(--faint);line-height:1.8}
+@media(max-width:860px){.ifig{grid-template-columns:1fr;gap:26px}
+  .col,.wide,.crumb{padding-left:22px;padding-right:22px}
+  .brow{grid-template-columns:92px 1fr 50px}}
+</style>
+</head>
+<body>
+<script>document.documentElement.className += " js";</script>
+
+<p class="crumb"><a href="../index.html">&larr; Gallery · v18 long read</a></p>
+
+<div class="wide">
+  <header>
+    <p class="lab">Medical imaging &nbsp;·&nbsp; Vision and language</p>
+    <h1>The model that could not <em>point</em></h1>
+    <p class="dek">Ask a text-conditioned 3D model whether there is a tumour and it will
+      tell you, correctly. Ask it <b>where</b>, and once the lesion is small, it hands
+      back a region many times too large and centred somewhere else entirely.</p>
+    <div class="byline">
+      <span><b>Raj Hansini Akara</b> · MPCS 53113, University of Chicago</span>
+      <span>BraTS2020 · 369 patients · 128&sup3; volumes</span>
+    </div>
+  </header>
+</div>
+
+<div class="col">
+  <p>The clinically urgent lesions are the small ones. They are the ones a radiologist
+    might miss on a busy afternoon, the ones that argue for another scan in three months
+    rather than six. They are also, it turns out, precisely the ones these models cannot
+    find.</p>
+  <p>Not detect &mdash; find. The distinction matters more than it sounds. Run the model
+    on a held-out patient with a small enhancing tumour and it will confidently report
+    that a lesion is present. It will then outline a region roughly sixteen times the
+    true volume, its centre a couple of centimetres from where the tumour actually sits.</p>
+</div>
+
+<div class="interlude" data-reveal>
+  <div class="wide">
+    <p class="lab">One held-out patient</p>
+    <div class="ifig">
+      <svg viewBox="0 0 860 400" role="img"
+           aria-label="Axial slice. A small solid outline marks the true lesion; a much larger dashed outline marks the model's predicted region, offset from it.">
+        <rect width="860" height="400" fill="#faf7f1"/>
+        <g stroke="#c6c1b6" fill="none" stroke-width="1.4">
+          <ellipse cx="430" cy="200" rx="250" ry="166"/>
+          <ellipse cx="430" cy="200" rx="230" ry="146"/>
+          <path d="M430 34 V366"/>
+          <path d="M412 132 q-26 42 -17 92 q4 24 17 38 q2 -76 0 -130 z"/>
+          <path d="M448 132 q26 42 17 92 q-4 24 -17 38 q-2 -76 0 -130 z"/>
+          <path d="M246 144 q38 26 28 66"/><path d="M302 96 q26 34 13 58"/>
+          <path d="M614 144 q-38 26 -28 66"/><path d="M558 96 q-26 34 -13 58"/>
+          <path d="M264 282 q45 30 104 37"/><path d="M596 282 q-45 30 -104 37"/>
+        </g>
+        <ellipse id="predBlob" cx="508" cy="236" rx="122" ry="92" fill="#bf5a25"
+                 fill-opacity=".13" stroke="#bf5a25" stroke-width="2.4" stroke-dasharray="9 7"/>
+        <circle cx="548" cy="192" r="15" fill="#14201c" fill-opacity=".18"
+                stroke="#14201c" stroke-width="2.4"/>
+        <g stroke="#14201c" stroke-width="1" fill="none"><path d="M560 183 L672 122 H730"/></g>
+        <g font-family="Archivo, sans-serif" font-size="13">
+          <text x="736" y="118" fill="#14201c">TRUE LESION · 1.9 cm&#179;</text>
+          <text x="24" y="376" fill="#bf5a25">PREDICTED · 31.4 cm&#179;</text>
+          <text x="24" y="30" fill="#93a09a" font-size="12">SLICE 64/128 · T1CE</text>
+        </g>
+      </svg>
+      <div class="say">
+        <p class="n">16&times;</p>
+        <p>the true volume, and centred two centimetres away. <b>Dice 0.037.</b></p>
+        <p>The model was right that something was there. It was wrong about almost
+          everything else.</p>
+      </div>
+    </div>
+    <p class="icap">Small enhancing tumour, held-out patient. Both outlines are from the
+      same inference pass.</p>
+  </div>
+</div>
+
+<div class="col">
+  <h2>It is not that small lesions are hard</h2>
+  <p>The obvious objection is that a few voxels of low-contrast tissue with ambiguous
+    borders may simply be beyond finding. So the same small lesions were handed to a
+    plain supervised U-Net, with no language involved anywhere in the pipeline.</p>
+  <p>It degraded by a factor of <b>1.2</b>. The text-conditioned model degrades by
+    <b>14.9</b> on enhancing tumour over the same range. The lesions are learnable.
+    Something about conditioning on language is what breaks.</p>
+</div>
+
+<div class="interlude" data-reveal>
+  <div class="wide">
+    <p class="lab">Dice by lesion-size tercile · enhancing tumour</p>
+    <div class="ifig">
+      <div class="bars">
+        <div class="brow"><span class="bk">Large</span><span class="btr"><i class="bfl" style="--x:53%"></i></span><span class="bv">0.149</span></div>
+        <div class="brow"><span class="bk">Medium</span><span class="btr"><i class="bfl" style="--x:13.2%"></i></span><span class="bv">0.037</span></div>
+        <div class="brow"><span class="bk">Small</span><span class="btr"><i class="bfl o" style="--x:3.6%"></i></span><span class="bv">0.010</span></div>
+      </div>
+      <div class="say">
+        <p class="n">14.9&times;</p>
+        <p>worse on small lesions than large ones. <b>Whole tumour falls 4.9&times; and
+          tumour core 9.3&times;</b> over the same range.</p>
+        <p>Monotonic in every region, with no recovery.</p>
+      </div>
+    </div>
+    <p class="icap">Held-out n = 73. 171 paired Wilcoxon tests, Benjamini&#8209;Hochberg
+      corrected; 9 of 9 comparisons replicated across three independent splits.</p>
+  </div>
+</div>
+
+<div class="col">
+  <h2>Nor is it the language</h2>
+  <p>The next suspicion was the text encoder, and the fix would have been a better one.
+    Instead, PubMedBERT was replaced with random vectors &mdash; no medical knowledge,
+    no semantics, nothing at all. Performance barely moved.</p>
+  <blockquote>The query functions as an opaque class identifier that happens to be
+    spelled in English.</blockquote>
+  <p>The model is not reading the prompt. It is looking up a channel. Which means no
+    amount of better text, better encoder or better prompt engineering was ever going to
+    repair this.</p>
+
+  <h2>What was left was the plumbing</h2>
+  <p>Three elaborate interventions were tried first. Size-conditioned prompting helped
+    small lesions and broke large ones. Multi-scale ensembling gained on tumour core and
+    gave the gain back on enhancing tumour. Scale-matched retraining overfit the size
+    tercile it was tuned on. Each was reversed after a control caught the error.</p>
+  <p>What worked was the least interesting idea available. The model processes volumes
+    in overlapping sliding windows and merges them by flat averaging, which smears a
+    small lesion sitting near a window edge across everything around it. Weight each
+    window toward its own centre instead, and Dice rises by <b>0.145</b> with no
+    retraining whatsoever.</p>
+</div>
+
+<div class="interlude dark" data-reveal>
+  <div class="wide">
+    <p class="lab">The repair · no weights modified</p>
+    <div class="ifig">
+      <div class="bars">
+        <div class="brow"><span class="bk">Before &mdash; flat averaging</span><span class="btr"><i class="bfl" style="--x:0%"></i></span><span class="bv">0 / 21</span></div>
+        <div class="brow"><span class="bk">After &mdash; centre-weighted</span><span class="btr"><i class="bfl o" style="--x:33.3%"></i></span><span class="bv">7 / 21</span></div>
+      </div>
+      <div class="say">
+        <p class="n">+0.145</p>
+        <p>Dice, <b>with no retraining of any kind.</b></p>
+        <p>Small enhancing tumour recovered in seven of twenty-one patients where the
+          model previously found none.</p>
+      </div>
+    </div>
+    <p class="icap" style="color:#7e8c86">Patients with non-zero Dice on small enhancing
+      tumour, before and after the merge is changed.</p>
+  </div>
+</div>
+
+<div class="close">
+  <div class="col">
+    <p class="lab">What to carry away</p>
+    <h2>A shared confound is <em>not</em> a cancelled confound</h2>
+    <p>Three results here were reversed after the fact, each time by a control that
+      should have been run first. The lesson generalises past this dataset: every stage
+      of a pipeline is an instrument until somebody measures it.</p>
+    <p><a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper and the code &rarr;</a></p>
+  </div>
+</div>
+
+<div class="wide">
+  <footer>
+    Raj Hansini Akara · MPCS 53113 · University of Chicago<br>
+    Diagnosing Small-Lesion Grounding Failure in Text-Conditioned 3D Medical Localization
+  </footer>
+</div>
+
+<script>
+/* Motion punctuates; it never carries meaning. The hidden starting state lives
+   behind the .js class set at the top of <body>, so a reader without JavaScript
+   gets every figure at full size rather than an empty chart. */
+(function () {
+  var els = document.querySelectorAll("[data-reveal]");
+  if (!("IntersectionObserver" in window)) {
+    Array.prototype.forEach.call(els, function (e) { e.classList.add("in"); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -18% 0px", threshold: 0.2 });
+  Array.prototype.forEach.call(els, function (e) { io.observe(e); });
+})();
+</script>
+
+</body>
+</html>
