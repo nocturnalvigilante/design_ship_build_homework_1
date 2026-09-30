@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v17 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* v17 = v01 (the overlay and its measurements rail) x v12 (everything on one
+   surface). One screen, no scrolling: the figure, the nine numbers, the two
+   controls and the repair are tiled so a reader who gives this page four seconds
+   still leaves with the whole argument.
+   Near-black with a single high-chroma yellow, so it is not read as a variant of
+   v01's amber-and-cyan or v12's indigo-and-coral. */
+:root{
+  --bg:#0c0d0f; --tile:#141619; --edge:#23262b; --hair:#1b1e22;
+  --txt:#eef0f2; --dim:#878e97; --faint:#5c636c; --hot:#ffe14d; --gt:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+  font:15px/1.5 Chivo,"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
+a{color:var(--hot)}
+.lab{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--faint);margin:0}
+
+.rail{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:9px 20px;border-bottom:1px solid var(--edge)}
+.rail a{color:var(--dim);text-decoration:none}
+
+.board{display:grid;gap:1px;background:var(--edge);padding:1px 0 0;
+  grid-template-columns:repeat(12,1fr);
+  grid-template-areas:
+    "t t t t t t t t k k k k"
+    "f f f f f f f s s s s s"
+    "f f f f f f f a a a r r"
+    "n n n n n n n n n n n n";
+  min-height:calc(100vh - 36px)}
+.tile{background:var(--tile);padding:20px 22px 22px;min-width:0}
+
+.t-head{grid-area:t;display:flex;flex-direction:column;justify-content:center}
+h1{font-size:clamp(28px,3.6vw,50px);line-height:1;letter-spacing:-.035em;
+  font-weight:900;margin:10px 0 0;max-width:19ch}
+h1 em{font-style:normal;color:var(--hot)}
+.t-head p{color:var(--dim);max-width:60ch;margin:16px 0 0;font-size:15.5px}
+.t-head p b{color:var(--txt);font-weight:500}
+
+.t-kpi{grid-area:k;display:flex;flex-direction:column;justify-content:center}
+.kbig{font-size:clamp(52px,7.4vw,96px);line-height:.86;letter-spacing:-.05em;
+  font-weight:900;color:var(--hot);margin:8px 0 10px}
+.t-kpi p.s{margin:0;color:var(--dim);font-size:14px;max-width:26ch}
+.t-kpi p.s b{color:var(--txt);font-weight:500}
+
+.t-fig{grid-area:f;display:flex;flex-direction:column;justify-content:center}
+.t-fig svg{width:100%;height:auto;display:block}
+.figfoot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint)}
+
+.t-scale{grid-area:s}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+th{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:400;
+  padding:0 8px 7px 0;border-bottom:1px solid var(--edge)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:9px 8px 9px 0;border-bottom:1px solid var(--hair)}
+tr.x td{color:var(--hot);font-weight:700}
+tr.c td{color:var(--dim);font-style:italic}
+
+.t-abl{grid-area:a}
+.t-fix{grid-area:r}
+.t-abl .v,.t-fix .v{font-size:clamp(30px,4vw,44px);line-height:1;font-weight:900;
+  letter-spacing:-.035em;margin:10px 0 9px}
+.t-fix .v{color:var(--hot)}
+.t-abl p.s,.t-fix p.s{margin:0;font-size:13.5px;color:var(--dim);line-height:1.5}
+.t-abl p.s b,.t-fix p.s b{color:var(--txt);font-weight:500}
+
+.t-note{grid-area:n;display:flex;justify-content:space-between;align-items:center;
+  gap:26px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
+.t-note .q{font-size:clamp(16px,2vw,23px);font-weight:500;letter-spacing:-.015em;
+  margin:0;max-width:52ch}
+.t-note .q em{font-style:normal;color:var(--hot)}
+.t-note .meta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint);
+  line-height:1.8;text-align:right}
+.cta{display:inline-block;background:var(--hot);color:#0c0d0f;text-decoration:none;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;padding:12px 19px;font-weight:500;white-space:nowrap}
+
+@media(max-width:1100px){
+  .board{grid-template-areas:
+    "t t t t t t t t t t t t"
+    "k k k k k k k k k k k k"
+    "f f f f f f f f f f f f"
+    "s s s s s s s s s s s s"
+    "a a a a a a r r r r r r"
+    "n n n n n n n n n n n n";min-height:0}
+}
+@media(max-width:620px){.board{grid-template-areas:
+    "t t t t t t t t t t t t" "k k k k k k k k k k k k"
+    "f f f f f f f f f f f f" "s s s s s s s s s s s s"
+    "a a a a a a a a a a a a" "r r r r r r r r r r r r"
+    "n n n n n n n n n n n n"}
+  .tile{padding:16px 16px 18px}}
+</style>
+</head>
+<body>
+
+<div class="rail lab">
+  <a href="../index.html">&larr; Gallery · v17 one-screen console</a>
+  <span>BraTS2020 · 369 patients · 128&sup3; · held-out n = 73</span>
+</div>
+
+<div class="board">
+
+  <div class="tile t-head">
+    <p class="lab">Localization failure &mdash; text-conditioned 3D medical models</p>
+    <h1>It knows the tumour is there. It cannot say <em>where</em>.</h1>
+    <p>The model detects a lesion correctly, then returns a region many times too large
+      and centred somewhere else. <b>The smaller the lesion, the wider the miss</b> —
+      and the small ones are the clinically urgent ones.</p>
+  </div>
+
+  <div class="tile t-kpi">
+    <p class="lab">Dice degradation<br>large &rarr; small</p>
+    <p class="kbig">14.9&times;</p>
+    <p class="s">Enhancing tumour. A supervised U-Net on the same lesions degrades
+      <b>1.2&times;</b>, so the lesions are learnable and the conditioning is what fails.</p>
+  </div>
+
+  <div class="tile t-fig">
+    <p class="lab" style="margin-bottom:12px">Held-out patient · small enhancing tumour</p>
+    <svg viewBox="0 0 860 400" role="img"
+         aria-label="Axial slice: a small white outline marks the true lesion, a much larger dashed yellow outline marks the model's predicted region, offset from it.">
+      <rect width="860" height="400" fill="#0f1114"/>
+      <g stroke="#3c434c" fill="none" stroke-width="1.5">
+        <ellipse cx="430" cy="200" rx="252" ry="168"/>
+        <ellipse cx="430" cy="200" rx="232" ry="148"/>
+        <path d="M430 32 V368"/>
+        <path d="M412 132 q-26 42 -17 92 q4 24 17 38 q2 -76 0 -130 z"/>
+        <path d="M448 132 q26 42 17 92 q-4 24 -17 38 q-2 -76 0 -130 z"/>
+        <path d="M244 144 q38 26 28 66"/><path d="M300 96 q26 34 13 58"/>
+        <path d="M616 144 q-38 26 -28 66"/><path d="M560 96 q-26 34 -13 58"/>
+        <path d="M262 282 q45 30 104 37"/><path d="M598 282 q-45 30 -104 37"/>
+      </g>
+      <ellipse cx="524" cy="238" rx="124" ry="92" fill="#ffe14d" fill-opacity=".09"
+               stroke="#ffe14d" stroke-width="2.4" stroke-dasharray="9 7"/>
+      <circle cx="566" cy="192" r="15" fill="#fff" fill-opacity=".26" stroke="#fff" stroke-width="2.4"/>
+      <g stroke="#fff" stroke-width="1" fill="none"><path d="M578 183 L688 122 H744"/></g>
+      <g stroke="#ffe14d" stroke-width="1" fill="none"><path d="M430 322 L286 362 H168"/></g>
+      <g font-family="IBM Plex Mono, monospace" font-size="12.5">
+        <text x="750" y="118" fill="#fff">TRUE 1.9 cm&#179;</text>
+        <text x="72" y="358" fill="#ffe14d">PREDICTED 31.4 cm&#179;</text>
+        <text x="24" y="30" fill="#5c636c" font-size="11.5">SLICE 64/128 · T1CE</text>
+        <text x="736" y="376" fill="#ffe14d" font-size="11.5">DICE 0.037</text>
+      </g>
+    </svg>
+    <div class="figfoot">
+      <span>Sixteen times the true volume, two centimetres off centre</span>
+      <span>Detection: correct</span>
+    </div>
+  </div>
+
+  <div class="tile t-scale">
+    <p class="lab">Dice by lesion-size tercile</p>
+    <table>
+      <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
+      <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+      <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+      <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+      <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+    </table>
+    <p class="lab" style="margin-top:14px;line-height:1.9">Monotonic in every region ·
+      171 paired Wilcoxon tests, BH corrected · 9 of 9 replicated across three splits</p>
+  </div>
+
+  <div class="tile t-abl">
+    <p class="lab">Language ablation</p>
+    <p class="v">&asymp; 0</p>
+    <p class="s">Replacing PubMedBERT with <b>random vectors</b> changes almost nothing.
+      The query functions as an opaque class identifier that happens to be spelled in
+      English.</p>
+  </div>
+
+  <div class="tile t-fix">
+    <p class="lab">Repair · no retraining</p>
+    <p class="v">+0.145</p>
+    <p class="s"><b>Centre-weighted window merging.</b> Small enhancing tumour goes from
+      0 to 7 of 21 patients. No weights were modified.</p>
+  </div>
+
+  <div class="tile t-note">
+    <p class="q">Three more elaborate interventions were reversed after a control caught
+      the error. <em>A shared confound is not a cancelled confound.</em></p>
+    <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
+    <p class="meta">Raj Hansini Akara<br>MPCS 53113 · University of Chicago</p>
+  </div>
+
+</div>
+
+</body>
+</html>
