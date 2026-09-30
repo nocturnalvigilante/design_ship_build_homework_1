@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v07 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* v07 — magazine spread. Editorial rather than technical: a dek, a drop cap, three
+   columns of running text, a pull quote breaking the measure, a full-bleed figure
+   band, folio rules. Ink-blue and a single vermilion instead of the cream-and-serif
+   default the brief warns against.
+   What it tests: whether the finding reads as a STORY to someone who will not
+   look at a table. */
+:root{
+  --paper:#fdfdfb; --ink:#101418; --blue:#16255e; --verm:#d8402a;
+  --dim:#6d7480; --hair:#d3d6dc;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:17px/1.62 Inter,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--verm)}
+.w{max-width:1180px;margin:0 auto;padding:0 40px}
+.serif{font-family:"Bodoni Moda",Didot,Georgia,serif}
+
+.folio{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:14px 0 12px;border-bottom:1px solid var(--ink);
+  font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.folio a{color:var(--dim);text-decoration:none}
+.folio b{color:var(--ink);font-weight:600}
+
+.kick{font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--verm);font-weight:600;margin:40px 0 16px}
+h1{font-family:"Bodoni Moda",Didot,Georgia,serif;font-weight:900;
+  font-size:clamp(46px,9.4vw,116px);line-height:.92;letter-spacing:-.022em;
+  margin:0;max-width:15ch;color:var(--blue)}
+h1 em{font-style:italic;font-weight:400;color:var(--ink)}
+.dek{display:grid;grid-template-columns:1.1fr 1fr;gap:46px;margin:30px 0 0;
+  padding-bottom:30px;border-bottom:3px solid var(--ink)}
+.dek .d{font-family:"Bodoni Moda",serif;font-size:clamp(19px,2.2vw,25px);
+  line-height:1.34;color:var(--ink);margin:0}
+.dek .by{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  align-self:end}
+.dek .by b{display:block;font-size:14px;letter-spacing:.04em;color:var(--ink);
+  text-transform:none;font-weight:600;margin-bottom:3px}
+
+.cols{columns:3;column-gap:38px;column-rule:1px solid var(--hair);
+  margin:38px 0 0;text-align:justify;hyphens:auto}
+.cols p{margin:0 0 15px}
+.cols p:first-child::first-letter{font-family:"Bodoni Moda",serif;font-weight:900;
+  float:left;font-size:78px;line-height:.72;padding:6px 10px 0 0;color:var(--verm)}
+.cols h3{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--verm);
+  margin:22px 0 8px;font-weight:600;break-after:avoid}
+.cols .sc{font-variant-caps:all-small-caps;letter-spacing:.06em}
+
+.pull{break-inside:avoid;margin:6px 0 18px;padding:16px 0;
+  border-top:3px solid var(--verm);border-bottom:1px solid var(--ink)}
+.pull p{font-family:"Bodoni Moda",serif;font-style:italic;font-size:22px;
+  line-height:1.25;margin:0;color:var(--blue)}
+
+.band{background:var(--blue);color:#fff;margin:48px 0 0;padding:44px 0 46px}
+.band .w{display:grid;grid-template-columns:1fr 1.25fr;gap:52px;align-items:center}
+.band .n{font-family:"Bodoni Moda",serif;font-weight:900;
+  font-size:clamp(76px,14vw,178px);line-height:.82;letter-spacing:-.04em;margin:0}
+.band .n span{color:#ffd0c6;font-size:.36em;letter-spacing:0;display:block;
+  font-family:Inter,sans-serif;font-weight:500;margin-top:14px;line-height:1.4}
+figure{margin:0}
+figcaption{font-size:12px;color:#c3c9dd;margin-top:12px;max-width:52ch}
+table{width:100%;border-collapse:collapse;font-size:15px;color:#fff}
+th{text-align:right;font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:#a8b0cc;font-weight:500;padding:0 10px 8px 0;border-bottom:1px solid #4a5789}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:10px 10px 10px 0;border-bottom:1px solid #2b3a72;
+  font-variant-numeric:tabular-nums}
+tr.x td{color:#ff9f8c;font-weight:600}
+tr.c td{color:#a8b0cc}
+
+.close{padding:48px 0 0}
+.close h2{font-family:"Bodoni Moda",serif;font-weight:700;font-size:clamp(26px,4vw,46px);
+  line-height:1.06;margin:0 0 16px;max-width:20ch;letter-spacing:-.02em}
+.close p{max-width:56ch;color:var(--dim);margin:0 0 14px}
+.cta{display:inline-block;margin-top:14px;border-bottom:3px solid var(--verm);
+  color:var(--ink);text-decoration:none;font-weight:600;font-size:18px;padding-bottom:2px}
+footer{margin-top:52px;border-top:1px solid var(--ink);padding:14px 0 60px;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+@media(max-width:980px){.cols{columns:2}.dek,.band .w{grid-template-columns:1fr;gap:26px}}
+@media(max-width:640px){.cols{columns:1}.w{padding:0 22px}
+  .cols{text-align:left;hyphens:none}}
+</style>
+</head>
+<body>
+
+<div class="w">
+  <div class="folio">
+    <span><a href="../index.html">&larr; Gallery</a> &nbsp;·&nbsp; v07 Magazine spread</span>
+    <span><b>Diagnosis</b> &nbsp;·&nbsp; Issue 01 &nbsp;·&nbsp; pp. 34&ndash;39</span>
+  </div>
+
+  <p class="kick">Medical imaging &nbsp;/&nbsp; Vision and language</p>
+  <h1>The model that could not <em>point</em>.</h1>
+  <div class="dek">
+    <p class="d">Ask a text-conditioned 3D model whether there is a tumour and it will
+      tell you, correctly. Ask it <em>where</em>, and once the lesion is small, it
+      hands back a region many times too large and centred somewhere else entirely.</p>
+    <p class="by"><b>Raj Hansini Akara</b>MPCS 53113 · University of Chicago<br>
+      BraTS2020 · 369 patients</p>
+  </div>
+
+  <div class="cols">
+    <p>The clinically urgent lesions are the small ones. They are the ones a
+      radiologist might miss on a busy afternoon, the ones that argue for another
+      scan in three months rather than six. They are also, it turns out, precisely
+      the ones these models cannot find.</p>
+    <p>Not <span class="sc">detect</span> &mdash; find. The distinction matters more
+      than it sounds. Run the model on a held-out patient with a small enhancing
+      tumour and it will confidently report that a lesion is present. It will then
+      outline a region roughly sixteen times the true volume, its centre a couple of
+      centimetres from where the tumour actually sits.</p>
+
+    <div class="pull">
+      <p>&ldquo;Localization degrades monotonically with lesion size, in every region,
+        with no recovery.&rdquo;</p>
+    </div>
+
+    <h3>Not the data</h3>
+    <p>The obvious objection is that small lesions are simply hard. A few voxels,
+      low contrast, ambiguous borders &mdash; perhaps nothing can find them. So the
+      same small lesions were handed to a plain supervised U-Net, no text involved.
+      It degraded by a factor of <b>1.2</b>, against <b>14.9</b> for the
+      text-conditioned model on enhancing tumour.</p>
+    <p>The lesions are learnable. Something about conditioning on language is what
+      breaks.</p>
+
+    <h3>Not the language either</h3>
+    <p>The next suspicion was the text encoder, and the fix would have been a better
+      one. Instead, PubMedBERT was replaced with random vectors &mdash; no medical
+      knowledge, no semantics, nothing. Performance barely moved.</p>
+    <p>Which yields the paper's sharpest line: the query functions as an opaque class
+      identifier that happens to be spelled in English. The model is not reading the
+      prompt. It is looking up a channel.</p>
+
+    <h3>The cheapest thing on the list</h3>
+    <p>Three elaborate interventions were tried. Size-conditioned prompting helped
+      small lesions and broke large ones. Multi-scale ensembling gained on tumour
+      core and gave the gain back on enhancing tumour. Scale-matched retraining
+      overfit the size tercile it was tuned on. Each was reversed after a control
+      caught the error.</p>
+    <p>What worked was the least interesting idea available. The model processes
+      volumes in overlapping sliding windows and averages them flatly, which smears
+      a small lesion sitting near a window edge across everything around it. Weight
+      each window toward its own centre instead, and Dice rises by <b>0.145</b> with
+      no retraining whatsoever. Small enhancing tumour goes from nought to seven of
+      twenty-one patients.</p>
+  </div>
+</div>
+
+<div class="band">
+  <div class="w">
+    <p class="n">14.9&times;<span>Dice degradation from large lesions to small, enhancing
+      tumour. The supervised control, on the same lesions, degrades 1.2&times;.</span></p>
+    <figure>
+      <table>
+        <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
+        <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+        <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+        <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+        <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+      </table>
+      <figcaption>Dice by lesion-size tercile, held-out n = 73. 171 paired Wilcoxon
+        tests, Benjamini&#8209;Hochberg corrected; 9 of 9 comparisons replicated across
+        three independent splits.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<div class="w close">
+  <h2>A shared confound is not a cancelled confound.</h2>
+  <p>Three results here were reversed after the fact, each time by a control that
+    should have been run first. The lesson generalises past this dataset: every stage
+    of a pipeline is an instrument until somebody measures it.</p>
+  <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper and the code &rarr;</a>
+  <footer>
+    <span>Diagnosing Small-Lesion Grounding Failure</span>
+    <span>Held-out n = 73 · 128&sup3; volumes</span>
+  </footer>
+</div>
+
+</body>
+</html>
