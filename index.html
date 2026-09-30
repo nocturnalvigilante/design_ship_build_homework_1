@@ -38,7 +38,12 @@ h1{font-size:clamp(34px,5.2vw,64px);line-height:1;letter-spacing:-.035em;
 .phase .r{flex:1;height:1px;background:var(--edge)}
 .phase .c{color:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:12px}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:18px}
+/* --tw is the thumbnail width as a plain number, so the column width and the
+   iframe's scale factor derive from the SAME value: scale(calc(--tw / 1280))
+   lands the 1280px preview exactly on the card, with no gap and no crop at any
+   breakpoint. Changing one number moves both. */
+.grid{--tw:236;display:grid;gap:18px;justify-content:center;
+  grid-template-columns:repeat(auto-fill,calc(var(--tw) * 1px))}
 .card{border:1px solid var(--edge);background:var(--card);display:block;
   transition:border-color .12s ease, transform .12s ease}
 .card:hover{border-color:var(--accent);transform:translateY(-2px)}
@@ -46,7 +51,7 @@ h1{font-size:clamp(34px,5.2vw,64px);line-height:1;letter-spacing:-.035em;
 .shot{position:relative;aspect-ratio:16/10;overflow:hidden;background:#0a0b0d;
   border-bottom:1px solid var(--edge)}
 .shot iframe{position:absolute;top:0;left:0;width:1280px;height:800px;border:0;
-  transform:scale(.181);transform-origin:0 0;pointer-events:none}
+  transform:scale(calc(var(--tw) / 1280));transform-origin:0 0;pointer-events:none}
 .shot .ph{position:absolute;inset:0;display:grid;place-items:center;
   color:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:12px}
 .meta{padding:12px 14px 15px}
@@ -72,6 +77,8 @@ footer{border-top:1px solid var(--edge);margin-top:64px;padding:26px 0 60px;
 @media(max-width:820px){.intro{grid-template-columns:1fr;gap:28px}
   .facts{border-left:0;border-top:1px solid var(--edge);padding:20px 0 0}
   .wrap{padding:0 20px}}
+@media(max-width:700px){.grid{--tw:150;gap:12px}
+  .meta{padding:10px 11px 13px}.meta h3{font-size:14px}.meta p{font-size:12px}}
 </style>
 </head>
 <body>
@@ -141,7 +148,11 @@ const V = [
   {n:6, tag:"wide", title:"Brutalist manifesto",
    note:"No webfont at all, Times and Courier as the browser ships them, default-blue links, square corners. Four numbered claims. A stress test: if the finding is weak, this layout has nothing to hide it behind."}, {n:7, tag:"wide", title:"Magazine spread",
    note:"Editorial rather than technical. Drop cap, three justified columns, a pull quote breaking the measure, a full-bleed figure band. Tests whether the finding reads as a story to someone who will not look at a table."},
-  {n:8,  tag:"wide"}, {n:9,  tag:"wide"}, {n:10, tag:"wide"}, {n:11, tag:"wide"},
+  {n:8, tag:"wide", title:"Scrolling data story",
+   note:"One sticky scan, one claim per screen; the prediction inflates and drifts as you scroll. The only version where JavaScript earns its place — an IntersectionObserver setting one attribute."}, {n:9, tag:"wide", title:"Before / after",
+   note:"Leads with the fix rather than the failure and makes the reader perform the comparison by hand. Drag the divider: flat window averaging on one side, centre-weighted merging on the other."}, {n:10, tag:"wide", title:"Anatomical plate",
+   note:"The nineteenth-century engraving the field descends from. Ruled frame, plate numeral, hairline leaders out to lettered keys. Treats the model's output as a specimen to be compared, not a number."}, {n:11, tag:"wide", title:"The quiet one",
+   note:"One column, one measure, a great deal of air, one hairline. The deliberate opposite of v06: does this finding need volume, or does it land harder when nothing competes with it?"},
   {n:12, tag:"wide"}, {n:13, tag:"wide"},
   {n:14, tag:"cross"},{n:15, tag:"cross"},{n:16, tag:"cross"},{n:17, tag:"cross"},
   {n:18, tag:"cross"},{n:19, tag:"cross"},
