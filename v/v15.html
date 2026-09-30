@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v15 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* v15 = v05 (the narrowing sequence) x v11 (the quiet column).
+   v05 paced the argument perfectly but dressed it as a terminal; v11 had the right
+   temperature and no structure. Here each step is a hypothesis, the test that was
+   run, and the verdict, strung on one vertical rule so the eye can see the
+   candidates being eliminated. Ruling things OUT is the shape of this research,
+   and no other version in the set draws that shape. */
+:root{
+  --paper:#faf9f6; --ink:#1b1f1d; --soft:#5a625e; --faint:#98a19c;
+  --rule:#d8d8d2; --out:#a8342b; --in:#1f6f4a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:19px/1.72 Newsreader,Georgia,serif}
+a{color:var(--ink);border-bottom:1px solid var(--in);text-decoration:none;padding-bottom:1px}
+a:hover{color:var(--in)}
+.col{max-width:700px;margin:0 auto;padding:0 30px}
+.sans{font-family:"IBM Plex Sans",sans-serif}
+.lab{font-family:"IBM Plex Sans",sans-serif;font-size:10.5px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--faint);margin:0;font-weight:600}
+
+.crumb{max-width:700px;margin:0 auto;padding:32px 30px 0}
+.crumb a{border:0;color:var(--faint);font-family:"IBM Plex Sans",sans-serif;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+h1{font-weight:400;font-size:clamp(33px,5vw,50px);line-height:1.14;
+  letter-spacing:-.018em;margin:58px 0 0;max-width:17ch}
+h1 em{font-style:italic}
+.lede{color:var(--soft);font-size:20px;margin:22px 0 0;max-width:46ch}
+.lede b{color:var(--ink);font-weight:600}
+
+.openq{margin:46px 0 0;padding:20px 0 22px;border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--ink)}
+.openq p{margin:9px 0 0;font-size:23px;line-height:1.36;max-width:36ch}
+
+/* the elimination chain */
+.chain{position:relative;margin:0;padding:44px 0 10px}
+.chain::before{content:"";position:absolute;left:13px;top:68px;bottom:96px;
+  width:1px;background:var(--rule)}
+.step{position:relative;padding:0 0 38px 52px}
+.dot{position:absolute;left:3px;top:4px;width:21px;height:21px;border-radius:50%;
+  background:var(--paper);border:2px solid var(--out);display:grid;place-items:center;
+  font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;font-weight:600;color:var(--out);
+  line-height:1}
+.step.keep .dot{border-color:var(--in);color:var(--in)}
+.step h2{font-family:Newsreader,serif;font-weight:600;font-size:23px;line-height:1.3;
+  letter-spacing:-.012em;margin:0 0 6px;max-width:30ch}
+.step .test{font-family:"IBM Plex Sans",sans-serif;font-size:14px;color:var(--soft);
+  margin:0 0 14px}
+.step .test b{color:var(--ink);font-weight:500}
+.verdict{display:inline-flex;align-items:baseline;gap:10px;font-family:"IBM Plex Sans",sans-serif;
+  font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+  border:1px solid var(--out);color:var(--out);padding:6px 12px;margin:0 0 12px}
+.step.keep .verdict{border-color:var(--in);color:var(--in)}
+.verdict span{font-size:17px;letter-spacing:-.01em;text-transform:none;font-weight:600}
+.step p.why{margin:0;color:var(--soft);max-width:44ch;font-size:17.5px}
+.step p.why b{color:var(--ink);font-weight:600}
+
+/* one figure, earning its place inside step 1 */
+.mini{margin:16px 0 16px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;
+  font-variant-numeric:tabular-nums;max-width:420px}
+.mrow{display:grid;grid-template-columns:96px 1fr 50px;gap:12px;align-items:center;padding:5px 0}
+.mt{height:8px;background:#e7e7e1;position:relative}
+.mf{position:absolute;inset:0 auto 0 0;background:var(--ink)}
+.mf.o{background:var(--out)}
+.mv{text-align:right;color:var(--soft)}
+.mk{color:var(--soft)}
+.mcap{color:var(--faint);font-size:12px;margin:10px 0 0;line-height:1.55;max-width:44ch}
+
+.land{margin:20px 0 0;padding:28px 0 0;border-top:1px solid var(--ink)}
+.land h2{font-family:Newsreader,serif;font-weight:600;font-size:clamp(25px,3.4vw,34px);
+  line-height:1.16;letter-spacing:-.02em;margin:0 0 16px;max-width:22ch}
+.land p{color:var(--soft);max-width:48ch;margin:0 0 16px}
+.land p b{color:var(--ink);font-weight:600}
+.two{display:flex;gap:40px;flex-wrap:wrap;margin:24px 0 4px;
+  font-family:"IBM Plex Sans",sans-serif}
+.two div{flex:1 1 170px}
+.two .n{font-size:34px;font-weight:600;letter-spacing:-.025em;line-height:1;color:var(--in)}
+.two .k{font-size:13px;color:var(--faint);margin-top:8px;line-height:1.5}
+
+footer{margin:56px 0 92px;font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;
+  color:var(--faint);line-height:1.8;border-top:1px solid var(--rule);padding-top:16px}
+@media(max-width:600px){body{font-size:18px}.col,.crumb{padding-left:22px;padding-right:22px}
+  .step{padding-left:42px}.chain::before{left:11px}}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../index.html">&larr; Gallery · v15 elimination</a></p>
+
+<div class="col">
+
+  <h1>Four explanations. <em>Three of them were wrong.</em></h1>
+  <p class="lede">Text-conditioned 3D medical models detect that a lesion is present
+    and then fail to localize it once it is small. <b>This is how the cause was
+    narrowed down.</b></p>
+
+  <div class="openq">
+    <p class="lab">The observation</p>
+    <p>Dice falls by up to <b>14.9&times;</b> from large lesions to small ones, in every
+      region, with no recovery.</p>
+  </div>
+
+  <div class="chain">
+
+    <div class="step">
+      <span class="dot">1</span>
+      <h2>Perhaps small lesions are simply unfindable.</h2>
+      <p class="test">Test &mdash; <b>hand the same small lesions to a plain supervised
+        U-Net</b>, with no language involved at all.</p>
+      <div class="mini">
+        <div class="mrow"><span class="mk">Large</span><span class="mt"><i class="mf" style="width:53%"></i></span><span class="mv">0.149</span></div>
+        <div class="mrow"><span class="mk">Medium</span><span class="mt"><i class="mf" style="width:13.2%"></i></span><span class="mv">0.037</span></div>
+        <div class="mrow"><span class="mk">Small</span><span class="mt"><i class="mf o" style="width:3.6%"></i></span><span class="mv">0.010</span></div>
+        <p class="mcap">Enhancing tumour, held-out n = 73. Whole tumour falls 4.9&times;
+          and tumour core 9.3&times; over the same range.</p>
+      </div>
+      <p class="verdict">Ruled out &nbsp;<span>1.2&times; vs 14.9&times;</span></p>
+      <p class="why">The control degrades by a factor of 1.2 on the same lesions.
+        <b>They are learnable.</b> Whatever is broken is not the data.</p>
+    </div>
+
+    <div class="step">
+      <span class="dot">2</span>
+      <h2>Perhaps the medical text encoder is too weak.</h2>
+      <p class="test">Test &mdash; <b>replace PubMedBERT with random vectors</b> and
+        measure what is lost.</p>
+      <p class="verdict">Ruled out &nbsp;<span>&Delta; Dice &asymp; 0.000</span></p>
+      <p class="why">Almost nothing is lost, because almost nothing was being used. The
+        query functions as <b>an opaque class identifier that happens to be spelled in
+        English</b>. A better encoder was never going to help.</p>
+    </div>
+
+    <div class="step">
+      <span class="dot">3</span>
+      <h2>Perhaps the model needs to be told the lesion is small.</h2>
+      <p class="test">Test &mdash; <b>size-conditioned prompting, multi-scale ensembling,
+        scale-matched retraining</b>, each measured against its own control.</p>
+      <p class="verdict">Ruled out &nbsp;<span>3 of 3 reversed</span></p>
+      <p class="why">Each traded one failure for another: helped small and broke large,
+        gained on tumour core and gave it back on enhancing, or overfit the size tercile
+        it was tuned on. All three were reversed after a control caught the error.</p>
+    </div>
+
+    <div class="step keep">
+      <span class="dot">4</span>
+      <h2>Perhaps the windows are simply merged badly.</h2>
+      <p class="test">Test &mdash; <b>weight each sliding window toward its own centre</b>
+        instead of averaging them flat.</p>
+      <p class="verdict">Confirmed &nbsp;<span>+0.145 Dice</span></p>
+      <p class="why">The volume is traversed in overlapping windows and averaged
+        uniformly, which smears a small lesion across everything near a window edge.
+        Fixing the merge recovers small enhancing tumour in <b>7 of 21 patients</b>
+        where the model previously found none, and <b>changes no weights at all</b>.</p>
+    </div>
+
+  </div>
+
+  <div class="land">
+    <h2>A shared confound is not a cancelled confound.</h2>
+    <p>The largest available repair was not in the model and not in the language. It
+      was in the inference plumbing, where nobody was looking, because every stage of
+      a pipeline is an instrument until somebody measures it.</p>
+    <div class="two">
+      <div><p class="n">+0.145</p><p class="k">Dice gained, with no retraining of any kind</p></div>
+      <div><p class="n">9 / 9</p><p class="k">comparisons replicated across three independent splits</p></div>
+    </div>
+    <p style="margin-top:26px"><a href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper and the code</a></p>
+  </div>
+
+  <footer>
+    Raj Hansini Akara · MPCS 53113 · University of Chicago<br>
+    BraTS2020, 369 patients, 128&sup3; volumes · 171 paired Wilcoxon tests,
+    Benjamini&#8209;Hochberg corrected.
+  </footer>
+
+</div>
+
+</body>
+</html>
