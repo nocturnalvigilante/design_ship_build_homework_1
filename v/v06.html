@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v06 · Small-Lesion Grounding Failure</title>
+<style>
+/* v06 — brutalist manifesto. No webfont at all: Times and Courier as the browser
+   ships them, default-blue underlined links, square corners, no shadows, no
+   easing. The restraint is the point — every other version is designed, this one
+   argues that the finding needs no help. Also a real test: if the claim is weak,
+   this layout has nothing to hide it behind. */
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#000;
+  font:18px/1.42 "Times New Roman",Times,serif;padding:0 0 100px}
+a{color:#0000ee}a:visited{color:#551a8b}
+.w{max-width:1120px;margin:0 auto;padding:0 28px}
+.mono{font-family:"Courier New",Courier,monospace}
+
+.strip{background:#000;color:#fff;padding:7px 0;
+  font:12px/1 "Courier New",monospace;letter-spacing:.06em}
+.strip .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.strip a{color:#d7ff2e}
+
+h1{font-size:clamp(46px,11.5vw,148px);line-height:.88;letter-spacing:-.03em;
+  font-weight:700;margin:34px 0 0;text-transform:uppercase}
+h1 mark{background:#d7ff2e;color:#000;padding:0 .06em}
+.rule{border:0;border-top:9px solid #000;margin:26px 0 0}
+.rule.thin{border-top-width:2px}
+
+.lede{font-size:clamp(21px,2.6vw,31px);line-height:1.22;max-width:26ch;
+  margin:26px 0 0;font-weight:700}
+.dek{max-width:58ch;margin:18px 0 0;font-size:18px}
+
+.claims{margin:0;padding:0;list-style:none;counter-reset:c}
+.claims li{counter-increment:c;border-top:2px solid #000;padding:22px 0 24px;
+  display:grid;grid-template-columns:120px 1fr;gap:26px;align-items:start}
+.claims li::before{content:counter(c,decimal-leading-zero);
+  font:700 44px/1 "Courier New",monospace}
+.claims h2{font-size:clamp(23px,3.2vw,34px);line-height:1.08;margin:0 0 8px;
+  font-weight:700;letter-spacing:-.015em;text-transform:uppercase}
+.claims p{margin:0;max-width:62ch}
+.claims .num{font:700 15px/1 "Courier New",monospace;background:#000;color:#d7ff2e;
+  display:inline-block;padding:5px 8px;margin-top:10px}
+
+table{width:100%;border-collapse:collapse;font-family:"Courier New",monospace;
+  font-size:16px;margin:8px 0 0;border:3px solid #000}
+th,td{border:2px solid #000;padding:9px 11px;text-align:right}
+th{background:#000;color:#fff;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+th:first-child,td:first-child{text-align:left}
+tr.x td{background:#d7ff2e;font-weight:700}
+
+.shout{background:#000;color:#fff;margin-top:0;padding:56px 0 60px}
+.shout h2{font-size:clamp(30px,6.4vw,78px);line-height:.96;margin:0;font-weight:700;
+  letter-spacing:-.03em;text-transform:uppercase;max-width:15ch}
+.shout h2 em{font-style:normal;color:#d7ff2e}
+.shout p{max-width:56ch;margin:22px 0 0;font-size:18px;color:#cfcfcf}
+.shout a.cta{display:inline-block;margin-top:28px;background:#d7ff2e;color:#000;
+  padding:14px 22px;font:700 15px/1 "Courier New",monospace;letter-spacing:.1em;
+  text-transform:uppercase;text-decoration:none;border:3px solid #d7ff2e}
+.fine{font-family:"Courier New",monospace;font-size:13px;margin-top:38px;
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+@media(max-width:700px){.claims li{grid-template-columns:1fr;gap:6px}
+  .claims li::before{font-size:30px}table{font-size:13px}th,td{padding:7px 6px}}
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="w">
+  <span><a href="../index.html">&larr; GALLERY</a> &nbsp;/&nbsp; V06 MANIFESTO</span>
+  <span>BRATS2020 · 369 PATIENTS · 128&sup3;</span>
+</div></div>
+
+<div class="w">
+  <h1>The model<br>knows it is<br>there. It<br><mark>cannot</mark><br>point.</h1>
+  <hr class="rule">
+  <p class="lede">Text-conditioned 3D medical models do not localize small lesions.
+    They detect them and then guess.</p>
+  <p class="dek">Four claims. Each one is a measurement, not an opinion. The numbers
+    below are held-out, corrected, and replicated across three independent splits.</p>
+  <hr class="rule thin" style="margin-top:34px">
+
+  <ol class="claims">
+    <li>
+      <div>
+        <h2>The failure is monotonic in lesion size.</h2>
+        <p>Dice falls from large to small in every region, and never recovers. For
+          enhancing tumour it falls by a factor of fifteen.</p>
+        <table>
+          <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
+          <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+          <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+          <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+        </table>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h2>The lesions are learnable. The conditioning is not.</h2>
+        <p>A plain supervised U-Net, given the same small lesions, degrades by a
+          factor of 1.2. The data is not the problem.</p>
+        <span class="num">1.2&times; VS 14.9&times;</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h2>The language contributes nothing.</h2>
+        <p>Replace PubMedBERT with random vectors and almost nothing changes. The
+          query functions as an opaque class identifier that happens to be spelled
+          in English.</p>
+        <span class="num">&Delta; DICE &asymp; 0.000</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h2>The cheapest fix won.</h2>
+        <p>Size-conditioned prompting, multi-scale ensembling and scale-matched
+          retraining each traded one failure for another. Reweighting every sliding
+          window toward its own centre beat all of them and changed no weights at
+          all. Small enhancing tumour went from 0 to 7 of 21 patients.</p>
+        <span class="num">+0.145 DICE · NO RETRAINING</span>
+      </div>
+    </li>
+  </ol>
+  <hr class="rule">
+</div>
+
+<div class="shout">
+  <div class="w">
+    <h2>A shared confound is <em>not</em> a cancelled confound.</h2>
+    <p>Three results in this project were reversed after a control caught the error.
+      Every stage of a pipeline is an instrument until somebody measures it.</p>
+    <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">READ THE PAPER</a>
+  </div>
+</div>
+
+<div class="w">
+  <div class="fine">
+    <span>RAJ HANSINI AKARA · MPCS 53113 · UNIVERSITY OF CHICAGO</span>
+    <span>171 PAIRED WILCOXON TESTS · BH CORRECTED · 9/9 REPLICATED</span>
+  </div>
+</div>
+
+</body>
+</html>
