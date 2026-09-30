@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v02 · Small-Lesion Grounding Failure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Archivo:wght@400;500;600;700&display=swap">
+<style>
+/* v02 — clinical incident report. The model is the subject of the investigation,
+   not the author of it. Carbon-copy paper, ruled boxes, typewriter entries, a
+   red stamp. Nothing here is decoration: every box is a field that was filled in. */
+:root{
+  --paper:#f2efe6; --ink:#16150f; --dim:#6b675a; --rule:#16150f;
+  --hair:#b9b3a2; --stamp:#a8231d; --hi:#e8e2cc;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#3c3a33;color:var(--ink);
+  font:15px/1.5 Archivo,"Helvetica Neue",Arial,sans-serif;padding:26px 14px 70px}
+a{color:inherit}
+.sheet{max-width:880px;margin:0 auto;background:var(--paper);
+  padding:0;box-shadow:0 1px 3px rgba(0,0,0,.4),0 16px 44px rgba(0,0,0,.34);
+  position:relative}
+.punch{position:absolute;left:14px;width:11px;height:11px;border-radius:50%;
+  background:#3c3a33;box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
+.tw{font-family:"Courier Prime",Courier,monospace}
+
+.hdr{border-bottom:2.5px solid var(--rule);padding:16px 34px 12px 44px;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.hdr .l{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.hdr h1{font-size:20px;font-weight:700;letter-spacing:.02em;margin:3px 0 0;text-transform:uppercase}
+.no{font-size:11px;letter-spacing:.12em;text-align:right;color:var(--dim)}
+.no b{display:block;font-size:17px;color:var(--ink);letter-spacing:.04em}
+
+.fields{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1.5px solid var(--rule)}
+.f{padding:9px 12px 10px;border-right:1px solid var(--hair)}
+.f:last-child{border-right:0}
+.f .k{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.f .v{font-size:14px}
+
+section{padding:20px 34px 22px 44px;border-bottom:1px solid var(--hair)}
+.sec-k{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);
+  margin:0 0 10px;display:flex;gap:10px;align-items:baseline}
+.sec-k b{color:var(--ink);font-weight:700}
+.stated{font-size:clamp(21px,2.9vw,30px);line-height:1.24;font-weight:600;margin:0;
+  letter-spacing:-.015em;max-width:30ch}
+p{margin:0 0 12px;max-width:66ch}
+p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+th{text-align:left;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);font-weight:500;padding:0 10px 6px 0;border-bottom:1px solid var(--rule)}
+td{padding:7px 10px 7px 0;border-bottom:1px solid var(--hair)}
+td.n{font-family:"Courier Prime",monospace;text-align:right;white-space:nowrap}
+tr.flag td{background:var(--hi)}
+tr.flag td:first-child::before{content:"▸ ";color:var(--stamp)}
+
+.check{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;max-width:64ch}
+.box{width:15px;height:15px;border:1.5px solid var(--ink);flex:0 0 15px;
+  display:grid;place-items:center;font-size:12px;line-height:1;translate:0 2px;
+  font-family:"Courier Prime",monospace}
+.check b{font-weight:600}
+
+.stamp-box{position:absolute;right:34px;top:150px;transform:rotate(-8deg);
+  border:2.5px solid var(--stamp);color:var(--stamp);padding:7px 14px;
+  font-size:13px;font-weight:700;letter-spacing:.14em;opacity:.86;
+  text-transform:uppercase;pointer-events:none}
+.sign{display:flex;justify-content:space-between;gap:26px;padding:18px 34px 22px 44px;
+  flex-wrap:wrap;font-size:11px;color:var(--dim)}
+.sign .line{border-top:1px solid var(--ink);padding-top:5px;min-width:190px;color:var(--ink)}
+.back{display:block;max-width:880px;margin:0 auto 12px;color:#cfcabb;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.link{border-bottom:1.5px solid var(--stamp);color:var(--stamp);text-decoration:none;font-weight:600}
+@media(max-width:700px){.fields{grid-template-columns:repeat(2,1fr)}
+  .f:nth-child(2){border-right:0}.stamp-box{position:static;transform:none;margin:0 0 14px;display:inline-block}
+  section{padding-left:24px;padding-right:20px}.hdr{padding-left:24px}}
+</style>
+</head>
+<body>
+
+<a class="back" href="../index.html">&larr; Gallery · v02 incident report</a>
+
+<div class="sheet">
+  <span class="punch" style="top:64px"></span>
+  <span class="punch" style="top:50%"></span>
+  <span class="punch" style="bottom:64px"></span>
+
+  <div class="hdr">
+    <div>
+      <div class="l">Model Performance Review Board</div>
+      <h1>Localization Incident Report</h1>
+    </div>
+    <div class="no">CASE<b>SLG-2026-001</b></div>
+  </div>
+
+  <div class="fields">
+    <div class="f"><div class="k">Subject</div><div class="v tw">Text-cond. 3D localizer</div></div>
+    <div class="f"><div class="k">Cohort</div><div class="v tw">BraTS2020 · n=369</div></div>
+    <div class="f"><div class="k">Volume</div><div class="v tw">128³ voxels</div></div>
+    <div class="f"><div class="k">Status</div><div class="v tw" style="color:#a8231d">REPRODUCED</div></div>
+  </div>
+
+  <div class="stamp-box">Reproduced 9/9</div>
+
+  <section>
+    <p class="sec-k"><b>01</b> Reported failure</p>
+    <p class="stated">The model detects that a lesion is present, then fails to
+      localize it once the lesion is small.</p>
+  </section>
+
+  <section>
+    <p class="sec-k"><b>02</b> Measurements on file</p>
+    <table>
+      <tr><th>Region</th><th style="text-align:right">Large</th><th style="text-align:right">Medium</th>
+        <th style="text-align:right">Small</th><th style="text-align:right">Ratio</th></tr>
+      <tr><td>Whole tumour</td><td class="n">0.281</td><td class="n">0.137</td><td class="n">0.057</td><td class="n">4.9&times;</td></tr>
+      <tr><td>Tumour core</td><td class="n">0.176</td><td class="n">0.059</td><td class="n">0.019</td><td class="n">9.3&times;</td></tr>
+      <tr class="flag"><td>Enhancing tumour</td><td class="n">0.149</td><td class="n">0.037</td><td class="n">0.010</td><td class="n">14.9&times;</td></tr>
+      <tr><td>Supervised U-Net (control)</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">1.2&times;</td></tr>
+    </table>
+    <p style="margin-top:12px;font-size:13px;color:var(--dim)">The control degrades
+      1.2&times; on the same lesions. They are learnable. The text conditioning is
+      what fails.</p>
+  </section>
+
+  <section>
+    <p class="sec-k"><b>03</b> Lines of enquiry</p>
+    <div class="check"><span class="box">&times;</span><span>
+      <b>Is the failure real?</b> Yes. Monotonic in lesion size, 171 paired Wilcoxon
+      tests with Benjamini&#8209;Hochberg correction, replicated across three splits.</span></div>
+    <div class="check"><span class="box">&times;</span><span>
+      <b>Is it linguistic?</b> No. Replacing PubMedBERT with random vectors changes
+      almost nothing. The query is an opaque class identifier that happens to be
+      spelled in English.</span></div>
+    <div class="check"><span class="box">&times;</span><span>
+      <b>Can it be fixed?</b> Yes, and cheaply. Reweighting each window toward its
+      centre gives <b>+0.145 Dice with no retraining</b>, recovering small enhancing
+      tumour in 7 of 21 patients where it previously found none.</span></div>
+  </section>
+
+  <section>
+    <p class="sec-k"><b>04</b> Note for the record</p>
+    <p>Three experiments were reversed after controls caught errors. A shared confound
+      is not a cancelled confound: every stage of the pipeline is an instrument until
+      somebody measures it.</p>
+    <p style="margin-top:14px"><a class="link"
+      href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Full
+      report and code &rarr;</a></p>
+  </section>
+
+  <div class="sign">
+    <div class="line">Raj Hansini Akara · Investigator</div>
+    <div class="line">MPCS 53113 · University of Chicago</div>
+    <div class="line tw">BraTS2020 · held-out n=73</div>
+  </div>
+</div>
+
+</body>
+</html>
