@@ -6,170 +6,268 @@
 <title>v11 · Small-Lesion Grounding Failure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
 <style>
-/* v11 — the quiet one. One column, one measure, a great deal of air, section marks
-   hung in the left margin, and a single hairline as the only rule on the page. No
-   panel, no card, no chrome of any kind.
-   Deliberately the opposite of v06: that version shouts the same claims in Times at
-   148px. Having both in the set answers a real question — does this finding need
-   volume, or does it land harder when nothing competes with it? */
+/* v11 — ARCADE CABINET, 1983. Scanlines, phosphor, a coin slot.
+   This one earns the theme on structure rather than decoration: the three lesion
+   size terciles ARE three stages that get harder, the model IS a player whose run
+   ends, and the four interventions ARE continues that did not save it. STAGE 3 is
+   where it reads GAME OVER, which is exactly what 0.010 Dice means.
+   Press Start 2P for display only — it is unreadable in paragraphs — with VT323
+   carrying every run of real text. */
 :root{
-  --paper:#fcfcfa; --ink:#23262a; --soft:#5d646c; --faint:#9aa1a8;
-  --hair:#e2e2dd; --mark:#b03a25;
+  --crt:#060a06; --panel:#0b120b; --edge:#1d3a1d;
+  --green:#39ff6a; --cyan:#3df0ff; --magenta:#ff4fd8; --amber:#ffd93d; --red:#ff4136;
+  --dim:#5f8a66;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font:19px/1.78 "Source Serif 4",Georgia,serif;
-  font-variant-numeric:oldstyle-nums;-webkit-font-smoothing:antialiased}
-a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--mark);
-  padding-bottom:1px}
-a:hover{color:var(--mark)}
-.col{max-width:640px;margin:0 auto;padding:0 28px}
-.sans{font-family:"IBM Plex Sans",-apple-system,sans-serif}
+body{margin:0;background:#000;color:var(--green);
+  font:20px/1.5 VT323,"Courier New",monospace;overflow-x:hidden}
+a{color:var(--cyan)}
+.screen{position:relative;background:
+  radial-gradient(ellipse 120% 100% at 50% 50%,#0b140b 0%,#040704 78%,#000 100%);
+  min-height:100vh;padding:0 0 60px;overflow:hidden}
+.scan{position:fixed;inset:0;z-index:5;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.34) 2px 4px)}
+.vig{position:fixed;inset:0;z-index:4;pointer-events:none;
+  box-shadow:inset 0 0 180px rgba(0,0,0,.9)}
+.w{max-width:1120px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+.px{font-family:"Press Start 2P",monospace;letter-spacing:0}
+.lab{font-family:"Press Start 2P",monospace;font-size:9px;letter-spacing:.08em;
+  color:var(--dim);margin:0;line-height:1.9}
 
-.crumb{max-width:640px;margin:0 auto;padding:36px 28px 0;
-  font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--faint)}
-.crumb a{border:0;color:var(--faint)}
+/* marquee row */
+.hud{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  margin:0 auto;padding-top:16px;padding-bottom:14px;border-bottom:2px solid var(--edge)}
+.hud a{color:var(--dim);text-decoration:none}
+.hud .sc{color:var(--amber)}
 
-h1{font-weight:400;font-size:clamp(30px,4.6vw,44px);line-height:1.18;
-  letter-spacing:-.017em;margin:74px 0 0;max-width:19ch}
-.lede{color:var(--soft);font-size:20px;margin:26px 0 0}
-.lede em{font-style:italic;color:var(--ink)}
-hr{border:0;border-top:1px solid var(--hair);margin:56px 0}
+.title{text-align:center;padding-top:52px;padding-bottom:8px}
+.title .ins{font-family:"Press Start 2P",monospace;font-size:11px;color:var(--magenta);
+  margin:0 0 26px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+@media (prefers-reduced-motion:reduce){.title .ins{animation:none}}
+h1{font-family:"Press Start 2P",monospace;font-size:clamp(17px,3.5vw,42px);
+  line-height:1.5;margin:0 auto;max-width:21ch;color:var(--green);
+  text-shadow:0 0 18px rgba(57,255,106,.55),0 4px 0 #0a3d18}
+h1 em{font-style:normal;color:var(--red);text-shadow:0 0 18px rgba(255,65,54,.55),0 4px 0 #4d0f0b}
+.title .sub{font-size:23px;color:#9fd6a8;max-width:56ch;margin:28px auto 0}
+.title .sub b{color:var(--amber)}
 
-section{margin:0 0 54px;position:relative}
-section > .mk{font-family:"IBM Plex Sans",sans-serif;font-size:11px;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+/* stage select */
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:46px}
+.stage{border:2px solid var(--edge);background:var(--panel);padding:18px 18px 20px}
+.stage.over{border-color:var(--red)}
+.stage .n{font-family:"Press Start 2P",monospace;font-size:10px;color:var(--cyan);
+  margin:0 0 12px}
+.stage.over .n{color:var(--red)}
+.stage .sz{font-family:"Press Start 2P",monospace;font-size:13px;color:#bfe9c6;
   margin:0 0 14px}
-h2{font-weight:600;font-size:23px;line-height:1.28;letter-spacing:-.012em;
-  margin:0 0 16px;max-width:26ch}
-p{margin:0 0 20px}
-p:last-child{margin-bottom:0}
-b{font-weight:600}
+.bar{height:16px;border:2px solid var(--edge);background:#061006;position:relative;
+  margin:0 0 9px}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--green)}
+.bar i.mid{background:var(--amber)}.bar i.low{background:var(--red)}
+.stage .v{font-family:"Press Start 2P",monospace;font-size:15px;margin:0 0 4px}
+.stage .k{font-size:19px;color:var(--dim);margin:0}
+.stage .res{font-family:"Press Start 2P",monospace;font-size:11px;margin:14px 0 0;
+  color:var(--green)}
+.stage.over .res{color:var(--red)}
 
-/* the one figure: a bar per size tercile, nothing more */
-.chart{margin:30px 0 8px;font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;
-  font-variant-numeric:tabular-nums lining-nums}
-.br{display:grid;grid-template-columns:98px 1fr 52px;gap:14px;align-items:center;
-  padding:7px 0}
-.tr{height:9px;background:#eeefe9;position:relative}
-.tf{position:absolute;inset:0 auto 0 0;background:var(--ink)}
-.tf.m{background:var(--mark)}
-.bv{text-align:right;color:var(--soft)}
-.bk{color:var(--soft)}
-.cap{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;line-height:1.6;
-  color:var(--faint);margin:14px 0 0}
+/* score table */
+.board{border:2px solid var(--edge);background:var(--panel);padding:20px 22px 22px;
+  margin-top:28px}
+table{width:100%;border-collapse:collapse;font-size:21px}
+th{text-align:right;font-family:"Press Start 2P",monospace;font-size:9px;
+  letter-spacing:.06em;color:var(--dim);font-weight:400;padding:0 10px 11px 0;
+  border-bottom:2px solid var(--edge)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:7px 10px 7px 0;border-bottom:1px solid #112811;color:#bfe9c6}
+tr.x td{color:var(--red)}
+tr.c td{color:var(--cyan)}
 
-blockquote{margin:34px 0;padding:0 0 0 20px;border-left:2px solid var(--mark);
-  font-style:italic;color:var(--ink);font-size:20px;line-height:1.55}
+/* continues */
+.cont{margin-top:40px}
+.cont h2{font-family:"Press Start 2P",monospace;font-size:14px;color:var(--amber);
+  margin:0 0 20px}
+.rows{border:2px solid var(--edge);background:var(--panel)}
+.row{display:grid;grid-template-columns:62px 1fr 150px;gap:16px;align-items:center;
+  padding:14px 20px;border-bottom:1px solid #112811}
+.row:last-child{border-bottom:0}
+.row .c{font-family:"Press Start 2P",monospace;font-size:11px;color:var(--dim)}
+.row .t{font-size:21px;color:#bfe9c6}
+.row .t b{color:#eafff0}
+.row .o{font-family:"Press Start 2P",monospace;font-size:10px;text-align:right;
+  color:var(--red)}
+.row.win .o{color:var(--green)}
+.row.win .c{color:var(--green)}
 
-.pair{display:flex;gap:40px;flex-wrap:wrap;margin:26px 0 0;
-  font-family:"IBM Plex Sans",sans-serif}
-.pair div{flex:1 1 150px}
-.pair .n{font-size:32px;font-weight:500;letter-spacing:-.02em;line-height:1;
-  font-variant-numeric:lining-nums tabular-nums}
-.pair .n.bad{color:var(--mark)}
-.pair .l{font-size:12.5px;color:var(--faint);margin-top:8px;line-height:1.5}
+/* the scan */
+.cab{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;margin-top:28px;align-items:center}
+.cab .mon{border:2px solid var(--edge);background:#040704;padding:12px}
+.cab .mon svg{width:100%;height:auto;display:block}
+.cab .mon .c{font-size:18px;color:var(--dim);margin:8px 2px 0}
+.cab .score{text-align:left}
+.cab .score .big{font-family:"Press Start 2P",monospace;
+  font-size:clamp(26px,4.6vw,56px);line-height:1.3;color:var(--red);margin:0 0 16px;
+  text-shadow:0 0 26px rgba(255,65,54,.5)}
+.cab .score p{font-size:21px;color:#9fd6a8;margin:0 0 12px;max-width:28ch}
+.cab .score p b{color:var(--amber)}
 
-.tried{margin:22px 0 0;padding:0;list-style:none;font-size:18px}
-.tried li{padding:9px 0 9px 26px;position:relative;color:var(--soft)}
-.tried li::before{content:"—";position:absolute;left:0;color:var(--faint)}
-.tried li.won{color:var(--ink)}
-.tried li.won::before{content:"→";color:var(--mark)}
-
-footer{margin:0 0 96px;font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;
-  color:var(--faint);line-height:1.75}
-footer a{border-bottom-color:var(--hair)}
-@media(max-width:620px){body{font-size:18px}.col,.crumb{padding-left:22px;padding-right:22px}
-  .br{grid-template-columns:82px 1fr 46px}}
+.gameover{margin-top:44px;border:2px solid var(--magenta);background:#120312;
+  padding:34px 32px 36px;text-align:center}
+.gameover h2{font-family:"Press Start 2P",monospace;font-size:clamp(16px,3.2vw,32px);
+  line-height:1.6;color:var(--magenta);margin:0 0 20px;
+  text-shadow:0 0 24px rgba(255,79,216,.5)}
+.gameover p{font-size:22px;color:#e4b6dd;max-width:58ch;margin:0 auto 14px}
+.gameover p b{color:#fff}
+.cta{display:inline-block;margin-top:18px;border:2px solid var(--green);
+  background:#041004;color:var(--green);text-decoration:none;
+  font-family:"Press Start 2P",monospace;font-size:12px;padding:16px 22px;
+  text-shadow:0 0 12px rgba(57,255,106,.6)}
+footer{padding:30px 0 20px;font-size:18px;color:var(--dim);display:flex;
+  justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:900px){.stages{grid-template-columns:1fr}.cab{grid-template-columns:1fr}
+  .row{grid-template-columns:48px 1fr;gap:10px}.row .o{grid-column:2;text-align:left}}
 </style>
 </head>
 <body>
 
-<p class="crumb"><a href="../index.html">&larr; Gallery</a> &nbsp;·&nbsp; v11 quiet</p>
+<div class="scan"></div>
+<div class="vig"></div>
 
-<div class="col">
+<div class="screen">
+  <div class="w hud lab">
+    <span><a href="../index.html">&larr; GALLERY</a> &nbsp; V11 ARCADE</span>
+    <span class="sc">HI-SCORE 0.281 &nbsp;&nbsp; 1UP 0.010</span>
+  </div>
 
-  <h1>A model that knows a tumour is there, and cannot say where.</h1>
-  <p class="lede">Text-conditioned 3D medical models detect small lesions and then
-    fail to localize them. <em>This is what that failure is, and what fixes it.</em></p>
+  <div class="w title">
+    <p class="ins">&#9654; INSERT COIN &#9664;</p>
+    <h1>IT FINDS THE LESION<br>IT <em>CANNOT PLACE IT</em></h1>
+    <p class="sub">PLAYER 1 is a text-conditioned 3D localizer. It clears stage one.
+      It dies on stage three. <b>The smaller the target, the wider it misses.</b></p>
+  </div>
 
-  <hr>
-
-  <section>
-    <p class="mk">One</p>
-    <h2>The failure gets worse as the lesion gets smaller, and never recovers.</h2>
-    <p>Sorted by lesion volume into terciles, localization declines monotonically in
-      every region. For enhancing tumour, the clinically urgent case, Dice falls by
-      a factor of <b>14.9</b> from the largest third to the smallest.</p>
-    <div class="chart">
-      <div class="br"><span class="bk">Large</span><span class="tr"><i class="tf" style="width:53%"></i></span><span class="bv">0.149</span></div>
-      <div class="br"><span class="bk">Medium</span><span class="tr"><i class="tf" style="width:13.2%"></i></span><span class="bv">0.037</span></div>
-      <div class="br"><span class="bk">Small</span><span class="tr"><i class="tf m" style="width:3.6%"></i></span><span class="bv">0.010</span></div>
-      <p class="cap">Enhancing tumour, held-out n = 73. Whole tumour falls 4.9&times;
-        and tumour core 9.3&times; over the same range.</p>
+  <div class="w">
+    <div class="stages">
+      <div class="stage">
+        <p class="n">STAGE 1</p>
+        <p class="sz">LARGE LESIONS</p>
+        <div class="bar"><i style="width:53%"></i></div>
+        <p class="v">0.149</p>
+        <p class="k">DICE &middot; ENHANCING</p>
+        <p class="res">&#9654; CLEARED</p>
+      </div>
+      <div class="stage">
+        <p class="n">STAGE 2</p>
+        <p class="sz">MEDIUM LESIONS</p>
+        <div class="bar"><i class="mid" style="width:13.2%"></i></div>
+        <p class="v">0.037</p>
+        <p class="k">DICE &middot; ENHANCING</p>
+        <p class="res">&#9654; BARELY</p>
+      </div>
+      <div class="stage over">
+        <p class="n">STAGE 3</p>
+        <p class="sz">SMALL LESIONS</p>
+        <div class="bar"><i class="low" style="width:3.6%"></i></div>
+        <p class="v">0.010</p>
+        <p class="k">DICE &middot; ENHANCING</p>
+        <p class="res">&#9654; GAME OVER</p>
+      </div>
     </div>
-  </section>
 
-  <section>
-    <p class="mk">Two</p>
-    <h2>The lesions are findable. The conditioning is what fails.</h2>
-    <p>The obvious objection is that small lesions are simply hard. So the same
-      lesions went to a plain supervised U-Net, no language involved at all.</p>
-    <div class="pair">
-      <div><p class="n">1.2&times;</p><p class="l">degradation, supervised U-Net,
-        same small lesions</p></div>
-      <div><p class="n bad">14.9&times;</p><p class="l">degradation,
-        text-conditioned model, enhancing tumour</p></div>
+    <div class="board">
+      <p class="lab" style="margin-bottom:12px">SCORE TABLE &mdash; DICE BY TARGET SIZE</p>
+      <table>
+        <tr><th>REGION</th><th>LARGE</th><th>MEDIUM</th><th>SMALL</th><th>DROP</th></tr>
+        <tr><td>WHOLE TUMOUR</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+        <tr><td>TUMOUR CORE</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+        <tr class="x"><td>ENHANCING TUMOUR</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+        <tr class="c"><td>U-NET (CPU PLAYER)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+      </table>
     </div>
-  </section>
 
-  <section>
-    <p class="mk">Three</p>
-    <h2>And the language contributes nothing measurable.</h2>
-    <p>Replacing PubMedBERT with random vectors changes almost nothing. Whatever the
-      model is doing with the prompt, it is not reading it.</p>
-    <blockquote>The query functions as an opaque class identifier that happens to be
-      spelled in English.</blockquote>
-  </section>
+    <div class="cab">
+      <div class="mon">
+        <svg viewBox="0 0 740 340" role="img"
+             aria-label="Scan readout: a small ringed target against a far larger predicted region offset from it.">
+          <rect width="740" height="340" fill="#040704"/>
+          <g stroke="#1d3a1d" fill="none" stroke-width="1.4">
+            <ellipse cx="370" cy="170" rx="220" ry="136"/>
+            <ellipse cx="370" cy="170" rx="200" ry="116"/>
+            <path d="M370 34 V306"/>
+            <path d="M352 114 q-23 34 -15 76 q4 20 15 30 q2 -63 0 -106 z"/>
+            <path d="M388 114 q23 34 15 76 q-4 20 -15 30 q-2 -63 0 -106 z"/>
+            <path d="M208 124 q33 22 24 55"/><path d="M532 124 q-33 22 -24 55"/>
+          </g>
+          <ellipse cx="450" cy="202" rx="110" ry="78" fill="#ff4136" fill-opacity=".10"
+                   stroke="#ff4136" stroke-width="2.4" stroke-dasharray="8 6"/>
+          <g stroke="#39ff6a" stroke-width="2.4" fill="none">
+            <rect x="474" y="138" width="28" height="28"/>
+            <path d="M488 128 V138"/><path d="M488 166 V176"/>
+            <path d="M464 152 H474"/><path d="M502 152 H512"/>
+          </g>
+          <g font-family="VT323, monospace" font-size="19">
+            <text x="524" y="134" fill="#39ff6a">TARGET 1.9cm&#179;</text>
+            <text x="24" y="292" fill="#ff4136">SHOT 31.4cm&#179; &#183; MISS</text>
+            <text x="20" y="28" fill="#3f6a46">SLICE 64/128 &#183; T1CE</text>
+            <text x="600" y="322" fill="#ff4136">DICE 0.037</text>
+          </g>
+        </svg>
+        <p class="c">The shot never moves. Only the target shrinks.</p>
+      </div>
+      <div class="score">
+        <p class="big">14.9&times;<br>WORSE</p>
+        <p>on small targets than large. Monotonic in every region, <b>no continues</b>.</p>
+        <p>Detection stayed perfect the whole run. That is how nobody noticed.</p>
+      </div>
+    </div>
 
-  <section>
-    <p class="mk">Four</p>
-    <h2>The cheapest available fix beat every elaborate one.</h2>
-    <p>Four interventions were tried. Three were reversed after a control caught the
-      error.</p>
-    <ul class="tried">
-      <li>Size-conditioned prompting. Helped small lesions, broke large ones.</li>
-      <li>Multi-scale ensembling. Gained on tumour core, gave it back on enhancing.</li>
-      <li>Scale-matched retraining. Overfit the tercile it was tuned on.</li>
-      <li class="won">Centre-weighted window merging. <b>+0.145 Dice, no retraining.</b></li>
-    </ul>
-    <p style="margin-top:22px">The volume is processed in overlapping sliding windows
-      and merged by flat averaging, which smears a small lesion across everything near
-      a window edge. Weighting each window toward its own centre recovers small
-      enhancing tumour in <b>7 of 21 patients</b> where the model previously found
-      none, and changes no weights at all.</p>
-  </section>
+    <div class="cont">
+      <h2>CONTINUE? &nbsp;4 ATTEMPTS</h2>
+      <div class="rows">
+        <div class="row">
+          <span class="c">01</span>
+          <span class="t">Maybe small targets just can't be hit. Hand the same lesions
+            to a plain supervised U-Net with <b>no language at all</b>.</span>
+          <span class="o">NO &middot; 1.2&times;</span>
+        </div>
+        <div class="row">
+          <span class="c">02</span>
+          <span class="t">Maybe the text encoder is weak. Swap PubMedBERT for
+            <b>random vectors</b>. Nothing changes.</span>
+          <span class="o">NO &middot; &Delta;&asymp;0.000</span>
+        </div>
+        <div class="row">
+          <span class="c">03</span>
+          <span class="t">Maybe tell it the target is small. Size-conditioned prompting,
+            multi-scale ensembling, scale-matched retraining.</span>
+          <span class="o">NO &middot; 3 OF 3 REVERSED</span>
+        </div>
+        <div class="row win">
+          <span class="c">04</span>
+          <span class="t">Maybe the windows are merged badly. <b>Weight each sliding
+            window toward its own centre.</b></span>
+          <span class="o">YES &middot; +0.145</span>
+        </div>
+      </div>
+    </div>
 
-  <hr>
+    <div class="gameover">
+      <h2>A SHARED CONFOUND IS NOT<br>A CANCELLED CONFOUND</h2>
+      <p>The bug was never in the player. It was in the merge step, at inference time,
+        where nobody was looking. <b>No retraining. Not one modified weight.</b>
+        Small enhancing tumour recovered in 7 of 21 subjects.</p>
+      <p>Every stage of a pipeline is an instrument until somebody measures it.</p>
+      <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">&#9654; READ THE PAPER</a>
+    </div>
 
-  <section>
-    <h2>A shared confound is not a cancelled confound.</h2>
-    <p>Every stage of a pipeline is an instrument until somebody measures it. That is
-      the part of this worth carrying to the next dataset.</p>
-    <p><a href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper and the code</a></p>
-  </section>
-
-  <footer>
-    Raj Hansini Akara · MPCS 53113 · University of Chicago<br>
-    BraTS2020, 369 patients, 128&sup3; volumes · 171 paired Wilcoxon tests,
-    Benjamini&#8209;Hochberg corrected · 9 of 9 comparisons replicated across three
-    independent splits.
-  </footer>
-
+    <footer>
+      <span>RAJ HANSINI AKARA</span>
+      <span>MPCS 53113 &middot; UNIVERSITY OF CHICAGO</span>
+      <span>171 TESTS &middot; 9/9 REPLICATED</span>
+    </footer>
+  </div>
 </div>
 
 </body>
