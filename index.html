@@ -97,11 +97,12 @@ footer{border-top:1px solid var(--edge);margin-top:64px;padding:26px 0 60px;
           to localize it once it is small.</b></p>
         <p>The page has one job. A researcher lands, understands the finding in
           fifteen seconds, and opens the paper. Everything below is an attempt at
-          that, from a radiology workstation to a CVPR submission to an arcade
-          cabinet.</p>
+          that, from a radiology workstation to a CVPR submission to a transit
+          map to a nutrition label.</p>
         <p>Versions 01 to 13 go as wide as the subject allows, including
           directions that were always going to fail. 14 to 19 cross-breed what
-          survived. 20 to 25 converge.</p>
+          survived. 20 to 25 go wider still, into forms this subject has no
+          business wearing, to find out which ones it turns out to fit.</p>
       </div>
       <div class="facts">
         <p class="lab" style="margin-bottom:12px">The finding</p>
@@ -119,7 +120,7 @@ footer{border-top:1px solid var(--edge);margin-top:64px;padding:26px 0 60px;
   <div id="phases"></div>
 
   <div class="final" id="final" hidden>
-    <p class="lab">The choice</p>
+    <p class="lab">The one I would ship</p>
     <h2 id="finalTitle"></h2>
     <p id="finalWhy"></p>
     <a class="go" id="finalLink" href="#">Open v25 &rarr;</a>
@@ -177,8 +178,9 @@ const V = [
 const PHASES = [
   {key:"wide",     h:"Going wide",      s:"v01–v13 · radically different directions"},
   {key:"cross",    h:"Cross-breeding",  s:"v14–v19 · combining what survived"},
-  {key:"converge", h:"Converging",      s:"v20–v25 · refinement to the final choice"}
+  {key:"converge", h:"Going wider still", s:"v20–v25 · forms the subject has no business wearing"}
 ];
+const TAGLABEL = {wide:"wide", cross:"cross", converge:"wider", final:"final"};
 const pad = n => String(n).padStart(2,"0");
 
 const host = document.getElementById("phases");
@@ -206,7 +208,7 @@ for (const ph of PHASES) {
       '</div>' +
       '<div class="meta">' +
         '<div class="id"><span class="v">v' + pad(v.n) + '</span>' +
-          '<span class="tag">' + (v.tag === "final" ? "final" : v.tag) + '</span></div>' +
+          '<span class="tag">' + TAGLABEL[v.tag] + '</span></div>' +
         '<h3>' + (v.title || "&nbsp;") + '</h3>' +
         '<p>' + (v.note || "") + '</p>' +
       '</div>';
