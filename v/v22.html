@@ -6,320 +6,266 @@
 <title>v22 · Small-Lesion Grounding Failure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
-/* v22 — refining v21 by taking v16's interaction and deleting its controls.
-   v16 needed a segmented control and a slider to reach nine states. Here the
-   EVIDENCE TABLE IS THE CONTROL: click any of the nine numbers and the scan, the
-   headline figure and the caption move to that cell. No widget to learn, no
-   duplicated data, and a reader who never clicks still sees a complete table.
-   Every reachable state is a measurement. There is no interpolation because there
-   is nothing measured between the terciles. */
+/* v22 — TRANSIT MAP. The diagnosis as a network diagram.
+   This is the one layout in the set whose STRUCTURE is the argument rather than a
+   container for it. Four lines leave the same junction; three run to closed termini
+   and one carries through to the fix. A reader who only looks at the picture has
+   the whole finding, including that the dead ends were explored before the answer.
+   Beck's rules are obeyed: 45 and 90 degrees only, even station spacing, one colour
+   per line, geography sacrificed to legibility. */
 :root{
-  --paper:#fbfbf9; --ink:#111413; --dim:#5f6664; --faint:#949b98;
-  --hair:#e3e4e0; --rule:#111413; --hot:#d93a1e; --ok:#127553; --sel:#fdeeea;
+  --paper:#fbfbfa; --ink:#15181c; --dim:#5a6168; --hair:#e2e4e3;
+  --l1:#d4362c; --l2:#e8972b; --l3:#7d4bc4; --l4:#0f8a5f; --trunk:#1f6fd0;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
-  font:16.5px/1.6 "Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  font:16px/1.55 Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-variant-numeric:tabular-nums}
-a{color:var(--hot)}
-.w{max-width:1280px;margin:0 auto;padding:0 40px}
-.g{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 26px}
-.lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.19em;
-  text-transform:uppercase;color:var(--faint);margin:0}
+a{color:var(--trunk)}
+.w{max-width:1280px;margin:0 auto;padding:0 36px}
+.lab{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  margin:0;font-weight:600}
 
 .top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 auto;
-  padding-top:14px;padding-bottom:13px;border-bottom:1px solid var(--hair)}
-.top a{color:var(--faint);text-decoration:none}
+  padding-top:15px;padding-bottom:14px;border-bottom:1px solid var(--hair)}
+.top a{color:var(--dim);text-decoration:none}
 
-.hero{padding-top:52px;padding-bottom:36px}
-.hero h1{grid-column:1/span 7;font-size:clamp(34px,5.2vw,64px);line-height:1;
-  letter-spacing:-.036em;font-weight:700;margin:12px 0 0}
-.hero h1 em{font-style:normal;color:var(--hot)}
-.hero .sf{grid-column:9/span 4;align-self:end;color:var(--dim);margin:0}
-.hero .sf b{color:var(--ink);font-weight:600}
-.hero .kick{grid-column:1/span 7;margin-bottom:0}
+.hero{padding-top:46px;padding-bottom:26px;display:grid;
+  grid-template-columns:1.3fr 1fr;gap:52px;align-items:end}
+h1{font-size:clamp(32px,4.8vw,58px);line-height:1.02;letter-spacing:-.035em;
+  font-weight:700;margin:12px 0 0;max-width:16ch}
+h1 em{font-style:normal;color:var(--l1)}
+.hero p{color:var(--dim);margin:0;max-width:40ch}
+.hero p b{color:var(--ink);font-weight:600}
 
-.evid{border-top:2px solid var(--rule);padding-top:26px;padding-bottom:34px}
-/* Explicit rows: auto-placement is sparse and never backtracks, so once .pfoot
-   claimed row 2 at columns 1-8, .side was pushed to row 2 as well and the whole
-   right-hand column started level with the bottom of the figure. */
-.evid .plate{grid-column:1/span 8;grid-row:1}
-.evid .plate svg{width:100%;height:auto;display:block}
-.pfoot{grid-column:1/span 8;grid-row:2;display:flex;justify-content:space-between;gap:14px;
-  flex-wrap:wrap;margin-top:12px;font-family:"IBM Plex Mono",monospace;
-  font-size:11px;color:var(--faint)}
-.evid .side{grid-column:9/span 4;grid-row:1/span 2}
-.kbig{font-size:clamp(50px,6.6vw,90px);line-height:.84;letter-spacing:-.05em;
-  font-weight:700;color:var(--hot);margin:8px 0 12px}
-.side > p.s{margin:0 0 22px;color:var(--dim);max-width:30ch;font-size:15.5px;min-height:76px}
-.side > p.s b{color:var(--ink);font-weight:600}
+.map{border:1px solid var(--hair);background:#fff;padding:26px 28px 22px;
+  border-radius:4px}
+.map svg{width:100%;height:auto;display:block}
+.mapfoot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  margin-top:14px;font-size:12px;color:var(--dim)}
 
-table{width:100%;border-collapse:collapse;font-size:14.5px}
-th{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--faint);font-weight:400;
-  padding:0 0 7px;border-bottom:1px solid var(--rule)}
-th:first-child,td:first-child{text-align:left;padding-right:8px}
-td{text-align:right;border-bottom:1px solid var(--hair);padding:0}
-td.r{padding:9px 0 9px 8px;color:var(--dim)}
-td:first-child{padding:9px 8px 9px 0}
-/* the nine cells are real buttons: keyboard reachable, and the table still reads
-   as a table when nothing is clicked */
-td button{width:100%;border:0;background:none;font:inherit;color:inherit;
-  text-align:right;padding:9px 6px;cursor:pointer;font-variant-numeric:tabular-nums}
-td button:hover{background:var(--sel);color:var(--hot)}
-td button:focus-visible{outline:2px solid var(--hot);outline-offset:-2px}
-td button[aria-pressed=true]{background:var(--ink);color:#fff;font-weight:600}
-tr.x td:first-child,tr.x td.r{color:var(--hot);font-weight:600}
-tr.c td{color:var(--ok);padding:9px 6px 9px 0}
-.tablenote{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;
-  color:var(--faint);margin:10px 0 0;line-height:1.6}
-
-.narrow{border-top:1px solid var(--hair);padding-top:52px;padding-bottom:12px}
-.narrow .kick{grid-column:1/span 3}
-.narrow h2{grid-column:4/span 7;font-size:clamp(23px,3.1vw,34px);line-height:1.1;
-  letter-spacing:-.028em;font-weight:700;margin:0 0 34px}
-.chain{grid-column:1/span 12;display:grid;grid-template-columns:repeat(4,1fr);
-  gap:0;border-top:2px solid var(--rule)}
-.hyp{padding:18px 26px 22px;border-right:1px solid var(--hair);
-  display:flex;flex-direction:column}
-.hyp:last-child{border-right:0}.hyp:first-child{padding-left:0}.hyp:last-child{padding-right:0}
-.hyp .n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
-  color:var(--faint);margin:0 0 10px}
-.hyp h3{font-size:17.5px;font-weight:600;line-height:1.24;letter-spacing:-.012em;
+/* line guide */
+.guide{padding-top:48px;padding-bottom:8px}
+.guide h2{font-size:clamp(22px,3vw,32px);line-height:1.1;letter-spacing:-.028em;
+  font-weight:700;margin:10px 0 26px}
+.lines{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.line{border-top:7px solid var(--l1);padding-top:16px}
+.line.l2{border-top-color:var(--l2)}.line.l3{border-top-color:var(--l3)}
+.line.l4{border-top-color:var(--l4)}
+.line .n{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+  color:var(--l1);margin:0 0 9px}
+.line.l2 .n{color:var(--l2)}.line.l3 .n{color:var(--l3)}.line.l4 .n{color:var(--l4)}
+.line h3{font-size:18px;font-weight:600;line-height:1.22;letter-spacing:-.012em;
   margin:0 0 9px}
-.hyp p{font-size:14px;color:var(--dim);margin:0 0 16px;flex:1}
-.hyp p b{color:var(--ink);font-weight:600}
-.v{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-  border-top:1px solid var(--hot);padding-top:9px;color:var(--hot)}
-.v .t{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;
+.line p{font-size:14.5px;color:var(--dim);margin:0 0 14px}
+.line p b{color:var(--ink);font-weight:600}
+/* .line p.status, not .status: `.line p` outranks the bare class, so line 1
+   rendered its verdict in body grey at body size while lines 2-4 (which have a
+   two-class override) did not. */
+.line p.status{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  border-top:1px solid var(--hair);padding-top:9px;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:700;color:var(--l1);margin-bottom:0}
+.line.l2 p.status{color:var(--l2)}.line.l3 p.status{color:var(--l3)}
+.line.l4 p.status{color:var(--l4)}
+.status b{font-size:19px;letter-spacing:-.02em;text-transform:none}
+
+.fares{padding-top:46px;padding-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:right;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);font-weight:600;padding:0 10px 9px 0;border-bottom:2px solid var(--ink)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:11px 10px 11px 0;border-bottom:1px solid var(--hair)}
+tr.x td{color:var(--l1);font-weight:600}
+tr.c td{color:var(--l4)}
+
+.notice{margin-top:46px;background:var(--ink);color:#fff;border-radius:4px;
+  padding:34px 36px 38px;display:grid;grid-template-columns:1fr 300px;gap:48px;
+  align-items:start}
+.notice h2{font-size:clamp(22px,3.2vw,36px);line-height:1.08;letter-spacing:-.03em;
+  font-weight:700;margin:12px 0 16px;max-width:20ch}
+.notice h2 em{font-style:normal;color:#ff8f70}
+.notice p{color:#a7adaa;margin:0 0 14px;max-width:52ch}
+.notice p b{color:#fff;font-weight:600}
+.notice .lab{color:#8a918e}
+.gain{border-left:4px solid var(--l4);padding-left:18px}
+.gain b{display:block;font-size:46px;font-weight:700;letter-spacing:-.04em;line-height:1}
+.gain span{display:block;font-size:13px;color:#a7adaa;margin-top:9px}
+.cta{display:inline-block;margin-top:14px;background:#fff;color:var(--ink);
+  text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;padding:14px 22px;border-radius:3px}
+footer{padding-top:20px;padding-bottom:64px;display:flex;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font-size:11px;color:var(--dim);letter-spacing:.1em;
   text-transform:uppercase}
-.v .m{font-size:19px;font-weight:600;letter-spacing:-.02em}
-.hyp.keep .v{border-top-color:var(--ok);color:var(--ok)}
-
-.fix{background:var(--ink);color:#fff;margin-top:56px}
-.fix .w{padding-top:62px;padding-bottom:66px}
-.fix .kick{grid-column:1/span 3;color:#6d7471}
-.fix h2{grid-column:4/span 8;color:#fff;font-size:clamp(24px,3.4vw,40px);
-  line-height:1.06;letter-spacing:-.03em;font-weight:700;margin:0 0 26px}
-.fix h2 em{font-style:normal;color:#ff8f70}
-.fix .body{grid-column:4/span 5}
-.fix .body p{color:#a7adaa;margin:0 0 15px}
-.fix .body p b{color:#fff;font-weight:600}
-.fix .gain{grid-column:10/span 3;border-left:2px solid var(--hot);padding-left:20px}
-.fix .gain b{display:block;font-size:clamp(38px,4.6vw,54px);font-weight:700;
-  letter-spacing:-.04em;line-height:1}
-.fix .gain span{display:block;font-size:13.5px;color:#a7adaa;margin-top:10px}
-.cta{display:inline-block;margin-top:22px;background:#fff;color:var(--ink);
-  text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:11px;
-  letter-spacing:.16em;text-transform:uppercase;padding:14px 22px}
-footer{padding-top:18px;padding-bottom:60px;display:flex;justify-content:space-between;
-  gap:16px;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
-  color:var(--faint)}
-
-#gt{transition:r .45s cubic-bezier(.3,.7,.3,1)}
-@media (prefers-reduced-motion:reduce){#gt{transition:none}}
-@media(max-width:1020px){
-  .hero h1,.hero .sf,.hero .kick,.evid .plate,.pfoot,.evid .side,
-  .narrow .kick,.narrow h2,.fix .kick,.fix h2,.fix .body,.fix .gain{grid-column:1/span 12}
-  .evid .plate,.pfoot,.evid .side{grid-row:auto}
-  .hero .sf{margin-top:22px}.evid .side{padding-top:28px}
-  .side > p.s{min-height:0}
-  .fix .gain{margin-top:30px}.narrow h2{margin-bottom:26px}
-  .chain{grid-template-columns:1fr 1fr}
-  .hyp{padding:18px 22px 22px;border-bottom:1px solid var(--hair)}
-  .hyp:nth-child(even){border-right:0;padding-right:0}
-  .hyp:nth-child(odd){padding-left:0}}
-@media(max-width:620px){.chain{grid-template-columns:1fr}
-  .hyp{padding:18px 0 20px;border-right:0}.w{padding:0 22px}}
+@media(max-width:1000px){.hero,.notice{grid-template-columns:1fr;gap:24px}
+  .lines{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.lines{grid-template-columns:1fr}.w{padding:0 20px}}
 </style>
 </head>
 <body>
 
 <div class="w top lab">
-  <a href="../index.html">&larr; Gallery · v22 the table is the control</a>
-  <span>BraTS2020 · 369 patients · held-out n = 73</span>
+  <a href="../index.html">&larr; Gallery · v22 network diagram</a>
+  <span>BraTS2020 · held-out n = 73</span>
 </div>
 
-<div class="w hero g">
-  <p class="lab kick">Text-conditioned 3D medical localization</p>
-  <h1>It finds the lesion.<br>It cannot <em>place</em> it.</h1>
-  <p class="sf">These models detect that a tumour is present, then return a region many
-    times too large and centred somewhere else. <b>The smaller the lesion, the wider the
-    miss</b> — and the small ones are the clinically urgent ones.</p>
-</div>
-
-<div class="w evid g">
-  <div class="plate">
-    <svg viewBox="0 0 880 380" role="img" aria-labelledby="plateTitle">
-      <title id="plateTitle">Axial slice. A solid outline marks the true lesion and a
-        much larger dashed outline marks the model's predicted region. Selecting a
-        smaller size tercile in the table shrinks the true lesion; the prediction does
-        not move.</title>
-      <rect width="880" height="380" fill="#fff"/>
-      <g stroke="#c4c8c5" fill="none" stroke-width="1.4">
-        <ellipse cx="440" cy="190" rx="262" ry="160"/>
-        <ellipse cx="440" cy="190" rx="242" ry="140"/>
-        <path d="M440 30 V350"/>
-        <path d="M422 126 q-26 40 -17 88 q4 23 17 36 q2 -73 0 -124 z"/>
-        <path d="M458 126 q26 40 17 88 q-4 23 -17 36 q-2 -73 0 -124 z"/>
-        <path d="M248 138 q38 25 28 63"/><path d="M304 92 q26 33 13 56"/>
-        <path d="M632 138 q-38 25 -28 63"/><path d="M576 92 q-26 33 -13 56"/>
-        <path d="M266 268 q45 29 104 35"/><path d="M614 268 q-45 29 -104 35"/>
-      </g>
-      <ellipse cx="524" cy="226" rx="128" ry="90" fill="#d93a1e" fill-opacity=".08"
-               stroke="#d93a1e" stroke-width="2.4" stroke-dasharray="9 7"/>
-      <circle id="gt" cx="566" cy="182" r="42" fill="#111413" fill-opacity=".16"
-              stroke="#111413" stroke-width="2.4"/>
-      <g stroke="#d93a1e" stroke-width="1" fill="none"><path d="M452 314 L346 340 H312"/></g>
-      <g stroke="#111413" stroke-width="1" fill="none"><path d="M602 148 L654 112 H676"/></g>
-      <g font-family="IBM Plex Mono, monospace" font-size="12.5">
-        <text x="80" y="344" fill="#d93a1e">PREDICTED REGION — UNCHANGED</text>
-        <text x="24" y="28" fill="#949b98" font-size="11.5">SLICE 64/128 · T1CE · HELD-OUT PATIENT</text>
-        <text x="682" y="108" fill="#111413" font-size="11.5" id="gtLabel">TRUE LESION — LARGE</text>
-      </g>
-    </svg>
+<div class="w hero">
+  <div>
+    <p class="lab">Text-conditioned 3D medical localization</p>
+    <h1>Four lines left the junction. <em>Three were closed.</em></h1>
   </div>
-  <div class="pfoot">
-    <span id="pf">The predicted region never moves. Only the target does.</span>
-    <span>Detection: correct at every size</span>
-  </div>
-  <div class="side">
-    <p class="lab" id="cellLab">Dice — whole tumour, large lesions</p>
-    <p class="kbig" id="cellVal">0.281</p>
-    <p class="s" id="cellNote">The model at its best, and already a loose outline.
-      Pick any number below to see that cell.</p>
-    <table>
-      <caption class="lab" style="text-align:left;padding-bottom:9px">Dice by lesion-size tercile · click a cell</caption>
-      <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th style="padding-left:8px">Ratio</th></tr>
-      <tr>
-        <td>Whole tumour</td>
-        <td><button data-r="wt" data-i="0" aria-pressed="true">0.281</button></td>
-        <td><button data-r="wt" data-i="1" aria-pressed="false">0.137</button></td>
-        <td><button data-r="wt" data-i="2" aria-pressed="false">0.057</button></td>
-        <td class="r">4.9&times;</td>
-      </tr>
-      <tr>
-        <td>Tumour core</td>
-        <td><button data-r="tc" data-i="0" aria-pressed="false">0.176</button></td>
-        <td><button data-r="tc" data-i="1" aria-pressed="false">0.059</button></td>
-        <td><button data-r="tc" data-i="2" aria-pressed="false">0.019</button></td>
-        <td class="r">9.3&times;</td>
-      </tr>
-      <tr class="x">
-        <td>Enhancing tumour</td>
-        <td><button data-r="et" data-i="0" aria-pressed="false">0.149</button></td>
-        <td><button data-r="et" data-i="1" aria-pressed="false">0.037</button></td>
-        <td><button data-r="et" data-i="2" aria-pressed="false">0.010</button></td>
-        <td class="r">14.9&times;</td>
-      </tr>
-      <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td class="r">1.2&times;</td></tr>
-    </table>
-    <p class="tablenote">Nine measured cells. Nothing between the terciles is measured,
-      so nothing between them is shown.</p>
-  </div>
-</div>
-
-<div class="w narrow g">
-  <p class="lab kick">How the cause was narrowed</p>
-  <h2>Four explanations. Three of them were wrong.</h2>
-  <div class="chain">
-    <div class="hyp">
-      <p class="n">01</p>
-      <h3>Small lesions are simply unfindable.</h3>
-      <p>A plain supervised U-Net, handed the same lesions with no language anywhere in
-        the pipeline, barely degrades. <b>The lesions are learnable.</b></p>
-      <p class="v"><span class="t">Ruled out</span><span class="m">1.2&times;</span></p>
-    </div>
-    <div class="hyp">
-      <p class="n">02</p>
-      <h3>The medical text encoder is too weak.</h3>
-      <p>Replacing PubMedBERT with <b>random vectors</b> changes almost nothing. The
-        query is an opaque class identifier that happens to be spelled in English.</p>
-      <p class="v"><span class="t">Ruled out</span><span class="m">&Delta; &asymp; 0.000</span></p>
-    </div>
-    <div class="hyp">
-      <p class="n">03</p>
-      <h3>The model must be told the lesion is small.</h3>
-      <p>Size-conditioned prompting, multi-scale ensembling and scale-matched retraining
-        each traded one failure for another.</p>
-      <p class="v"><span class="t">Ruled out</span><span class="m">3 of 3 reversed</span></p>
-    </div>
-    <div class="hyp keep">
-      <p class="n">04</p>
-      <h3>The sliding windows are merged badly.</h3>
-      <p>Flat averaging smears a small lesion across everything near a window edge.
-        <b>Weight each window toward its own centre.</b></p>
-      <p class="v"><span class="t">Confirmed</span><span class="m">+0.145</span></p>
-    </div>
-  </div>
-</div>
-
-<div class="fix">
-  <div class="w g">
-    <p class="lab kick">The repair</p>
-    <h2>The cheapest thing on the list beat every elaborate one.
-      <em>No retraining at all.</em></h2>
-    <div class="body">
-      <p>The failure was not in the model and not in the language. It sat in the
-        inference plumbing, where nobody was looking.</p>
-      <p>Three more elaborate interventions were tried first and each was reversed after
-        a control caught the error. <b>A shared confound is not a cancelled confound</b>:
-        every stage of a pipeline is an instrument until somebody measures it.</p>
-      <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
-    </div>
-    <div class="gain"><b>+0.145</b><span>Dice, no weights modified. Small enhancing
-      tumour recovered in 7 of 21 patients where the model previously found none.<br><br>
-      171 paired Wilcoxon tests, Benjamini&#8209;Hochberg corrected; 9 of 9 comparisons
-      replicated across three independent splits.</span></div>
-  </div>
+  <p>These models detect that a tumour is present, then return a region many times too
+    large and centred somewhere else. <b>The map below is how the cause was found</b> —
+    every branch was ridden to its terminus before the through route was.</p>
 </div>
 
 <div class="w">
+  <div class="map">
+    <svg viewBox="0 0 1240 560" role="img"
+         aria-label="Network diagram. One trunk line leaves Observation. Three branches run to closed termini: the data, the language, and prompting. The fourth continues to the fix at centre-weighted merging.">
+      <rect width="1240" height="560" fill="#fff"/>
+
+      <!-- trunk, carries through -->
+      <path d="M110 300 H1130" stroke="#0f8a5f" stroke-width="13" fill="none" stroke-linecap="round"/>
+
+      <!-- branch 1: the data -->
+      <path d="M300 300 L380 220 H560" stroke="#d4362c" stroke-width="13" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- branch 2: the language -->
+      <path d="M470 300 L550 380 H760" stroke="#e8972b" stroke-width="13" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- branch 3: prompting and retraining -->
+      <path d="M700 300 L780 220 H1010" stroke="#7d4bc4" stroke-width="13" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- closed termini: bar across the line end -->
+      <g stroke="#15181c" stroke-width="7" stroke-linecap="round">
+        <path d="M560 202 V238"/><path d="M760 362 V398"/><path d="M1010 202 V238"/>
+      </g>
+
+      <!-- stations -->
+      <g fill="#fff" stroke="#15181c" stroke-width="5">
+        <circle cx="110" cy="300" r="13"/>
+        <circle cx="300" cy="300" r="11"/>
+        <circle cx="470" cy="300" r="11"/>
+        <circle cx="700" cy="300" r="11"/>
+        <circle cx="440" cy="220" r="10"/>
+        <circle cx="640" cy="380" r="10"/>
+        <circle cx="880" cy="220" r="10"/>
+        <circle cx="930" cy="300" r="11"/>
+      </g>
+      <!-- interchange: the terminus that matters -->
+      <circle cx="1130" cy="300" r="19" fill="#0f8a5f" stroke="#15181c" stroke-width="5"/>
+      <circle cx="1130" cy="300" r="7" fill="#fff"/>
+
+      <g font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#15181c">
+        <text x="110" y="344" text-anchor="middle">Observation</text>
+        <text x="440" y="200" text-anchor="middle">U-Net control</text>
+        <text x="640" y="418" text-anchor="middle">Random vectors</text>
+        <text x="880" y="200" text-anchor="middle">Three remedies</text>
+        <text x="930" y="344" text-anchor="middle">Window merge</text>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="14" fill="#5a6168">
+        <text x="110" y="364" text-anchor="middle">Dice falls 14.9&#215;</text>
+        <text x="440" y="180" text-anchor="middle">degrades only 1.2&#215;</text>
+        <text x="640" y="438" text-anchor="middle">&#916; Dice &#8776; 0.000</text>
+        <text x="880" y="180" text-anchor="middle">all three reversed</text>
+        <text x="930" y="364" text-anchor="middle">flat averaging found</text>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="13" font-weight="700"
+         letter-spacing="1.4" fill="#15181c">
+        <text x="584" y="226">CLOSED</text>
+        <text x="784" y="386">CLOSED</text>
+        <text x="1034" y="226">CLOSED</text>
+      </g>
+      <g font-family="Inter, sans-serif" font-weight="700" fill="#15181c">
+        <text x="1130" y="252" text-anchor="middle" font-size="18">The fix</text>
+        <text x="1130" y="344" text-anchor="middle" font-size="22" fill="#0f8a5f">+0.145</text>
+        <text x="1130" y="366" text-anchor="middle" font-size="13" font-weight="400"
+              fill="#5a6168">no retraining</text>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="12.5" font-weight="700"
+         letter-spacing="1.6" fill="#5a6168">
+        <text x="24" y="40">SMALL-LESION LOCALIZATION &#183; DIAGNOSTIC NETWORK</text>
+        <text x="24" y="540">NOT TO SCALE</text>
+      </g>
+    </svg>
+    <div class="mapfoot">
+      <span>Each branch was measured against its own control before being closed.</span>
+      <span>171 paired Wilcoxon tests · BH corrected · 9 / 9 replicated</span>
+    </div>
+  </div>
+</div>
+
+<div class="w guide">
+  <p class="lab">Line guide</p>
+  <h2>What was found at each terminus.</h2>
+  <div class="lines">
+    <div class="line">
+      <p class="n">Line 1 · Closed</p>
+      <h3>The data</h3>
+      <p>Perhaps small lesions are simply unfindable. A plain supervised U-Net was given
+        the same lesions with <b>no language anywhere</b> in the pipeline.</p>
+      <p class="status">Degrades <b>1.2&times;</b></p>
+    </div>
+    <div class="line l2">
+      <p class="n">Line 2 · Closed</p>
+      <h3>The language</h3>
+      <p>Perhaps the text encoder is too weak. PubMedBERT was replaced with
+        <b>random vectors</b>. The query is an opaque class identifier that happens to
+        be spelled in English.</p>
+      <p class="status">Change <b>&asymp; 0.000</b></p>
+    </div>
+    <div class="line l3">
+      <p class="n">Line 3 · Closed</p>
+      <h3>Three remedies</h3>
+      <p>Size-conditioned prompting, multi-scale ensembling and scale-matched
+        retraining. Each traded one failure mode for another and was reversed once its
+        control ran.</p>
+      <p class="status">Reversed <b>3 of 3</b></p>
+    </div>
+    <div class="line l4">
+      <p class="n">Line 4 · Through route</p>
+      <h3>Window merging</h3>
+      <p>Flat averaging smears a small lesion across everything near a window edge.
+        <b>Weight each window toward its own centre.</b> No weights modified.</p>
+      <p class="status">Gain <b>+0.145</b></p>
+    </div>
+  </div>
+</div>
+
+<div class="w fares">
+  <p class="lab" style="margin-bottom:14px">Service record &mdash; Dice by lesion-size tercile</p>
+  <table>
+    <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
+    <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+    <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+    <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+    <tr class="c"><td>Supervised U-Net (control)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+  </table>
+</div>
+
+<div class="w">
+  <div class="notice">
+    <div>
+      <p class="lab">Service notice</p>
+      <h2>A shared confound is <em>not</em> a cancelled confound</h2>
+      <p>The fault was not in the model and not in the language. It sat in the inference
+        plumbing, on the one stretch of line nobody had inspected.</p>
+      <p><b>Every stage of a pipeline is an instrument until somebody measures it.</b></p>
+      <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
+    </div>
+    <div class="gain"><b>0 &rarr; 7</b><span>of 21 patients recovered on small enhancing
+      tumour, where the model previously found none. No retraining and no modified
+      weights.</span></div>
+  </div>
   <footer>
     <span>Raj Hansini Akara</span>
     <span>MPCS 53113 · University of Chicago</span>
     <span>128&sup3; volumes</span>
   </footer>
 </div>
-
-<script>
-/* The table is the control. Nine buttons, nine measured cells, no widget to learn.
-   With JavaScript off the table still reads correctly and the figure shows the
-   large tercile, which is the state the markup ships in. */
-var NAME = { wt: "whole tumour", tc: "tumour core", et: "enhancing tumour" },
-    RATIO = { wt: "4.9", tc: "9.3", et: "14.9" },
-    SIZE = ["large", "medium", "small"],
-    R = [42, 25, 13],
-    NOTE = [
-      "The model at its best, and already a loose outline.",
-      "The target has halved. The predicted region has barely moved.",
-      "{r}× worse than the large tercile. A supervised U-Net on the same lesions degrades 1.2×."
-    ];
-var btns = document.querySelectorAll("td button"),
-    gt = document.getElementById("gt"), gtLabel = document.getElementById("gtLabel"),
-    cellLab = document.getElementById("cellLab"), cellVal = document.getElementById("cellVal"),
-    cellNote = document.getElementById("cellNote"), pf = document.getElementById("pf");
-
-function pick(btn) {
-  var r = btn.dataset.r, i = +btn.dataset.i;
-  Array.prototype.forEach.call(btns, function (b) {
-    b.setAttribute("aria-pressed", String(b === btn));
-  });
-  gt.setAttribute("r", R[i]);
-  gtLabel.textContent = "TRUE LESION — " + SIZE[i].toUpperCase();
-  cellLab.textContent = "Dice — " + NAME[r] + ", " + SIZE[i] + " lesions";
-  cellVal.textContent = btn.textContent;
-  cellNote.textContent = NOTE[i].replace("{r}", RATIO[r]);
-  pf.textContent = i === 0
-    ? "The predicted region never moves. Only the target does."
-    : "Same predicted region, same patient, a smaller target.";
-}
-Array.prototype.forEach.call(btns, function (b) {
-  b.addEventListener("click", function () { pick(b); });
-});
-</script>
 
 </body>
 </html>
