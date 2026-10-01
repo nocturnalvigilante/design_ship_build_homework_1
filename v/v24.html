@@ -4,325 +4,251 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>v24 · Small-Lesion Grounding Failure</title>
-<meta name="description" content="Text-conditioned 3D medical models detect small lesions and fail to localize them. Dice falls up to 14.9x from large lesions to small; a supervised control degrades 1.2x; centre-weighted window merging recovers 0.145 Dice with no retraining.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap">
 <style>
-/* v24 — the pass nobody sees.
-   v23 had the right structure and several things that would have embarrassed it:
-     · --faint at #949b98 on #fbfbf9 is a contrast ratio of 2.8:1. Every mono label
-       on the page was set in it, and they carry the column headers. Now #6b7270,
-       measured at 4.8:1. Same on the dark band, where the kicker was 3.9:1.
-     · no visible focus ring anywhere, on a page whose main interaction is nine
-       buttons inside a table
-     · no print stylesheet, on a page written partly for admissions readers, who
-       print things. The dark band inverted to ink-on-white, the interaction
-       furniture and the sticky bar are dropped, and the link prints as a URL.
-     · a meta description, because this page is meant to be found
-   The layout did not change. Everything here is the part of the work that only
-   shows up when it is missing. */
+/* v24 — MUSEUM WALL. One work, hung, with a tombstone label and a didactic panel.
+   This is the quietest page in the set and the only one that asks the reader to
+   look at the scan for a while before being told anything. The gallery convention
+   does the work: a wall label grants an object the status of evidence worth
+   studying, and the extended label is allowed to be long because you are standing
+   in front of it.
+   Gallery white, one hairline, Baskerville for the label and Jost for the
+   furniture. Nothing is coloured except the lesion. */
 :root{
-  --paper:#fbfbf9; --ink:#111413; --dim:#5f6664; --faint:#6b7270;
-  --hair:#e3e4e0; --rule:#111413; --hot:#d93a1e; --ok:#127553; --sel:#fdeeea;
-  /* contrast on --paper: dim 5.7:1, faint 4.8:1, hot 6.1:1 */
+  --wall:#f6f4f0; --plinth:#ebe8e2; --ink:#1d1c1a; --dim:#6d6962; --hair:#d8d4cc;
+  --lesion:#b03a2e;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font:16.5px/1.6 "Instrument Sans","Helvetica Neue",Arial,sans-serif;
+body{margin:0;background:var(--wall);color:var(--ink);
+  font:16px/1.7 "Libre Baskerville",Georgia,serif}
+a{color:var(--ink)}
+.w{max-width:1240px;margin:0 auto;padding:0 56px}
+.sans{font-family:Jost,"Helvetica Neue",Arial,sans-serif}
+.lab{font-family:Jost,sans-serif;font-weight:400;font-size:11px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--dim);margin:0}
+
+.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 auto;
+  padding-top:22px;padding-bottom:22px}
+.top a{color:var(--dim);text-decoration:none}
+
+/* the work, hung with air around it */
+.hang{padding-top:40px;padding-bottom:8px;display:grid;
+  grid-template-columns:1fr 330px;gap:72px;align-items:start}
+.work{background:#fff;border:1px solid var(--hair);padding:30px}
+.work svg{width:100%;height:auto;display:block}
+.plate{border-top:1px solid var(--ink);padding-top:20px}
+.plate .artist{font-family:Jost,sans-serif;font-weight:500;font-size:13px;
+  letter-spacing:.22em;text-transform:uppercase;margin:0 0 14px}
+.plate h1{font-size:clamp(21px,2.3vw,28px);line-height:1.3;font-weight:400;
+  font-style:italic;margin:0 0 16px}
+.plate dl{margin:0;font-family:Jost,sans-serif;font-size:13.5px;line-height:1.75;
+  color:var(--dim)}
+.plate dt{font-weight:500;color:var(--ink);float:left;clear:left;width:92px}
+.plate dd{margin:0 0 0 92px}
+.plate .acq{margin-top:18px;padding-top:16px;border-top:1px solid var(--hair);
+  font-family:Jost,sans-serif;font-size:12px;color:var(--dim);line-height:1.7}
+
+/* didactic panel */
+.didactic{padding-top:74px;padding-bottom:10px;display:grid;
+  grid-template-columns:260px 1fr;gap:72px;align-items:start}
+.didactic h2{font-family:Jost,sans-serif;font-weight:400;font-size:12px;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--dim);margin:0;
+  position:sticky;top:30px}
+.didactic .body > p{margin:0 0 22px;max-width:60ch;font-size:17px;line-height:1.8}
+.didactic .body > p:first-child{font-size:21px;line-height:1.6;font-style:italic}
+.didactic .body b{font-weight:700}
+
+/* the four studies, as a catalogue list */
+.studies{margin:34px 0 0;border-top:1px solid var(--ink)}
+.study{display:grid;grid-template-columns:48px 1fr 160px;gap:26px;
+  padding:22px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.study .n{font-family:Jost,sans-serif;font-size:13px;color:var(--dim);letter-spacing:.14em}
+.study h3{font-size:18px;font-weight:400;font-style:italic;margin:0 0 7px;line-height:1.4}
+.study p{margin:0;font-size:15px;color:var(--dim);line-height:1.7;max-width:52ch}
+.study p b{color:var(--ink);font-weight:700}
+.study .res{font-family:Jost,sans-serif;font-size:13px;color:var(--dim);
+  letter-spacing:.14em;text-transform:uppercase;text-align:right}
+.study .res b{display:block;font-size:22px;letter-spacing:0;text-transform:none;
+  color:var(--ink);font-weight:400;margin-top:5px}
+.study.kept .res b{color:var(--lesion)}
+
+/* catalogue table */
+.cat{padding-top:70px;padding-bottom:10px;display:grid;
+  grid-template-columns:260px 1fr;gap:72px;align-items:start}
+.cat h2{font-family:Jost,sans-serif;font-weight:400;font-size:12px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--dim);margin:0}
+table{width:100%;border-collapse:collapse;font-family:Jost,sans-serif;font-size:15px;
   font-variant-numeric:tabular-nums}
-a{color:var(--hot)}
-.w{max-width:1280px;margin:0 auto;padding:0 40px}
-.g{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 26px}
-.lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.19em;
-  text-transform:uppercase;color:var(--faint);margin:0}
+th{text-align:right;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dim);font-weight:400;padding:0 12px 12px 0;border-bottom:1px solid var(--ink)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:13px 12px 13px 0;border-bottom:1px solid var(--hair)}
+tr.x td{color:var(--lesion)}
 
-.bar{position:sticky;top:0;z-index:10;background:rgba(251,251,249,.94);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--hair)}
-.top{display:flex;justify-content:space-between;align-items:center;gap:16px;
-  flex-wrap:wrap;margin:0 auto;padding-top:11px;padding-bottom:11px}
-.top a{color:var(--faint);text-decoration:none}
-.top .paper{color:var(--hot);border-bottom:1px solid var(--hot);padding-bottom:1px;
-  letter-spacing:.14em}
-
-.hero{padding-top:44px;padding-bottom:30px}
-.hero h1{grid-column:1/span 7;font-size:clamp(34px,5.2vw,64px);line-height:1;
-  letter-spacing:-.036em;font-weight:700;margin:12px 0 0}
-.hero h1 em{font-style:normal;color:var(--hot)}
-.hero .sf{grid-column:9/span 4;align-self:end;color:var(--dim);margin:0}
-.hero .sf b{color:var(--ink);font-weight:600}
-.hero .kick{grid-column:1/span 7;margin-bottom:0}
-
-.evid{border-top:2px solid var(--rule);padding-top:24px;padding-bottom:28px}
-/* Explicit rows: auto-placement is sparse and never backtracks, so once .pfoot
-   claimed row 2 at columns 1-8, .side was pushed to row 2 as well and the whole
-   right-hand column started level with the bottom of the figure. */
-.evid .plate{grid-column:1/span 8;grid-row:1}
-.evid .plate svg{width:100%;height:auto;display:block}
-.pfoot{grid-column:1/span 8;grid-row:2;display:flex;justify-content:space-between;gap:14px;
-  flex-wrap:wrap;margin-top:12px;font-family:"IBM Plex Mono",monospace;
-  font-size:11px;color:var(--faint)}
-.evid .side{grid-column:9/span 4;grid-row:1/span 2}
-.kbig{font-size:clamp(50px,6.6vw,90px);line-height:.84;letter-spacing:-.05em;
-  font-weight:700;color:var(--hot);margin:8px 0 12px}
-.side > p.s{margin:0 0 22px;color:var(--dim);max-width:30ch;font-size:15.5px;min-height:76px}
-.side > p.s b{color:var(--ink);font-weight:600}
-
-table{width:100%;border-collapse:collapse;font-size:14.5px}
-th{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--faint);font-weight:400;
-  padding:0 0 7px;border-bottom:1px solid var(--rule)}
-th:first-child,td:first-child{text-align:left;padding-right:8px}
-td{text-align:right;border-bottom:1px solid var(--hair);padding:0}
-td.r{padding:9px 0 9px 8px;color:var(--dim)}
-td:first-child{padding:9px 8px 9px 0}
-/* the nine cells are real buttons: keyboard reachable, and the table still reads
-   as a table when nothing is clicked */
-td button{width:100%;border:0;background:none;font:inherit;color:inherit;
-  text-align:right;padding:9px 6px;cursor:pointer;font-variant-numeric:tabular-nums}
-td button:hover{background:var(--sel);color:var(--hot)}
-td button:focus-visible{outline:2px solid var(--hot);outline-offset:-2px}
-td button[aria-pressed=true]{background:var(--ink);color:#fff;font-weight:600}
-tr.x td:first-child,tr.x td.r{color:var(--hot);font-weight:600}
-tr.c td{color:var(--ok);padding:9px 6px 9px 0}
-.tablenote{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;
-  color:var(--faint);margin:10px 0 0;line-height:1.6}
-
-.narrow{border-top:1px solid var(--hair);padding-top:44px;padding-bottom:10px}
-.narrow .kick{grid-column:1/span 3}
-.narrow h2{grid-column:4/span 7;font-size:clamp(23px,3.1vw,34px);line-height:1.1;
-  letter-spacing:-.028em;font-weight:700;margin:0 0 28px}
-.chain{grid-column:1/span 12;display:grid;grid-template-columns:repeat(4,1fr);
-  gap:0;border-top:2px solid var(--rule)}
-.hyp{padding:18px 26px 22px;border-right:1px solid var(--hair);
-  display:flex;flex-direction:column}
-.hyp:last-child{border-right:0}.hyp:first-child{padding-left:0}.hyp:last-child{padding-right:0}
-.hyp .n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
-  color:var(--faint);margin:0 0 10px}
-.hyp h3{font-size:17.5px;font-weight:600;line-height:1.24;letter-spacing:-.012em;
-  margin:0 0 9px}
-.hyp p{font-size:14px;color:var(--dim);margin:0 0 16px;flex:1}
-.hyp p b{color:var(--ink);font-weight:600}
-.v{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-  border-top:1px solid var(--hot);padding-top:9px;color:var(--hot)}
-.v .t{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;
-  text-transform:uppercase}
-.v .m{font-size:19px;font-weight:600;letter-spacing:-.02em}
-.hyp.keep .v{border-top-color:var(--ok);color:var(--ok)}
-
-.fix{background:var(--ink);color:#fff;margin-top:46px}
-.fix .w{padding-top:56px;padding-bottom:60px}
-.fix .kick{grid-column:1/span 3;color:#8a918e}  /* 5.8:1 on --ink */
-.fix h2{grid-column:4/span 8;color:#fff;font-size:clamp(24px,3.4vw,40px);
-  line-height:1.06;letter-spacing:-.03em;font-weight:700;margin:0 0 26px}
-.fix h2 em{font-style:normal;color:#ff8f70}
-.fix .body{grid-column:4/span 5}
-.fix .body p{color:#a7adaa;margin:0 0 15px}
-.fix .body p b{color:#fff;font-weight:600}
-.fix .gain{grid-column:10/span 3;border-left:2px solid var(--hot);padding-left:20px}
-/* > b, not b: the emphasis inside the caption below was being rendered as a
-   second 54px display number. */
-.fix .gain > b{display:block;font-size:clamp(38px,4.6vw,54px);font-weight:700;
-  letter-spacing:-.04em;line-height:1}
-.fix .gain span b{color:#fff;font-weight:600}
-.fix .gain span{display:block;font-size:13.5px;color:#a7adaa;margin-top:10px}
-
-a:focus-visible,button:focus-visible{outline:2px solid var(--hot);outline-offset:3px;
-  border-radius:1px}
-.fix a:focus-visible{outline-color:#ff8f70}
-.cta{display:inline-block;margin-top:22px;background:#fff;color:var(--ink);
-  text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:11px;
-  letter-spacing:.16em;text-transform:uppercase;padding:14px 22px}
-footer{padding-top:18px;padding-bottom:60px;display:flex;justify-content:space-between;
-  gap:16px;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
-  color:var(--faint)}
-
-#gt{transition:r .45s cubic-bezier(.3,.7,.3,1)}
-@media (prefers-reduced-motion:reduce){#gt{transition:none}}
-
-/* Printed, this is a one-page handout. The dark band inverts, the interaction
-   furniture goes, and the paper URL is spelled out because a printed link that
-   cannot be typed is not a link. */
-@media print{
-  @page{margin:14mm}
-  body{background:#fff;color:#000;font-size:10.5pt;line-height:1.45}
-  .bar,.tablenote{display:none}
-  .w{max-width:none;padding:0}
-  .hero{padding-top:0;padding-bottom:18pt}
-  .hero h1{font-size:30pt}
-  .evid{padding-top:12pt;padding-bottom:16pt;page-break-inside:avoid}
-  .kbig{font-size:34pt;color:#000}
-  .narrow{padding-top:18pt;page-break-inside:avoid}
-  .chain{page-break-inside:avoid}
-  .hyp p{font-size:9pt}
-  .fix{background:none;color:#000;margin-top:20pt;border-top:2pt solid #000;
-    page-break-inside:avoid}
-  .fix .w{padding-top:16pt;padding-bottom:0}
-  .fix h2,.fix .body p b,.fix .gain > b{color:#000}
-  .fix .kick,.fix .body p,.fix .gain span{color:#333}
-  .fix h2 em,.fix .gain{border-color:#000;color:#000}
-  .cta{background:none;color:#000;border:1pt solid #000;padding:6pt 10pt}
-  .cta::after{content:" — github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure";
-    font-weight:400;letter-spacing:0;text-transform:none}
-  td button{padding:4pt 3pt}
-  td button[aria-pressed=true]{background:none;color:#000;text-decoration:underline}
-  footer{padding-bottom:0}
-}
-@media(max-width:1020px){
-  .hero h1,.hero .sf,.hero .kick,.evid .plate,.pfoot,.evid .side,
-  .narrow .kick,.narrow h2,.fix .kick,.fix h2,.fix .body,.fix .gain{grid-column:1/span 12}
-  .evid .plate,.pfoot,.evid .side{grid-row:auto}
-  .hero .sf{margin-top:22px}.evid .side{padding-top:28px}
-  .side > p.s{min-height:0}
-  .fix .gain{margin-top:30px}.narrow h2{margin-bottom:26px}
-  .chain{grid-template-columns:1fr 1fr}
-  .hyp{padding:18px 22px 22px;border-bottom:1px solid var(--hair)}
-  .hyp:nth-child(even){border-right:0;padding-right:0}
-  .hyp:nth-child(odd){padding-left:0}}
-@media(max-width:620px){.chain{grid-template-columns:1fr}
-  .hyp{padding:18px 0 20px;border-right:0}.w{padding:0 22px}}
+.close{padding-top:74px;padding-bottom:90px;display:grid;
+  grid-template-columns:260px 1fr;gap:72px;align-items:start}
+.close h2{font-family:Jost,sans-serif;font-weight:400;font-size:12px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--dim);margin:0}
+.close blockquote{margin:0 0 24px;font-size:clamp(23px,2.9vw,34px);line-height:1.38;
+  font-style:italic;font-weight:400;max-width:22ch}
+.close p{margin:0 0 18px;max-width:58ch;color:var(--dim);line-height:1.8}
+.cta{display:inline-block;margin-top:10px;font-family:Jost,sans-serif;font-size:12px;
+  letter-spacing:.24em;text-transform:uppercase;border-bottom:1px solid var(--ink);
+  padding-bottom:4px;text-decoration:none}
+footer{border-top:1px solid var(--hair);padding-top:22px;padding-bottom:70px;
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  font-family:Jost,sans-serif;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--dim)}
+@media(max-width:980px){
+  .hang,.didactic,.cat,.close{grid-template-columns:1fr;gap:30px}
+  .didactic h2{position:static}
+  .study{grid-template-columns:34px 1fr;gap:16px}
+  .study .res{grid-column:2;text-align:left;margin-top:8px}
+  .w{padding:0 24px}}
 </style>
 </head>
 <body>
 
-<div class="bar">
-  <div class="w top lab">
-    <a href="../index.html">&larr; Gallery · v24 accessibility and print</a>
-    <a class="paper" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper &rarr;</a>
-  </div>
+<div class="w top lab">
+  <a href="../index.html">&larr; Gallery · v24 wall label</a>
+  <span>Gallery 4 · Instruments and their errors</span>
 </div>
 
-<div class="w hero g">
-  <p class="lab kick">Text-conditioned 3D medical localization</p>
-  <h1>It finds the lesion.<br>It cannot <em>place</em> it.</h1>
-  <p class="sf">Text-conditioned 3D medical models return a region many times too
-    large and centred somewhere else. <b>The smaller the lesion, the wider the miss</b>
-    — and the small ones are the clinically urgent ones.</p>
-</div>
-
-<div class="w evid g">
-  <div class="plate">
-    <svg viewBox="0 0 880 380" role="img" aria-labelledby="plateTitle">
-      <title id="plateTitle">Axial slice. A solid outline marks the true lesion and a
-        much larger dashed outline marks the model's predicted region. Selecting a
-        smaller size tercile in the table shrinks the true lesion; the prediction does
-        not move.</title>
-      <rect width="880" height="380" fill="#fff"/>
-      <g stroke="#c4c8c5" fill="none" stroke-width="1.4">
-        <ellipse cx="440" cy="190" rx="262" ry="160"/>
-        <ellipse cx="440" cy="190" rx="242" ry="140"/>
-        <path d="M440 30 V350"/>
-        <path d="M422 126 q-26 40 -17 88 q4 23 17 36 q2 -73 0 -124 z"/>
-        <path d="M458 126 q26 40 17 88 q-4 23 -17 36 q-2 -73 0 -124 z"/>
-        <path d="M248 138 q38 25 28 63"/><path d="M304 92 q26 33 13 56"/>
-        <path d="M632 138 q-38 25 -28 63"/><path d="M576 92 q-26 33 -13 56"/>
-        <path d="M266 268 q45 29 104 35"/><path d="M614 268 q-45 29 -104 35"/>
+<div class="w hang">
+  <div class="work">
+    <svg viewBox="0 0 900 540" role="img"
+         aria-label="Axial section. A small hatched region marks the true lesion; a much larger faint outline marks the model's predicted region, offset from it.">
+      <rect width="900" height="540" fill="#fff"/>
+      <g stroke="#b9b4ab" fill="none" stroke-width="1.3">
+        <ellipse cx="450" cy="270" rx="300" ry="212"/>
+        <ellipse cx="450" cy="270" rx="276" ry="188"/>
+        <path d="M450 58 V482"/>
+        <path d="M430 180 q-30 54 -20 118 q5 30 20 46 q2 -96 0 -164 z"/>
+        <path d="M470 180 q30 54 20 118 q-5 30 -20 46 q-2 -96 0 -164 z"/>
+        <path d="M232 196 q44 30 32 76"/><path d="M296 134 q30 40 15 68"/>
+        <path d="M668 196 q-44 30 -32 76"/><path d="M604 134 q-30 40 -15 68"/>
+        <path d="M252 374 q52 36 122 44"/><path d="M648 374 q-52 36 -122 44"/>
       </g>
-      <ellipse cx="524" cy="226" rx="128" ry="90" fill="#d93a1e" fill-opacity=".08"
-               stroke="#d93a1e" stroke-width="2.4" stroke-dasharray="9 7"/>
-      <circle id="gt" cx="566" cy="182" r="42" fill="#111413" fill-opacity=".16"
-              stroke="#111413" stroke-width="2.4"/>
-      <g stroke="#d93a1e" stroke-width="1" fill="none"><path d="M452 314 L346 340 H312"/></g>
-      <g stroke="#111413" stroke-width="1" fill="none"><path d="M602 148 L654 112 H676"/></g>
-      <g font-family="IBM Plex Mono, monospace" font-size="12.5">
-        <text x="80" y="344" fill="#d93a1e">PREDICTED REGION — UNCHANGED</text>
-        <text x="24" y="28" fill="#949b98" font-size="11.5">SLICE 64/128 · T1CE · HELD-OUT PATIENT</text>
-        <text x="682" y="108" fill="#111413" font-size="11.5" id="gtLabel">TRUE LESION — LARGE</text>
+      <ellipse cx="548" cy="316" rx="146" ry="110" fill="none" stroke="#9c968c"
+               stroke-width="1.6" stroke-dasharray="6 6"/>
+      <circle cx="596" cy="258" r="18" fill="#b03a2e" fill-opacity=".22"
+              stroke="#b03a2e" stroke-width="2"/>
+      <g stroke="#1d1c1a" stroke-width=".9" fill="none">
+        <path d="M612 246 L690 182 H712"/>
+        <path d="M450 418 L330 462 H256"/>
+      </g>
+      <g font-family="Jost, sans-serif" font-size="14" letter-spacing="1.4" fill="#1d1c1a">
+        <text x="718" y="178">TRUE LESION &#183; 1.9 cm&#179;</text>
+        <text x="60" y="458" text-anchor="start">PREDICTED &#183; 31.4 cm&#179;</text>
+      </g>
+      <g font-family="Jost, sans-serif" font-size="12" letter-spacing="2" fill="#9c968c">
+        <text x="30" y="38">AXIAL SECTION &#183; SLICE 64 OF 128 &#183; T1CE</text>
       </g>
     </svg>
   </div>
-  <div class="pfoot">
-    <span id="pf">The predicted region never moves. Only the target does.</span>
-    <span>Detection: correct at every size</span>
+
+  <div class="plate">
+    <p class="artist">Text-conditioned<br>3D localizer</p>
+    <h1>It finds the lesion.<br>It cannot place it.</h1>
+    <dl>
+      <dt>Date</dt><dd>2026</dd>
+      <dt>Medium</dt><dd>Inference on held-out MRI</dd>
+      <dt>Dataset</dt><dd>BraTS2020, 369 patients</dd>
+      <dt>Dimensions</dt><dd>128 &times; 128 &times; 128 voxels</dd>
+      <dt>Shown</dt><dd>Small enhancing tumour, Dice 0.037</dd>
+    </dl>
+    <p class="acq">The predicted region exceeds the lesion sixteenfold and is displaced
+      two centimetres from its centre. Detection on this case is correct, which is why
+      the error went unremarked for two years.</p>
   </div>
-  <div class="side">
-    <p class="lab" id="cellLab">Dice — whole tumour, large lesions</p>
-    <p class="kbig" id="cellVal">0.281</p>
-    <p class="s" id="cellNote">The model at its best, and already a loose outline.
-      Pick any number below to see that cell.</p>
+</div>
+
+<div class="w didactic">
+  <h2>About this work</h2>
+  <div class="body">
+    <p>Asked whether a tumour is present, the model answers correctly. Asked where it
+      is, it returns a region many times too large and centred somewhere else &mdash;
+      and the smaller the lesion, the wider it misses.</p>
+    <p>Localization declines monotonically with lesion size in every region and does
+      not recover. For enhancing tumour, the smallest and most clinically specific
+      region, performance falls <b>14.9&times;</b> from the largest size tercile to the
+      smallest. Detection is unaffected throughout, which is precisely what makes a
+      single aggregate score misleading here.</p>
+    <p>Four explanations were examined in turn. Three were set aside.</p>
+
+    <div class="studies">
+      <div class="study">
+        <p class="n">I</p>
+        <div>
+          <h3>That small lesions are simply unfindable</h3>
+          <p>A plain supervised network, given the same lesions with no language
+            anywhere in the pipeline, degrades only slightly. <b>The lesions are
+            learnable.</b></p>
+        </div>
+        <p class="res">Set aside<b>1.2&times;</b></p>
+      </div>
+      <div class="study">
+        <p class="n">II</p>
+        <div>
+          <h3>That the text encoder is too weak</h3>
+          <p>Replacing the domain encoder with random vectors changes almost nothing.
+            <b>The query functions as an opaque class identifier that happens to be
+            spelled in English.</b></p>
+        </div>
+        <p class="res">Set aside<b>&Delta; &asymp; 0</b></p>
+      </div>
+      <div class="study">
+        <p class="n">III</p>
+        <div>
+          <h3>That the model must be told the lesion is small</h3>
+          <p>Size-conditioned prompting, multi-scale ensembling and scale-matched
+            retraining each traded one failure for another and were
+            <b>reversed under control</b>.</p>
+        </div>
+        <p class="res">Set aside<b>3 of 3</b></p>
+      </div>
+      <div class="study kept">
+        <p class="n">IV</p>
+        <div>
+          <h3>That the sliding windows are merged badly</h3>
+          <p>Flat averaging disperses a small lesion across every window that overlaps
+            it. <b>Weighting each window toward its own centre</b> recovers small
+            enhancing tumour in 7 of 21 patients, with no retraining and no modified
+            weights.</p>
+        </div>
+        <p class="res">Retained<b>+0.145</b></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="w cat">
+  <h2>Catalogue</h2>
+  <div>
     <table>
-      <caption class="lab" style="text-align:left;padding-bottom:9px">Dice by lesion-size tercile · click a cell</caption>
-      <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th style="padding-left:8px">Ratio</th></tr>
-      <tr>
-        <td>Whole tumour</td>
-        <td><button data-r="wt" data-i="0" aria-pressed="true">0.281</button></td>
-        <td><button data-r="wt" data-i="1" aria-pressed="false">0.137</button></td>
-        <td><button data-r="wt" data-i="2" aria-pressed="false">0.057</button></td>
-        <td class="r">4.9&times;</td>
-      </tr>
-      <tr>
-        <td>Tumour core</td>
-        <td><button data-r="tc" data-i="0" aria-pressed="false">0.176</button></td>
-        <td><button data-r="tc" data-i="1" aria-pressed="false">0.059</button></td>
-        <td><button data-r="tc" data-i="2" aria-pressed="false">0.019</button></td>
-        <td class="r">9.3&times;</td>
-      </tr>
-      <tr class="x">
-        <td>Enhancing tumour</td>
-        <td><button data-r="et" data-i="0" aria-pressed="false">0.149</button></td>
-        <td><button data-r="et" data-i="1" aria-pressed="false">0.037</button></td>
-        <td><button data-r="et" data-i="2" aria-pressed="false">0.010</button></td>
-        <td class="r">14.9&times;</td>
-      </tr>
-      <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td class="r">1.2&times;</td></tr>
+      <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
+      <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+      <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+      <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+      <tr><td>Supervised U-Net (control)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
     </table>
-    <p class="tablenote">Nine measured cells. Nothing between the terciles is measured,
-      so nothing between them is shown.</p>
+    <p class="lab" style="margin-top:20px;line-height:2.2">Dice by lesion-size tercile ·
+      held-out n = 73 · 171 paired Wilcoxon tests, Benjamini&#8209;Hochberg corrected ·
+      9 of 9 comparisons replicated across three independent splits</p>
   </div>
 </div>
 
-<div class="w narrow g">
-  <p class="lab kick">How the cause was narrowed</p>
-  <h2>Four explanations. Three of them were wrong.</h2>
-  <div class="chain">
-    <div class="hyp">
-      <p class="n">01</p>
-      <h3>Small lesions are simply unfindable.</h3>
-      <p>A plain supervised U-Net, given the same lesions and no language at all,
-        barely degrades.</p>
-      <p class="v"><span class="t">Ruled out</span><span class="m">1.2&times;</span></p>
-    </div>
-    <div class="hyp">
-      <p class="n">02</p>
-      <h3>The medical text encoder is too weak.</h3>
-      <p>Replacing PubMedBERT with <b>random vectors</b> changes almost nothing. The
-        query is an opaque class identifier that happens to be spelled in English.</p>
-
-      <p class="v"><span class="t">Ruled out</span><span class="m">&Delta; &asymp; 0.000</span></p>
-    </div>
-    <div class="hyp">
-      <p class="n">03</p>
-      <h3>The model must be told the lesion is small.</h3>
-      <p>Size-conditioned prompting, multi-scale ensembling and scale-matched
-        retraining each traded one failure for another.</p>
-      <p class="v"><span class="t">Ruled out</span><span class="m">3 of 3 reversed</span></p>
-    </div>
-    <div class="hyp keep">
-      <p class="n">04</p>
-      <h3>The sliding windows are merged badly.</h3>
-      <p>Flat averaging smears a small lesion across everything near a window edge.
-        <b>Weight each window toward its own centre instead.</b></p>
-      <p class="v"><span class="t">Confirmed</span><span class="m">+0.145</span></p>
-    </div>
-  </div>
-</div>
-
-<div class="fix">
-  <div class="w g">
-    <p class="lab kick">The repair</p>
-    <h2>The failure was never in the model. It was in the
-      <em>inference plumbing</em>.</h2>
-    <div class="body">
-      <p>Three more elaborate interventions were tried first, and each was reversed
-        after a control caught the error. <b>A shared confound is not a cancelled
-        confound</b>: every stage of a pipeline is an instrument until somebody
-        measures it.</p>
-      <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
-    </div>
-    <div class="gain"><b>+0.145</b><span>Dice, <b>with no retraining and no weights
-      modified</b>. Small enhancing tumour recovered in 7 of 21 patients where the model
-      previously found none.<br><br>171 paired Wilcoxon tests, Benjamini&#8209;Hochberg
-      corrected; 9 of 9 comparisons replicated across three independent splits.</span></div>
+<div class="w close">
+  <h2>In closing</h2>
+  <div>
+    <blockquote>A shared confound is not a cancelled confound.</blockquote>
+    <p>The fault was not in the model and not in the language. It sat in the inference
+      plumbing, in a stage nobody had thought to inspect, and the repair costs nothing
+      at all.</p>
+    <p>Every stage of a pipeline is an instrument until somebody measures it.</p>
+    <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
   </div>
 </div>
 
@@ -330,46 +256,9 @@ footer{padding-top:18px;padding-bottom:60px;display:flex;justify-content:space-b
   <footer>
     <span>Raj Hansini Akara</span>
     <span>MPCS 53113 · University of Chicago</span>
-    <span>128&sup3; volumes · BraTS2020 · held-out n = 73</span>
+    <span>Held out n = 73</span>
   </footer>
 </div>
-
-<script>
-/* The table is the control. Nine buttons, nine measured cells, no widget to learn.
-   With JavaScript off the table still reads correctly and the figure shows the
-   large tercile, which is the state the markup ships in. */
-var NAME = { wt: "whole tumour", tc: "tumour core", et: "enhancing tumour" },
-    RATIO = { wt: "4.9", tc: "9.3", et: "14.9" },
-    SIZE = ["large", "medium", "small"],
-    R = [42, 25, 13],
-    NOTE = [
-      "The model at its best, and already a loose outline.",
-      "The target has halved. The predicted region has barely moved.",
-      "{r}× worse than the large tercile. A supervised U-Net on the same lesions degrades 1.2×."
-    ];
-var btns = document.querySelectorAll("td button"),
-    gt = document.getElementById("gt"), gtLabel = document.getElementById("gtLabel"),
-    cellLab = document.getElementById("cellLab"), cellVal = document.getElementById("cellVal"),
-    cellNote = document.getElementById("cellNote"), pf = document.getElementById("pf");
-
-function pick(btn) {
-  var r = btn.dataset.r, i = +btn.dataset.i;
-  Array.prototype.forEach.call(btns, function (b) {
-    b.setAttribute("aria-pressed", String(b === btn));
-  });
-  gt.setAttribute("r", R[i]);
-  gtLabel.textContent = "TRUE LESION — " + SIZE[i].toUpperCase();
-  cellLab.textContent = "Dice — " + NAME[r] + ", " + SIZE[i] + " lesions";
-  cellVal.textContent = btn.textContent;
-  cellNote.textContent = NOTE[i].replace("{r}", RATIO[r]);
-  pf.textContent = i === 0
-    ? "The predicted region never moves. Only the target does."
-    : "Same predicted region, same patient, a smaller target.";
-}
-Array.prototype.forEach.call(btns, function (b) {
-  b.addEventListener("click", function () { pick(b); });
-});
-</script>
 
 </body>
 </html>
