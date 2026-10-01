@@ -8,12 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* v14 = v03 (Swiss grid) x v01 (the scan overlay).
-   v03 proved a single number can hold a page but had no picture; v01 had the
-   strongest picture in the set but buried it in application chrome. Here the
-   overlay IS the hero, set on the grid at full measure, with the number as its
-   caption rather than its rival. Blue and black instead of v03's red so the two
-   are not read as a recolour. */
+/* v14 — a strict Swiss grid carrying v01's scan overlay.
+   v01 had the strongest picture in the set and buried it in application chrome;
+   a bare modular grid can hold a single number but has nothing to look at. Here
+   the overlay IS the hero, set on the grid at full measure, with 14.9x as its
+   caption rather than its rival.
+   (This originally crossed with the Swiss-grid version at v03; that slot was later
+   rebuilt as a CVPR submission, so the grid discipline now lives only here.) */
 :root{
   --paper:#fff; --ink:#0a0a0a; --dim:#6b6b6b; --hair:#e0e0e0;
   --blue:#0033ff; --gt:#0a0a0a; --pred:#0033ff;
