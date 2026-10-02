@@ -6,195 +6,355 @@
 <title>v17 · Small-Lesion Grounding Failure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* v17 — v01's overlay and measurements rail, tiled onto one surface.
-   One screen, no scrolling: the figure, the nine numbers, the two
-   controls and the repair are tiled so a reader who gives this page four seconds
-   still leaves with the whole argument.
-   Near-black with a single high-chroma yellow, so it is not read as a variant of
-   v01's amber-and-cyan. */
+/* v17 — CONFERENCE PAPER PAGE. The accepted-paper view on a tier-1 ML venue site:
+   decision badge, session and poster number, author block with affiliation marks,
+   abstract, keyword chips, reviewer summary, BibTeX, and the row of PDF / Code /
+   Poster / Video buttons.
+   Different from v03, which is the SUBMISSION. This is the same work after it was
+   accepted, and the difference is the whole point: the reviewer summary is where a
+   paper's weaknesses get stated in public, so the three reversed interventions sit
+   in the one place a venue would actually print them. */
 :root{
-  --bg:#0c0d0f; --tile:#141619; --edge:#23262b; --hair:#1b1e22;
-  --txt:#eef0f2; --dim:#878e97; --faint:#5c636c; --hot:#ffe14d; --gt:#fff;
+  --bg:#f7f8fa; --card:#fff; --ink:#15181d; --dim:#5a6270; --faint:#8b93a1;
+  --hair:#e1e5eb; --navy:#2f3a8f; --accent:#5a4fcf; --green:#1a7a4a; --red:#b3261e;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--txt);
-  font:15px/1.5 Chivo,"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
-a{color:var(--hot)}
-.lab{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.2em;
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 "Source Sans 3","Helvetica Neue",Arial,sans-serif}
+a{color:var(--navy)}
+.w{max-width:1120px;margin:0 auto;padding:0 32px}
+.mono{font-family:"JetBrains Mono",monospace}
+.lab{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--faint);margin:0}
 
-.rail{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
-  padding:9px 20px;border-bottom:1px solid var(--edge)}
-.rail a{color:var(--dim);text-decoration:none}
+/* venue masthead */
+.venue{background:var(--navy);color:#fff}
+.venue .w{display:flex;justify-content:space-between;align-items:center;gap:18px;
+  flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+.venue .name{font-weight:700;font-size:19px;letter-spacing:-.01em}
+.venue .name span{opacity:.72;font-weight:400;margin-left:10px;font-size:15px}
+.venue nav{display:flex;gap:20px;flex-wrap:wrap;font-size:14.5px}
+.venue nav a{color:#fff;opacity:.88;text-decoration:none}
 
-.board{display:grid;gap:1px;background:var(--edge);padding:1px 0 0;
-  grid-template-columns:repeat(12,1fr);
-  grid-template-areas:
-    "t t t t t t t t k k k k"
-    "f f f f f f f s s s s s"
-    "f f f f f f f a a a r r"
-    "n n n n n n n n n n n n";
-  min-height:calc(100vh - 36px)}
-.tile{background:var(--tile);padding:20px 22px 22px;min-width:0}
+.crumb{padding-top:16px;padding-bottom:4px;font-size:13.5px;color:var(--dim)}
+.crumb a{text-decoration:none}
 
-.t-head{grid-area:t;display:flex;flex-direction:column;justify-content:center}
-h1{font-size:clamp(28px,3.6vw,50px);line-height:1;letter-spacing:-.035em;
-  font-weight:900;margin:10px 0 0;max-width:19ch}
-h1 em{font-style:normal;color:var(--hot)}
-.t-head p{color:var(--dim);max-width:60ch;margin:16px 0 0;font-size:15.5px}
-.t-head p b{color:var(--txt);font-weight:500}
+/* paper header */
+.paper{background:var(--card);border:1px solid var(--hair);border-radius:8px;
+  padding:30px 34px 32px;margin-top:14px}
+.badges{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+.badge{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;padding:5px 11px;border-radius:4px;font-weight:500}
+.badge.oral{background:#eae8fb;color:var(--accent)}
+.badge.ok{background:#e4f3eb;color:var(--green)}
+.badge.n{background:#eef0f4;color:var(--dim)}
+h1{font-size:clamp(25px,3.4vw,38px);line-height:1.22;letter-spacing:-.018em;
+  font-weight:700;margin:0 0 16px;max-width:34ch}
+.authors{font-size:17px;margin:0 0 5px}
+.authors sup{color:var(--navy);font-weight:600}
+.affil{font-size:14px;color:var(--dim);margin:0 0 20px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:18px;
+  border-top:1px solid var(--hair)}
+.act{border:1px solid var(--hair);border-radius:6px;padding:9px 16px;font-size:14px;
+  text-decoration:none;color:var(--ink);background:#fbfcfd}
+.act.primary{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600}
 
-.t-kpi{grid-area:k;display:flex;flex-direction:column;justify-content:center}
-.kbig{font-size:clamp(52px,7.4vw,96px);line-height:.86;letter-spacing:-.05em;
-  font-weight:900;color:var(--hot);margin:8px 0 10px}
-.t-kpi p.s{margin:0;color:var(--dim);font-size:14px;max-width:26ch}
-.t-kpi p.s b{color:var(--txt);font-weight:500}
+/* session box */
+.session{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:14px;
+  background:var(--card);border:1px solid var(--hair);border-radius:8px;overflow:hidden}
+.session div{padding:14px 18px 16px;border-left:1px solid var(--hair)}
+.session div:first-child{border-left:0}
+.session .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin:0 0 5px}
+.session .v{font-size:15.5px;font-weight:600;margin:0}
 
-.t-fig{grid-area:f;display:flex;flex-direction:column;justify-content:center}
-.t-fig svg{width:100%;height:auto;display:block}
-.figfoot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
-  margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint)}
+.cols{display:grid;grid-template-columns:1fr 310px;gap:26px;margin-top:14px;
+  align-items:start}
+.main{display:flex;flex-direction:column;gap:14px}
+.block{background:var(--card);border:1px solid var(--hair);border-radius:8px;
+  padding:26px 30px 28px}
+.block h2{font-size:18px;font-weight:700;letter-spacing:-.01em;margin:0 0 14px;
+  padding-bottom:11px;border-bottom:1px solid var(--hair)}
+.block p{margin:0 0 13px}
+.block p:last-child{margin-bottom:0}
+.block b{font-weight:700}
+.abstract p{font-size:16.5px;line-height:1.72}
 
-.t-scale{grid-area:s}
-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
-th{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:9px;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:400;
-  padding:0 8px 7px 0;border-bottom:1px solid var(--edge)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:#eef0f4;border-radius:999px;padding:5px 13px;font-size:13px;
+  color:var(--dim)}
+
+/* reviewer summary */
+.rev{display:grid;grid-template-columns:34px 1fr 118px;gap:18px;padding:16px 0;
+  border-bottom:1px solid var(--hair);align-items:baseline}
+.rev:last-of-type{border-bottom:0}
+.rev .n{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--faint)}
+.rev h3{font-size:16px;font-weight:700;margin:0 0 6px;line-height:1.35}
+.rev p{font-size:15px;color:var(--dim);margin:0;max-width:60ch}
+.rev p b{color:var(--ink)}
+.rev .v{text-align:right;font-family:"JetBrains Mono",monospace;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.rev .v b{display:block;font-family:"Source Sans 3",sans-serif;font-size:19px;
+  letter-spacing:0;text-transform:none;color:var(--ink);font-weight:700;margin-top:3px}
+.rev.ok .v{color:var(--green)}
+
+table{width:100%;border-collapse:collapse;font-size:15px;
+  font-variant-numeric:tabular-nums}
+caption{text-align:left;font-size:13.5px;color:var(--dim);padding-bottom:10px}
+th{text-align:right;font-family:"JetBrains Mono",monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:400;
+  padding:0 10px 9px 0;border-bottom:1px solid var(--ink)}
 th:first-child,td:first-child{text-align:left}
-td{text-align:right;padding:9px 8px 9px 0;border-bottom:1px solid var(--hair)}
-tr.x td{color:var(--hot);font-weight:700}
-tr.c td{color:var(--dim);font-style:italic}
+td{text-align:right;padding:10px 10px 10px 0;border-bottom:1px solid var(--hair)}
+tr.x td{color:var(--red);font-weight:700}
+tr.c td{color:var(--green)}
 
-.t-abl{grid-area:a}
-.t-fix{grid-area:r}
-.t-abl .v,.t-fix .v{font-size:clamp(30px,4vw,44px);line-height:1;font-weight:900;
-  letter-spacing:-.035em;margin:10px 0 9px}
-.t-fix .v{color:var(--hot)}
-.t-abl p.s,.t-fix p.s{margin:0;font-size:13.5px;color:var(--dim);line-height:1.5}
-.t-abl p.s b,.t-fix p.s b{color:var(--txt);font-weight:500}
+figure{margin:0}
+figure svg{width:100%;height:auto;display:block;border:1px solid var(--hair);
+  border-radius:6px}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:11px;line-height:1.6}
 
-.t-note{grid-area:n;display:flex;justify-content:space-between;align-items:center;
-  gap:26px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
-.t-note .q{font-size:clamp(16px,2vw,23px);font-weight:500;letter-spacing:-.015em;
-  margin:0;max-width:52ch}
-.t-note .q em{font-style:normal;color:var(--hot)}
-.t-note .meta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint);
-  line-height:1.8;text-align:right}
-.cta{display:inline-block;background:var(--hot);color:#0c0d0f;text-decoration:none;
-  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;padding:12px 19px;font-weight:500;white-space:nowrap}
+/* sidebar */
+.side{display:flex;flex-direction:column;gap:14px;position:sticky;top:18px}
+.side .block{padding:20px 22px 22px}
+.side h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-family:"JetBrains Mono",monospace;color:var(--faint);font-weight:400;
+  border:0;padding:0;margin:0 0 12px}
+.stat{display:flex;justify-content:space-between;gap:10px;padding:7px 0;
+  border-bottom:1px solid var(--hair);font-size:14.5px}
+.stat:last-child{border-bottom:0}
+.stat span{color:var(--dim)}
+.stat b{font-weight:700;font-variant-numeric:tabular-nums}
+.stat b.red{color:var(--red)}.stat b.green{color:var(--green)}
+pre{margin:0;background:#1c2029;color:#e4e8ef;border-radius:6px;padding:16px 18px;
+  font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.75;
+  overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+pre .k{color:#9db4ff}pre .s{color:#9ae6b4}
 
-@media(max-width:1100px){
-  .board{grid-template-areas:
-    "t t t t t t t t t t t t"
-    "k k k k k k k k k k k k"
-    "f f f f f f f f f f f f"
-    "s s s s s s s s s s s s"
-    "a a a a a a r r r r r r"
-    "n n n n n n n n n n n n";min-height:0}
-}
-@media(max-width:620px){.board{grid-template-areas:
-    "t t t t t t t t t t t t" "k k k k k k k k k k k k"
-    "f f f f f f f f f f f f" "s s s s s s s s s s s s"
-    "a a a a a a a a a a a a" "r r r r r r r r r r r r"
-    "n n n n n n n n n n n n"}
-  .tile{padding:16px 16px 18px}}
+footer{padding-top:26px;padding-bottom:60px;margin-top:22px;border-top:1px solid var(--hair);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:13px;color:var(--faint)}
+@media(max-width:940px){.cols{grid-template-columns:1fr}.side{position:static}
+  .session{grid-template-columns:1fr 1fr}
+  .session div:nth-child(3){border-left:0}
+  .rev{grid-template-columns:26px 1fr}
+  .rev .v{grid-column:2;text-align:left;margin-top:6px}}
 </style>
 </head>
 <body>
 
-<div class="rail lab">
-  <a href="../index.html">&larr; Gallery · v17 one-screen console</a>
-  <span>BraTS2020 · 369 patients · 128&sup3; · held-out n = 73</span>
+<div class="venue">
+  <div class="w">
+    <span class="name">MOCK VENUE 2026 <span>· a fictional conference, for layout purposes</span></span>
+    <nav><a href="#">Program</a><a href="#">Papers</a><a href="#">Workshops</a>
+      <a href="../index.html">&larr; Gallery · v17</a></nav>
+  </div>
 </div>
 
-<div class="board">
+<div class="w">
+  <p class="crumb"><a href="#">Papers</a> &rsaquo; <a href="#">Medical imaging</a>
+    &rsaquo; Paper 4817</p>
 
-  <div class="tile t-head">
-    <p class="lab">Localization failure &mdash; text-conditioned 3D medical models</p>
-    <h1>It knows the tumour is there. It cannot say <em>where</em>.</h1>
-    <p>The model detects a lesion correctly, then returns a region many times too large
-      and centred somewhere else. <b>The smaller the lesion, the wider the miss</b> —
-      and the small ones are the clinically urgent ones.</p>
-  </div>
-
-  <div class="tile t-kpi">
-    <p class="lab">Dice degradation<br>large &rarr; small</p>
-    <p class="kbig">14.9&times;</p>
-    <p class="s">Enhancing tumour. A supervised U-Net on the same lesions degrades
-      <b>1.2&times;</b>, so the lesions are learnable and the conditioning is what fails.</p>
-  </div>
-
-  <div class="tile t-fig">
-    <p class="lab" style="margin-bottom:12px">Held-out patient · small enhancing tumour</p>
-    <svg viewBox="0 0 860 400" role="img"
-         aria-label="Axial slice: a small white outline marks the true lesion, a much larger dashed yellow outline marks the model's predicted region, offset from it.">
-      <rect width="860" height="400" fill="#0f1114"/>
-      <g stroke="#3c434c" fill="none" stroke-width="1.5">
-        <ellipse cx="430" cy="200" rx="252" ry="168"/>
-        <ellipse cx="430" cy="200" rx="232" ry="148"/>
-        <path d="M430 32 V368"/>
-        <path d="M412 132 q-26 42 -17 92 q4 24 17 38 q2 -76 0 -130 z"/>
-        <path d="M448 132 q26 42 17 92 q-4 24 -17 38 q-2 -76 0 -130 z"/>
-        <path d="M244 144 q38 26 28 66"/><path d="M300 96 q26 34 13 58"/>
-        <path d="M616 144 q-38 26 -28 66"/><path d="M560 96 q-26 34 -13 58"/>
-        <path d="M262 282 q45 30 104 37"/><path d="M598 282 q-45 30 -104 37"/>
-      </g>
-      <ellipse cx="524" cy="238" rx="124" ry="92" fill="#ffe14d" fill-opacity=".09"
-               stroke="#ffe14d" stroke-width="2.4" stroke-dasharray="9 7"/>
-      <circle cx="566" cy="192" r="15" fill="#fff" fill-opacity=".26" stroke="#fff" stroke-width="2.4"/>
-      <g stroke="#fff" stroke-width="1" fill="none"><path d="M578 183 L688 122 H744"/></g>
-      <g stroke="#ffe14d" stroke-width="1" fill="none"><path d="M430 322 L286 362 H168"/></g>
-      <g font-family="IBM Plex Mono, monospace" font-size="12.5">
-        <text x="750" y="118" fill="#fff">TRUE 1.9 cm&#179;</text>
-        <text x="72" y="358" fill="#ffe14d">PREDICTED 31.4 cm&#179;</text>
-        <text x="24" y="30" fill="#5c636c" font-size="11.5">SLICE 64/128 · T1CE</text>
-        <text x="736" y="376" fill="#ffe14d" font-size="11.5">DICE 0.037</text>
-      </g>
-    </svg>
-    <div class="figfoot">
-      <span>Sixteen times the true volume, two centimetres off centre</span>
-      <span>Detection: correct</span>
+  <div class="paper">
+    <div class="badges">
+      <span class="badge oral">Oral</span>
+      <span class="badge ok">Accepted</span>
+      <span class="badge n">Paper 4817</span>
+      <span class="badge n">Medical imaging &middot; Vision–language</span>
+    </div>
+    <h1>Diagnosing Small-Lesion Grounding Failure in Text-Conditioned 3D Medical
+      Localization</h1>
+    <p class="authors">Raj Hansini Akara<sup>1</sup></p>
+    <p class="affil"><sup>1</sup> University of Chicago &middot; MPCS 53113</p>
+    <div class="actions">
+      <a class="act primary" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Paper (PDF)</a>
+      <a class="act" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Code</a>
+      <a class="act" href="#poster">Poster</a>
+      <a class="act" href="#review">Reviews</a>
+      <a class="act" href="#bib">BibTeX</a>
     </div>
   </div>
 
-  <div class="tile t-scale">
-    <p class="lab">Dice by lesion-size tercile</p>
-    <table>
-      <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
-      <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
-      <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
-      <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
-      <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
-    </table>
-    <p class="lab" style="margin-top:14px;line-height:1.9">Monotonic in every region ·
-      171 paired Wilcoxon tests, BH corrected · 9 of 9 replicated across three splits</p>
+  <div class="session">
+    <div><p class="k">Session</p><p class="v">Oral 3B</p></div>
+    <div><p class="k">When</p><p class="v">Thu 11:20</p></div>
+    <div><p class="k">Where</p><p class="v">Hall C</p></div>
+    <div><p class="k">Poster</p><p class="v">#3041</p></div>
   </div>
 
-  <div class="tile t-abl">
-    <p class="lab">Language ablation</p>
-    <p class="v">&asymp; 0</p>
-    <p class="s">Replacing PubMedBERT with <b>random vectors</b> changes almost nothing.
-      The query functions as an opaque class identifier that happens to be spelled in
-      English.</p>
+  <div class="cols">
+    <div class="main">
+
+      <div class="block abstract">
+        <h2>Abstract</h2>
+        <p>Text-conditioned 3D medical localization models report strong aggregate
+          performance while failing at the task they are deployed for. We show that
+          localization degrades monotonically with lesion size, by up to
+          <b>14.9&times;</b> in Dice from the largest size tercile to the smallest,
+          while detection remains unaffected.</p>
+        <p>Three controls isolate the cause. A supervised U-Net given the same small
+          lesions degrades only <b>1.2&times;</b>, establishing that the lesions are
+          learnable. Replacing the domain text encoder with random vectors changes
+          performance by <b>&asymp;0.000 Dice</b>: the query functions as an opaque
+          class identifier that happens to be spelled in English. Three size-aware
+          interventions each traded one failure mode for another and were reversed
+          under control.</p>
+        <p>The dominant failure is instead located in inference-time window merging.
+          Reweighting each sliding window toward its centre yields <b>+0.145 Dice with
+          no retraining</b>, recovering small enhancing tumour in 7 of 21 patients
+          where the model previously found none.</p>
+      </div>
+
+      <div class="block">
+        <h2>Keywords</h2>
+        <div class="chips">
+          <span class="chip">medical image segmentation</span>
+          <span class="chip">vision–language grounding</span>
+          <span class="chip">failure analysis</span>
+          <span class="chip">sliding-window inference</span>
+          <span class="chip">BraTS</span>
+          <span class="chip">negative results</span>
+        </div>
+      </div>
+
+      <div class="block" id="poster">
+        <h2>Figure 1</h2>
+        <figure>
+          <svg viewBox="0 0 860 330" role="img"
+               aria-label="Axial slice with the ground-truth lesion outlined solid and the predicted region outlined dashed and far larger.">
+            <rect width="860" height="330" fill="#fbfcfd"/>
+            <g stroke="#b7bfcc" fill="none" stroke-width="1.3">
+              <ellipse cx="430" cy="165" rx="256" ry="132"/>
+              <ellipse cx="430" cy="165" rx="234" ry="112"/>
+              <path d="M430 33 V297"/>
+              <path d="M412 108 q-25 36 -16 80 q4 20 16 31 q2 -66 0 -111 z"/>
+              <path d="M448 108 q25 36 16 80 q-4 20 -16 31 q-2 -66 0 -111 z"/>
+              <path d="M258 118 q36 24 27 61"/><path d="M602 118 q-36 24 -27 61"/>
+            </g>
+            <ellipse cx="518" cy="196" rx="120" ry="80" fill="#b3261e" fill-opacity=".07"
+                     stroke="#b3261e" stroke-width="2" stroke-dasharray="8 6"/>
+            <circle cx="558" cy="152" r="14" fill="#2f3a8f" fill-opacity=".20"
+                    stroke="#2f3a8f" stroke-width="2"/>
+            <g stroke="#15181d" stroke-width=".9" fill="none"><path d="M571 143 L666 92 H706"/></g>
+            <g font-family="Source Sans 3, sans-serif" font-size="13.5">
+              <text x="712" y="88" fill="#15181d">GT &#183; 1.9 cm&#179;</text>
+              <text x="24" y="296" fill="#b3261e">Predicted &#183; 31.4 cm&#179;</text>
+              <text x="22" y="26" fill="#8b93a1" font-size="12">slice 64/128 &#183; T1CE</text>
+            </g>
+          </svg>
+          <figcaption><b>Figure 1.</b> Ground truth against the predicted region for a
+            held-out patient with small enhancing tumour. The prediction exceeds the
+            lesion 16&times; in volume and is displaced two centimetres from its
+            centroid. Dice = 0.037; detection on the same case is correct.</figcaption>
+        </figure>
+      </div>
+
+      <div class="block">
+        <h2>Table 1</h2>
+        <table>
+          <caption>Dice by lesion-size tercile, held-out <i>n</i> = 73. The supervised
+            control is reported as a degradation ratio only.</caption>
+          <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>L / S</th></tr>
+          <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
+          <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
+          <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
+          <tr class="c"><td>Supervised U-Net (control)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+        </table>
+      </div>
+
+      <div class="block" id="review">
+        <h2>Reviewer summary &mdash; hypotheses examined</h2>
+        <div class="rev">
+          <span class="n">R1</span>
+          <div>
+            <h3>Could the small lesions simply be unlearnable?</h3>
+            <p>Addressed. A supervised U-Net on the same lesions, with no language
+              conditioning at any stage, degrades <b>1.2&times;</b> over the same
+              range.</p>
+          </div>
+          <p class="v">Excluded<b>1.2&times;</b></p>
+        </div>
+        <div class="rev">
+          <span class="n">R2</span>
+          <div>
+            <h3>Is this an artefact of a weak text encoder?</h3>
+            <p>Addressed. Replacing PubMedBERT with <b>random Gaussian vectors</b> of
+              matched dimension changes performance by &asymp;0.000 Dice.</p>
+          </div>
+          <p class="v">Excluded<b>&Delta;&asymp;0</b></p>
+        </div>
+        <div class="rev">
+          <span class="n">R3</span>
+          <div>
+            <h3>Have size-aware training interventions been tried?</h3>
+            <p>Yes, and reported as negative. Size-conditioned prompting, multi-scale
+              ensembling and scale-matched retraining each traded one failure mode for
+              another. <b>All three were reversed under control.</b></p>
+          </div>
+          <p class="v">Excluded<b>3 of 3</b></p>
+        </div>
+        <div class="rev ok">
+          <span class="n">AC</span>
+          <div>
+            <h3>Area chair &mdash; contribution</h3>
+            <p>The inference-time repair is cheap, well-controlled and clearly
+              located. <b>Weighting each sliding window toward its own centre</b> gives
+              +0.145 Dice with no parameter updates.</p>
+          </div>
+          <p class="v">Accepted<b>+0.145</b></p>
+        </div>
+      </div>
+
+      <div class="block" id="bib">
+        <h2>BibTeX</h2>
+<pre><span class="k">@inproceedings</span>{akara2026lesion,
+  <span class="k">title</span>     = {<span class="s">Diagnosing Small-Lesion Grounding Failure in
+               Text-Conditioned 3D Medical Localization</span>},
+  <span class="k">author</span>    = {<span class="s">Akara, Raj Hansini</span>},
+  <span class="k">note</span>      = {<span class="s">Unpublished. This page is a layout exercise,
+               not a record of acceptance at any venue.</span>},
+  <span class="k">year</span>      = {<span class="s">2026</span>}
+}</pre>
+      </div>
+
+    </div>
+
+    <div class="side">
+      <div class="block">
+        <h2>At a glance</h2>
+        <div class="stat"><span>Worst degradation</span><b class="red">14.9&times;</b></div>
+        <div class="stat"><span>Supervised control</span><b class="green">1.2&times;</b></div>
+        <div class="stat"><span>Language contribution</span><b class="red">&asymp; 0</b></div>
+        <div class="stat"><span>Repair, no retraining</span><b class="green">+0.145</b></div>
+        <div class="stat"><span>Small ET recovered</span><b>7 / 21</b></div>
+        <div class="stat"><span>Replicated</span><b>9 / 9</b></div>
+      </div>
+      <div class="block">
+        <h2>Evaluation</h2>
+        <div class="stat"><span>Dataset</span><b>BraTS2020</b></div>
+        <div class="stat"><span>Patients</span><b>369</b></div>
+        <div class="stat"><span>Held out</span><b>73</b></div>
+        <div class="stat"><span>Volume</span><b>128&sup3;</b></div>
+        <div class="stat"><span>Paired tests</span><b>171</b></div>
+        <div class="stat"><span>Correction</span><b>BH</b></div>
+      </div>
+      <div class="block">
+        <h2>Takeaway</h2>
+        <p style="font-size:15.5px;margin:0;color:var(--dim)">A shared confound is not
+          a cancelled confound. <b style="color:var(--ink)">Every stage of a pipeline is
+          an instrument until somebody measures it.</b></p>
+      </div>
+    </div>
   </div>
 
-  <div class="tile t-fix">
-    <p class="lab">Repair · no retraining</p>
-    <p class="v">+0.145</p>
-    <p class="s"><b>Centre-weighted window merging.</b> Small enhancing tumour goes from
-      0 to 7 of 21 patients. No weights were modified.</p>
-  </div>
-
-  <div class="tile t-note">
-    <p class="q">Three more elaborate interventions were reversed after a control caught
-      the error. <em>A shared confound is not a cancelled confound.</em></p>
-    <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
-    <p class="meta">Raj Hansini Akara<br>MPCS 53113 · University of Chicago</p>
-  </div>
-
+  <footer>
+    <span><b>This is a design exercise.</b> The venue, paper number, session, poster
+      number and reviews are invented for layout. The work is not published or
+      accepted anywhere; only the measurements are real.</span>
+    <span>Raj Hansini Akara &middot; MPCS 53113 &middot; University of Chicago</span>
+  </footer>
 </div>
 
 </body>
