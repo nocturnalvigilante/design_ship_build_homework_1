@@ -53,10 +53,11 @@ The strongest lines, use them, do not invent new claims:
 
 ## Process
 
-- v01 to v13 go wide. Genuinely different layout, audience framing, mood, era, tone.
+- v01 to v19 go wide. Genuinely different layout, audience framing, mood, era, tone.
   **Changing only colours or fonts is not a new direction and does not count.**
-- v14 to v19 cross-breed whatever worked.
-- v20 to v25 converge and refine until v25 is the one.
+- v20 to v25 narrow down: take the one idea that survived contact with the audience,
+  combine the pieces of earlier versions that worked, and refine until v25 is the one.
+  Each of these states what changed from the version before it and why.
 - Commit after each version. The history is part of the grade.
 - At least 20 of the 25 must be unique against roughly 700 sites from the class, so
   avoid every obvious default: no purple-to-blue gradient hero, no cream background
