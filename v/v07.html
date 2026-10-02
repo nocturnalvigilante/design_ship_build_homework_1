@@ -6,186 +6,221 @@
 <title>v07 · Small-Lesion Grounding Failure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Mukta:wght@400;600;800&display=swap">
 <style>
-/* v07 — magazine spread. Editorial rather than technical: a dek, a drop cap, three
-   columns of running text, a pull quote breaking the measure, a full-bleed figure
-   band, folio rules. Ink-blue and a single vermilion instead of the cream-and-serif
-   default the brief warns against.
-   What it tests: whether the finding reads as a STORY to someone who will not
-   look at a table. */
+/* v07 — BOLLYWOOD POSTER. Hand-painted litho: marigold and crimson, radiating
+   rays, an ornate border, and a star billing block at the foot.
+   The form fits better than it has any right to. A film poster's entire job is to
+   sell a CONFLICT in one glance — somebody is wronged, somebody is to blame, and
+   the resolution is withheld. That is the shape of this paper, and the billing
+   block is already a credits list of four suspects.
+   Rozha One carries the Devanagari-poster display energy in Latin. */
 :root{
-  --paper:#fdfdfb; --ink:#101418; --blue:#16255e; --verm:#d8402a;
-  --dim:#6d7480; --hair:#d3d6dc;
+  --night:#1b0a10; --crimson:#d81e3f; --marigold:#f5a623; --gold:#ffd77a;
+  --cream:#fdf3e3; --teal:#0e6b63; --ink:#2a0f16;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font:17px/1.62 Inter,"Helvetica Neue",Arial,sans-serif}
-a{color:var(--verm)}
-.w{max-width:1180px;margin:0 auto;padding:0 40px}
-.serif{font-family:"Bodoni Moda",Didot,Georgia,serif}
+body{margin:0;background:#120508;color:var(--cream);
+  font:16px/1.6 Mukta,"Helvetica Neue",Arial,sans-serif;padding:22px 12px 70px}
+a{color:var(--gold)}
+.poster{max-width:1080px;margin:0 auto;position:relative;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 16%,rgba(245,166,35,.35),transparent 62%),
+    radial-gradient(ellipse 60% 40% at 50% 92%,rgba(216,30,63,.35),transparent 66%),
+    linear-gradient(175deg,#2a0d14 0%,#1b0a10 48%,#2c1008 100%);
+  border:3px solid var(--gold);box-shadow:0 0 0 7px var(--crimson),
+    0 0 0 9px var(--gold),0 24px 60px rgba(0,0,0,.65);padding:0}
+.rays{position:absolute;inset:0;overflow:hidden;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 22%,
+    rgba(255,215,122,.11) 0deg 5deg,transparent 5deg 11deg)}
+.inner{position:relative;z-index:2;padding:30px 36px 34px}
+.rozha{font-family:"Rozha One",Georgia,serif;font-weight:400}
 
-.folio{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  padding:14px 0 12px;border-bottom:1px solid var(--ink);
-  font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
-.folio a{color:var(--dim);text-decoration:none}
-.folio b{color:var(--ink);font-weight:600}
+.strip{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);
+  border-bottom:1px solid rgba(255,215,122,.35);padding-bottom:12px;font-weight:600}
+.strip a{color:var(--gold);text-decoration:none}
 
-.kick{font-size:11px;letter-spacing:.26em;text-transform:uppercase;
-  color:var(--verm);font-weight:600;margin:40px 0 16px}
-h1{font-family:"Bodoni Moda",Didot,Georgia,serif;font-weight:900;
-  font-size:clamp(46px,9.4vw,116px);line-height:.92;letter-spacing:-.022em;
-  margin:0;max-width:15ch;color:var(--blue)}
-h1 em{font-style:italic;font-weight:400;color:var(--ink)}
-.dek{display:grid;grid-template-columns:1.1fr 1fr;gap:46px;margin:30px 0 0;
-  padding-bottom:30px;border-bottom:3px solid var(--ink)}
-.dek .d{font-family:"Bodoni Moda",serif;font-size:clamp(19px,2.2vw,25px);
-  line-height:1.34;color:var(--ink);margin:0}
-.dek .by{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
-  align-self:end}
-.dek .by b{display:block;font-size:14px;letter-spacing:.04em;color:var(--ink);
-  text-transform:none;font-weight:600;margin-bottom:3px}
+.billing-top{text-align:center;margin:26px 0 6px;font-size:12.5px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--gold);font-weight:600}
+h1{font-family:"Rozha One",serif;text-align:center;line-height:.9;margin:6px 0 0;
+  font-size:clamp(44px,10.4vw,132px);color:var(--marigold);
+  text-shadow:0 0 1px var(--ink),4px 5px 0 var(--crimson),8px 10px 0 rgba(0,0,0,.45)}
+h1 em{display:block;font-style:normal;color:var(--cream);
+  font-size:.56em;text-shadow:3px 4px 0 var(--teal),6px 8px 0 rgba(0,0,0,.4)}
+.tag{text-align:center;font-family:"Rozha One",serif;font-size:clamp(17px,2.4vw,27px);
+  color:var(--gold);margin:18px auto 0;max-width:30ch;line-height:1.3}
+.sub{text-align:center;max-width:56ch;margin:16px auto 0;color:#e8d7bd;font-size:17px}
+.sub b{color:#fff}
 
-.cols{columns:3;column-gap:38px;column-rule:1px solid var(--hair);
-  margin:38px 0 0;text-align:justify;hyphens:auto}
-.cols p{margin:0 0 15px}
-.cols p:first-child::first-letter{font-family:"Bodoni Moda",serif;font-weight:900;
-  float:left;font-size:78px;line-height:.72;padding:6px 10px 0 0;color:var(--verm)}
-.cols h3{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--verm);
-  margin:22px 0 8px;font-weight:600;break-after:avoid}
-.cols .sc{font-variant-caps:all-small-caps;letter-spacing:.06em}
+/* the still */
+.still{margin:30px 0 0;border:3px solid var(--gold);background:#0a0407;padding:9px;
+  box-shadow:0 0 0 3px var(--crimson)}
+.still svg{width:100%;height:auto;display:block}
+.stillcap{text-align:center;font-size:13px;color:var(--gold);margin:11px 0 2px;
+  letter-spacing:.08em}
 
-.pull{break-inside:avoid;margin:6px 0 18px;padding:16px 0;
-  border-top:3px solid var(--verm);border-bottom:1px solid var(--ink)}
-.pull p{font-family:"Bodoni Moda",serif;font-style:italic;font-size:22px;
-  line-height:1.25;margin:0;color:var(--blue)}
+/* the four suspects, as a cast list */
+.cast{margin:34px 0 0;border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);
+  padding:24px 0}
+.cast h2{font-family:"Rozha One",serif;text-align:center;font-size:clamp(23px,3.4vw,38px);
+  color:var(--marigold);margin:0 0 22px}
+.roles{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.role{padding:0 20px;border-left:1px solid rgba(255,215,122,.3);text-align:center}
+.role:first-child{border-left:0}
+.role .as{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  margin:0 0 8px;font-weight:600}
+.role h3{font-family:"Rozha One",serif;font-size:21px;color:var(--cream);margin:0 0 9px;
+  line-height:1.16}
+.role p{font-size:14.5px;color:#d8c6ab;margin:0 0 14px}
+.role p b{color:#fff;font-weight:800}
+.role .fate{font-family:"Rozha One",serif;font-size:25px;color:var(--crimson)}
+.role.hero .fate{color:var(--marigold)}
 
-.band{background:var(--blue);color:#fff;margin:48px 0 0;padding:44px 0 46px}
-.band .w{display:grid;grid-template-columns:1fr 1.25fr;gap:52px;align-items:center}
-.band .n{font-family:"Bodoni Moda",serif;font-weight:900;
-  font-size:clamp(76px,14vw,178px);line-height:.82;letter-spacing:-.04em;margin:0}
-.band .n span{color:#ffd0c6;font-size:.36em;letter-spacing:0;display:block;
-  font-family:Inter,sans-serif;font-weight:500;margin-top:14px;line-height:1.4}
-figure{margin:0}
-figcaption{font-size:12px;color:#c3c9dd;margin-top:12px;max-width:52ch}
-table{width:100%;border-collapse:collapse;font-size:15px;color:#fff}
-th{text-align:right;font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:#a8b0cc;font-weight:500;padding:0 10px 8px 0;border-bottom:1px solid #4a5789}
-th:first-child,td:first-child{text-align:left}
-td{text-align:right;padding:10px 10px 10px 0;border-bottom:1px solid #2b3a72;
+/* the numbers, as a lobby card */
+.numbers{margin:30px 0 0;background:rgba(10,4,7,.55);border:2px solid var(--gold);
+  padding:22px 24px 24px}
+.numbers h2{font-family:"Rozha One",serif;font-size:24px;color:var(--marigold);
+  margin:0 0 14px;text-align:center}
+table{width:100%;border-collapse:collapse;font-size:15.5px;
   font-variant-numeric:tabular-nums}
-tr.x td{color:#ff9f8c;font-weight:600}
-tr.c td{color:#a8b0cc}
+th{text-align:right;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;padding:0 10px 9px 0;
+  border-bottom:1px solid rgba(255,215,122,.5)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:10px 10px 10px 0;border-bottom:1px solid rgba(255,215,122,.18);
+  color:#e8d7bd}
+tr.x td{color:var(--crimson);font-weight:800}
+tr.c td{color:#6fd4a0}
 
-.close{padding-top:48px}
-.close h2{font-family:"Bodoni Moda",serif;font-weight:700;font-size:clamp(26px,4vw,46px);
-  line-height:1.06;margin:0 0 16px;max-width:20ch;letter-spacing:-.02em}
-.close p{max-width:56ch;color:var(--dim);margin:0 0 14px}
-.cta{display:inline-block;margin-top:14px;border-bottom:3px solid var(--verm);
-  color:var(--ink);text-decoration:none;font-weight:600;font-size:18px;padding-bottom:2px}
-footer{margin-top:52px;border-top:1px solid var(--ink);padding:14px 0 60px;
-  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
-@media(max-width:980px){.cols{columns:2}.dek,.band .w{grid-template-columns:1fr;gap:26px}}
-@media(max-width:640px){.cols{columns:1}.w{padding:0 22px}
-  .cols{text-align:left;hyphens:none}}
+.climax{margin:30px 0 0;text-align:center}
+.climax h2{font-family:"Rozha One",serif;font-size:clamp(26px,5vw,60px);line-height:1.02;
+  color:var(--cream);margin:0 0 16px;
+  text-shadow:3px 4px 0 var(--crimson)}
+.climax h2 em{font-style:normal;color:var(--marigold)}
+.climax p{max-width:56ch;margin:0 auto 14px;color:#e8d7bd}
+.climax p b{color:#fff}
+.cta{display:inline-block;margin-top:16px;background:var(--crimson);color:var(--cream);
+  text-decoration:none;font-family:"Rozha One",serif;font-size:23px;padding:13px 32px;
+  border:2px solid var(--gold);box-shadow:4px 5px 0 rgba(0,0,0,.45)}
+
+/* star billing block */
+.credits{margin:32px 0 0;border-top:1px solid rgba(255,215,122,.4);padding-top:18px;
+  text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:#c9b596;line-height:2}
+.credits b{color:var(--gold);font-weight:600}
+@media(max-width:860px){.roles{grid-template-columns:1fr 1fr}
+  .role{border-left:0;padding:16px 10px;border-top:1px solid rgba(255,215,122,.3)}
+  .inner{padding:22px 18px 26px}}
+@media(max-width:560px){.roles{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div class="w">
-  <div class="folio">
-    <span><a href="../index.html">&larr; Gallery</a> &nbsp;·&nbsp; v07 Magazine spread</span>
-    <span><b>Diagnosis</b> &nbsp;·&nbsp; Issue 01 &nbsp;·&nbsp; pp. 34&ndash;39</span>
-  </div>
+<div class="poster">
+  <div class="rays"></div>
+  <div class="inner">
 
-  <p class="kick">Medical imaging &nbsp;/&nbsp; Vision and language</p>
-  <h1>The model that could not <em>point</em>.</h1>
-  <div class="dek">
-    <p class="d">Ask a text-conditioned 3D model whether there is a tumour and it will
-      tell you, correctly. Ask it <em>where</em>, and once the lesion is small, it
-      hands back a region many times too large and centred somewhere else entirely.</p>
-    <p class="by"><b>Raj Hansini Akara</b>MPCS 53113 · University of Chicago<br>
-      BraTS2020 · 369 patients</p>
-  </div>
-
-  <div class="cols">
-    <p>The clinically urgent lesions are the small ones. They are the ones a
-      radiologist might miss on a busy afternoon, the ones that argue for another
-      scan in three months rather than six. They are also, it turns out, precisely
-      the ones these models cannot find.</p>
-    <p>Not <span class="sc">detect</span> &mdash; find. The distinction matters more
-      than it sounds. Run the model on a held-out patient with a small enhancing
-      tumour and it will confidently report that a lesion is present. It will then
-      outline a region roughly sixteen times the true volume, its centre a couple of
-      centimetres from where the tumour actually sits.</p>
-
-    <div class="pull">
-      <p>&ldquo;Localization degrades monotonically with lesion size, in every region,
-        with no recovery.&rdquo;</p>
+    <div class="strip">
+      <a href="../index.html">&laquo; Gallery &middot; v07</a>
+      <span>BraTS2020 &middot; 369 &middot; Certified U/A</span>
     </div>
 
-    <h3>Not the data</h3>
-    <p>The obvious objection is that small lesions are simply hard. A few voxels,
-      low contrast, ambiguous borders &mdash; perhaps nothing can find them. So the
-      same small lesions were handed to a plain supervised U-Net, no text involved.
-      It degraded by a factor of <b>1.2</b>, against <b>14.9</b> for the
-      text-conditioned model on enhancing tumour.</p>
-    <p>The lesions are learnable. Something about conditioning on language is what
-      breaks.</p>
+    <p class="billing-top">The University of Chicago presents</p>
+    <h1>Lapata<em>The lost lesion</em></h1>
+    <p class="tag">&ldquo;It swore the tumour was there.<br>It would not say where.&rdquo;</p>
+    <p class="sub">Text-conditioned 3D medical models detect that a lesion is present,
+      then return a region many times too large and centred somewhere else.
+      <b>The smaller the lesion, the wider the miss.</b></p>
 
-    <h3>Not the language either</h3>
-    <p>The next suspicion was the text encoder, and the fix would have been a better
-      one. Instead, PubMedBERT was replaced with random vectors &mdash; no medical
-      knowledge, no semantics, nothing. Performance barely moved.</p>
-    <p>Which yields the paper's sharpest line: the query functions as an opaque class
-      identifier that happens to be spelled in English. The model is not reading the
-      prompt. It is looking up a channel.</p>
+    <div class="still">
+      <svg viewBox="0 0 900 360" role="img"
+           aria-label="Film still: a small marked lesion against a far larger predicted region offset from it.">
+        <rect width="900" height="360" fill="#0a0407"/>
+        <g stroke="#5a3b2a" fill="none" stroke-width="1.6">
+          <ellipse cx="450" cy="180" rx="268" ry="146"/>
+          <ellipse cx="450" cy="180" rx="246" ry="126"/>
+          <path d="M450 36 V324"/>
+          <path d="M432 118 q-26 40 -17 88 q4 22 17 34 q2 -72 0 -122 z"/>
+          <path d="M468 118 q26 40 17 88 q-4 22 -17 34 q-2 -72 0 -122 z"/>
+          <path d="M268 128 q38 26 28 66"/><path d="M632 128 q-38 26 -28 66"/>
+        </g>
+        <ellipse cx="540" cy="214" rx="126" ry="86" fill="#d81e3f" fill-opacity=".22"
+                 stroke="#d81e3f" stroke-width="3" stroke-dasharray="10 7"/>
+        <circle cx="582" cy="168" r="15" fill="#f5a623" stroke="#ffd77a" stroke-width="3"/>
+        <g stroke="#ffd77a" stroke-width="1.4" fill="none"><path d="M596 158 L694 100 H748"/></g>
+        <g font-family="Mukta, sans-serif" font-size="14" font-weight="600" letter-spacing="1.6">
+          <text x="754" y="96" fill="#ffd77a">THE TRUTH &#183; 1.9 cm&#179;</text>
+          <text x="26" y="326" fill="#d81e3f">THE CLAIM &#183; 31.4 cm&#179;</text>
+          <text x="24" y="30" fill="#8a6a52" font-size="12">SLICE 64/128 &#183; T1CE</text>
+        </g>
+      </svg>
+      <p class="stillcap">Sixteen times the volume. Two centimetres from the truth. Dice 0.037.</p>
+    </div>
 
-    <h3>The cheapest thing on the list</h3>
-    <p>Three elaborate interventions were tried. Size-conditioned prompting helped
-      small lesions and broke large ones. Multi-scale ensembling gained on tumour
-      core and gave the gain back on enhancing tumour. Scale-matched retraining
-      overfit the size tercile it was tuned on. Each was reversed after a control
-      caught the error.</p>
-    <p>What worked was the least interesting idea available. The model processes
-      volumes in overlapping sliding windows and averages them flatly, which smears
-      a small lesion sitting near a window edge across everything around it. Weight
-      each window toward its own centre instead, and Dice rises by <b>0.145</b> with
-      no retraining whatsoever. Small enhancing tumour goes from nought to seven of
-      twenty-one patients.</p>
-  </div>
-</div>
+    <div class="cast">
+      <h2>The four accused</h2>
+      <div class="roles">
+        <div class="role">
+          <p class="as">Suspect one</p>
+          <h3>The Data</h3>
+          <p>A plain supervised U-Net, given the same lesions and no language at all,
+            barely falters. <b>The lesions were always findable.</b></p>
+          <p class="fate">Acquitted &middot; 1.2&times;</p>
+        </div>
+        <div class="role">
+          <p class="as">Suspect two</p>
+          <h3>The Language</h3>
+          <p>PubMedBERT torn out, <b>random vectors</b> put in its place. Nothing moved.
+            The query is an opaque class id spelled in English.</p>
+          <p class="fate">Acquitted &middot; &Delta;&asymp;0</p>
+        </div>
+        <div class="role">
+          <p class="as">Suspect three</p>
+          <h3>The Clever Remedies</h3>
+          <p>Size-conditioned prompting, multi-scale ensembling, scale-matched
+            retraining. <b>All three reversed</b> by their own controls.</p>
+          <p class="fate">Acquitted &middot; 3 of 3</p>
+        </div>
+        <div class="role hero">
+          <p class="as">The culprit</p>
+          <h3>The Plumbing</h3>
+          <p>Flat window averaging smears a small lesion across all it passes.
+            <b>Weight each window toward its centre.</b> No retraining.</p>
+          <p class="fate">Guilty &middot; +0.145</p>
+        </div>
+      </div>
+    </div>
 
-<div class="band">
-  <div class="w">
-    <p class="n">14.9&times;<span>Dice degradation from large lesions to small, enhancing
-      tumour. The supervised control, on the same lesions, degrades 1.2&times;.</span></p>
-    <figure>
+    <div class="numbers">
+      <h2>Exhibit &mdash; Dice by lesion size</h2>
       <table>
         <tr><th>Region</th><th>Large</th><th>Medium</th><th>Small</th><th>Ratio</th></tr>
         <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
         <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
         <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
-        <tr class="c"><td>Supervised U-Net</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
+        <tr class="c"><td>Supervised U-Net (control)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
       </table>
-      <figcaption>Dice by lesion-size tercile, held-out n = 73. 171 paired Wilcoxon
-        tests, Benjamini&#8209;Hochberg corrected; 9 of 9 comparisons replicated across
-        three independent splits.</figcaption>
-    </figure>
-  </div>
-</div>
+    </div>
 
-<div class="w close">
-  <h2>A shared confound is not a cancelled confound.</h2>
-  <p>Three results here were reversed after the fact, each time by a control that
-    should have been run first. The lesson generalises past this dataset: every stage
-    of a pipeline is an instrument until somebody measures it.</p>
-  <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper and the code &rarr;</a>
-  <footer>
-    <span>Diagnosing Small-Lesion Grounding Failure</span>
-    <span>Held-out n = 73 · 128&sup3; volumes</span>
-  </footer>
+    <div class="climax">
+      <h2>A shared confound is<br><em>not</em> a cancelled confound</h2>
+      <p>The fault was never in the model and never in the language. It waited in the
+        inference plumbing, where nobody had thought to look, and the repair costs
+        <b>no retraining and not one modified weight</b>.</p>
+      <p>Small enhancing tumour recovered in <b>7 of 21 patients</b> where the model
+        had found none.</p>
+      <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
+    </div>
+
+    <div class="credits">
+      <b>Raj Hansini Akara</b> &middot; MPCS 53113 &middot; University of Chicago<br>
+      171 paired Wilcoxon tests &middot; Benjamini&#8209;Hochberg corrected &middot;
+      9 of 9 replicated across three independent splits<br>
+      BraTS2020 &middot; 369 patients &middot; held out n = 73 &middot; 128&sup3; volumes
+    </div>
+
+  </div>
 </div>
 
 </body>
