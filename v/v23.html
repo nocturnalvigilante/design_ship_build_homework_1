@@ -6,235 +6,307 @@
 <title>v23 · Small-Lesion Grounding Failure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* v23 — PUNK ZINE. Photocopied, cut up, taped back down, stapled.
-   Every other page in the set is polite about the three reversed experiments.
-   This one is not: a zine is the only register where "we were wrong three times
-   and published it anyway" reads as the POINT rather than a confession.
-   Ransom-note headline, blocks rotated off-axis, Courier for the body because
-   that is what a photocopier was fed, one spot colour and nothing else. */
+/* v23 — CUT.
+   v22 was right and too long. The brief gives this page one job: a researcher
+   understands the finding in fifteen seconds and opens the paper. So:
+     · the paper link moves into a sticky bar, because the moment a reader decides
+       is not reliably the moment they reach the bottom
+     · the standfirst lost the clause restating the headline
+     · the repair band asserted "no retraining" twice; now once
+     · vertical rhythm tightened so the panel and the figure share one screen
+   Nothing was added.
+
+   (Inherited from v22:) THE PANEL BECOMES THE CONTROL.
+   v21 had the reference panel and the scan sitting on the same page ignoring each
+   other. The panel rows are already the nine measured cells, so they may as well be
+   the control: click a row and the figure shrinks the true lesion to that tercile
+   while the prediction stays exactly where it was.
+   Every reachable state is a measurement. There is nothing measured between the
+   terciles, so there is nothing between them to show. Without JavaScript the panel
+   is still a complete table and the figure still shows the large tercile.
+
+   (Inherited from v21:) THE PANEL COMES FIRST.
+   v20 put the reference panel in a sidebar, which is exactly backwards: it is the
+   argument, not an aside. A reader scanning the left column got the finding without
+   ever seeing the thing that makes the finding legible.
+   So the panel moves into the first screen beside the headline, and the prose and
+   the hypotheses run full width underneath it. Nothing else changed.
+
+   (Inherited from v20:) FIRST CONVERGENCE.
+   Of everything explored, one idea survives contact with the actual audience: a
+   Dice score is unreadable on its own. That came out of the nutrition-facts panel
+   (now v25's ancestor), and it is the only device in the whole set that fixes the
+   reader's real problem — 0.010 means nothing until you are told it is 7% of what
+   the same model manages on a large lesion.
+   So the reference column comes forward and everything else is built around it.
+   Dropped from the wild phase and why:
+     · the costumes (noir, arcade, Bollywood, Win98) each cost a beat of
+       translation before the finding landed, and the brief gives this page one job
+     · the transit map was the best STRUCTURE but cannot hold nine numbers
+     · the museum wall had the right restraint and too little information density
+   Rough on purpose: a two-column split with the evidence in a sidebar. v21 fixes
+   that the sidebar is where the argument actually lives. */
 :root{
-  --copy:#d9d6cf; --paper:#f2f0e9; --ink:#141312; --spot:#ff2d6f; --grey:#6e6a63;
+  --paper:#fbfbf9; --ink:#16181a; --dim:#5c6367; --faint:#8b9296; --hair:#e2e3df;
+  --alarm:#c23616; --ref:#0d6e5a;
 }
 *{box-sizing:border-box}
-body{margin:0;background:#3a3834;color:var(--ink);
-  font:15.5px/1.6 "Courier Prime",Courier,monospace;padding:26px 14px 80px;
-  overflow-x:hidden}
-a{color:var(--spot)}
-.zine{max-width:1060px;margin:0 auto;position:relative}
-/* photocopy grain + toner streaks */
-.sheet{background:var(--paper);
-  background-image:
-    repeating-linear-gradient(94deg,rgba(20,19,18,.055) 0 1px,transparent 1px 5px),
-    radial-gradient(circle at 18% 12%,rgba(20,19,18,.09),transparent 42%),
-    radial-gradient(circle at 86% 78%,rgba(20,19,18,.07),transparent 46%);
-  padding:30px 32px 36px;box-shadow:0 2px 0 rgba(0,0,0,.35),0 20px 46px rgba(0,0,0,.45)}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:17px/1.68 Newsreader,Georgia,serif;font-variant-numeric:tabular-nums}
+a{color:var(--alarm)}
+.w{max-width:1200px;margin:0 auto;padding:0 38px}
+.sans{font-family:"IBM Plex Sans",sans-serif}
+.lab{font-family:"IBM Plex Sans",sans-serif;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--faint);margin:0;font-weight:600}
 
-.staple{position:absolute;width:21px;height:7px;background:#8e8b85;
-  box-shadow:inset 0 2px 0 #c9c6bf,0 1px 2px rgba(0,0,0,.4);z-index:6}
-.tape{position:absolute;width:104px;height:28px;background:rgba(228,224,206,.72);
-  border-left:1px dashed rgba(20,19,18,.22);border-right:1px dashed rgba(20,19,18,.22);
-  box-shadow:0 1px 2px rgba(0,0,0,.12);z-index:5}
+.bar{position:sticky;top:0;z-index:10;background:rgba(251,251,249,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--hair)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;
+  flex-wrap:wrap;margin:0 auto;padding-top:11px;padding-bottom:11px}
+.top a{color:var(--faint);text-decoration:none}
+.top .paper{color:var(--alarm);border-bottom:1px solid var(--alarm);padding-bottom:1px}
 
-.flag{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
-  font-family:"Courier Prime",monospace;font-size:11.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--grey);border-bottom:2px solid var(--ink);
-  padding-bottom:9px;margin-bottom:24px}
-.flag a{color:var(--grey);text-decoration:none}
+.hero{padding-top:38px;padding-bottom:26px}
+h1{font-size:clamp(34px,5.2vw,62px);line-height:1.06;letter-spacing:-.022em;
+  font-weight:600;margin:12px 0 0;max-width:17ch}
+h1 em{font-style:normal;color:var(--alarm)}
+.hero .sf{font-family:"IBM Plex Sans",sans-serif;font-size:18px;color:var(--dim);
+  max-width:52ch;margin:20px 0 0;line-height:1.6}
+.hero .sf b{color:var(--ink);font-weight:600}
 
-/* ransom note */
-h1{margin:0 0 16px;line-height:.98;max-width:19ch}
-h1 span{display:inline-block;background:var(--ink);color:var(--paper);
-  padding:1px 8px 3px;margin:3px 3px 3px 0;vertical-align:middle}
-h1 .a{font-family:"Archivo Black",sans-serif;font-size:clamp(28px,5.6vw,62px);
-  transform:rotate(-1.6deg)}
-h1 .b{font-family:"Bebas Neue",sans-serif;font-size:clamp(34px,7vw,80px);
-  letter-spacing:.02em;transform:rotate(1.4deg);background:var(--spot);color:var(--ink)}
-h1 .c{font-family:"Courier Prime",monospace;font-weight:700;
-  font-size:clamp(24px,4.4vw,50px);transform:rotate(.9deg);background:var(--paper);
-  color:var(--ink);border:3px solid var(--ink);padding:0 7px}
-h1 .d{font-family:"Archivo Black",sans-serif;font-size:clamp(30px,6.2vw,70px);
-  transform:rotate(-2.4deg);background:var(--paper);color:var(--ink);
-  -webkit-text-stroke:2px var(--ink)}
+.lede{display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:start;
+  padding-bottom:26px}
+.body{border-top:2px solid var(--ink);padding-top:28px}
+.arg{max-width:none}
 
-.stand{font-size:17px;max-width:54ch;margin:0 0 26px;line-height:1.5}
-.stand b{background:var(--spot);padding:0 3px}
+/* the argument */
+.arg > p{margin:0 0 20px;max-width:60ch}
+.arg > p b{font-weight:600}
+.arg h2{font-family:"IBM Plex Sans",sans-serif;font-size:19px;font-weight:600;
+  letter-spacing:-.01em;margin:32px 0 14px}
+figure{margin:26px 0 24px}
+figure svg{width:100%;height:auto;display:block;border:1px solid var(--hair)}
+figcaption{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--dim);
+  margin-top:11px;line-height:1.6;max-width:62ch}
 
-/* cut-up blocks */
-.cuts{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:10px}
-.cut{background:var(--copy);border:2px solid var(--ink);padding:16px 18px 18px;
-  position:relative;box-shadow:3px 3px 0 var(--ink)}
-.cut.c1{grid-column:span 7;transform:rotate(-.7deg)}
-.cut.c2{grid-column:span 5;transform:rotate(.8deg)}
-.cut.c3{grid-column:span 4;transform:rotate(.6deg)}
-.cut.c4{grid-column:span 4;transform:rotate(-1deg)}
-.cut.c5{grid-column:span 4;transform:rotate(.5deg)}
-.cut.wide{grid-column:span 12;transform:rotate(-.3deg)}
-.cut h2{font-family:"Bebas Neue",sans-serif;font-size:27px;letter-spacing:.03em;
-  margin:0 0 9px;line-height:1.05}
-.cut p{margin:0 0 9px}
-.cut p:last-child{margin-bottom:0}
-.cut b{font-weight:700}
-.kill{display:inline-block;background:var(--ink);color:var(--paper);
-  font-family:"Bebas Neue",sans-serif;font-size:19px;letter-spacing:.09em;
-  padding:3px 10px;margin-top:8px;transform:rotate(-1.4deg)}
-.kill.win{background:var(--spot);color:var(--ink)}
-s{text-decoration-color:var(--spot);text-decoration-thickness:2px}
+.hyp{border-top:1px solid var(--ink);margin-top:10px}
+.h{display:grid;grid-template-columns:30px 1fr 120px;gap:20px;padding:17px 0;
+  border-bottom:1px solid var(--hair);align-items:baseline}
+.h .n{font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--faint)}
+.h h3{font-size:19px;font-weight:600;margin:0 0 6px;line-height:1.3}
+.h p{margin:0;font-size:16px;color:var(--dim);max-width:52ch}
+.h p b{color:var(--ink);font-weight:600}
+.h .v{font-family:"IBM Plex Sans",sans-serif;text-align:right;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--alarm);font-weight:600}
+.h .v b{display:block;font-family:Newsreader,serif;font-size:21px;letter-spacing:0;
+  text-transform:none;color:var(--ink);font-weight:600;margin-top:4px}
+.h.keep .v{color:var(--ref)}
 
-.scrawl{font-family:"Courier Prime",monospace;font-style:italic;color:var(--spot);
-  font-size:16px;transform:rotate(-1.4deg);margin:14px 0 0;max-width:40ch}
+/* the reference panel — the thing this whole convergence is built around */
+.panel{border:1px solid var(--ink);padding:22px 24px 24px;background:#fff}
+.panel h2{font-family:"IBM Plex Sans",sans-serif;font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);font-weight:600;margin:0 0 6px}
+.panel .q{font-size:19px;line-height:1.4;margin:0 0 18px;padding-bottom:16px;
+  border-bottom:2px solid var(--ink)}
+.ref{display:grid;grid-template-columns:1fr 62px 62px;gap:10px;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid var(--hair);font-family:"IBM Plex Sans",sans-serif;
+  font-size:14.5px}
+.ref.head{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);font-weight:600;border-bottom:1px solid var(--ink);padding-bottom:7px}
+.ref span:nth-child(n+2){text-align:right}
+.ref .pc{font-weight:600}
+.ref.bad .pc{color:var(--alarm)}
+.ref.sub{padding-left:16px;color:var(--dim)}
+/* the nine cells are real buttons: keyboard reachable, and the panel still reads
+   as a table when nothing is clicked */
+.ref.pick{cursor:pointer;border:0;width:100%;background:none;font:inherit;
+  text-align:left;color:inherit;padding:9px 0;border-bottom:1px solid var(--hair)}
+.ref.pick:hover{background:#f3f6f4}
+.ref.pick:focus-visible{outline:2px solid var(--alarm);outline-offset:-2px}
+.ref.pick[aria-pressed=true]{background:var(--ink);color:#fff;padding-left:8px;
+  padding-right:8px}
+.ref.pick[aria-pressed=true] .pc{color:#fff}
+#gt{transition:r .4s cubic-bezier(.3,.7,.3,1)}
+@media (prefers-reduced-motion:reduce){#gt{transition:none}}
+.ref.good .pc{color:var(--ref)}
+.note{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--dim);
+  line-height:1.6;margin:16px 0 0;padding-top:14px;border-top:1px solid var(--hair)}
+.note b{color:var(--ink);font-weight:600}
 
-.huge{font-family:"Archivo Black",sans-serif;font-size:clamp(54px,11vw,128px);
-  line-height:.84;margin:0 0 10px;letter-spacing:-.03em}
-.huge em{font-style:normal;color:var(--spot)}
-
-.cut svg{width:100%;height:auto;display:block;border:2px solid var(--ink);
-  filter:grayscale(1) contrast(1.5)}
-table{width:100%;border-collapse:collapse;font-size:14.5px}
-th{text-align:right;font-family:"Bebas Neue",sans-serif;font-size:15px;
-  letter-spacing:.07em;padding:0 8px 6px 0;border-bottom:3px solid var(--ink)}
-th:first-child,td:first-child{text-align:left}
-td{text-align:right;padding:7px 8px;border-bottom:1px dashed rgba(20,19,18,.4)}
-tr.x td{background:var(--spot);font-weight:700}
-
-.manifesto{background:var(--ink);color:var(--paper);border:2px solid var(--ink);
-  padding:28px 30px 30px;margin-top:22px;transform:rotate(.4deg);
-  box-shadow:4px 4px 0 var(--spot)}
-.manifesto h2{font-family:"Archivo Black",sans-serif;font-size:clamp(22px,4.2vw,44px);
-  line-height:1.02;margin:0 0 14px;max-width:20ch;letter-spacing:-.02em}
-.manifesto h2 em{font-style:normal;color:var(--spot)}
-.manifesto p{color:#cfccc4;max-width:56ch;margin:0 0 11px}
-.manifesto p b{color:var(--paper)}
-.cta{display:inline-block;margin-top:12px;background:var(--spot);color:var(--ink);
-  text-decoration:none;font-family:"Bebas Neue",sans-serif;font-size:23px;
-  letter-spacing:.1em;padding:11px 24px;border:3px solid var(--paper)}
-.colo{margin-top:24px;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--grey);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
-@media(max-width:860px){.cuts{grid-template-columns:1fr}
-  .cut.c1,.cut.c2,.cut.c3,.cut.c4,.cut.c5,.cut.wide{grid-column:span 1}
-  .sheet{padding:22px 18px 26px}}
+.fix{background:var(--ink);color:#fff;margin-top:52px}
+.fix .w{padding-top:46px;padding-bottom:50px}
+.fix h2{font-size:clamp(24px,3.4vw,40px);line-height:1.1;letter-spacing:-.025em;
+  font-weight:600;margin:12px 0 18px;max-width:20ch}
+.fix h2 em{font-style:normal;color:#ff9b7a}
+.fix p{color:#a9b0b2;max-width:54ch;margin:0 0 14px}
+.fix p b{color:#fff;font-weight:600}
+.fix .lab{color:#8b9296}
+.cta{display:inline-block;margin-top:16px;background:#fff;color:var(--ink);
+  text-decoration:none;font-family:"IBM Plex Sans",sans-serif;font-size:11px;
+  font-weight:600;letter-spacing:.16em;text-transform:uppercase;padding:14px 24px}
+footer{padding-top:18px;padding-bottom:62px;display:flex;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font-family:"IBM Plex Sans",sans-serif;font-size:11px;
+  color:var(--faint);letter-spacing:.08em}
+@media(max-width:1000px){.body{grid-template-columns:1fr;gap:34px}
+  .h{grid-template-columns:24px 1fr}
+  .h .v{grid-column:2;text-align:left;margin-top:7px}
+  .w{padding:0 22px}}
 </style>
 </head>
 <body>
 
-<div class="zine">
-  <span class="staple" style="top:14px;left:70px;transform:rotate(-7deg)"></span>
-  <span class="staple" style="bottom:14px;left:70px;transform:rotate(5deg)"></span>
-  <span class="tape" style="top:-12px;left:40%;transform:rotate(-3deg)"></span>
-  <span class="tape" style="top:-10px;right:60px;transform:rotate(5deg)"></span>
+<div class="bar">
+  <div class="w top lab">
+    <a href="../index.html">&larr; Gallery · v23 cut</a>
+    <a class="paper" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper &rarr;</a>
+  </div>
+</div>
 
-  <div class="sheet">
-    <div class="flag">
-      <span><a href="../index.html">&laquo; gallery</a> &nbsp;/&nbsp; v23 &mdash; issue one &mdash; free</span>
-      <span>BraTS2020 &middot; 369 &middot; photocopied without permission</span>
-    </div>
+<div class="w hero lede">
+  <div>
+    <p class="lab">Text-conditioned 3D medical localization</p>
+    <h1>A Dice score of 0.010 means nothing until you know what it is <em>0.010 of</em>.</h1>
+    <p class="sf">These models detect that a tumour is present, then return a region many
+      times too large and centred somewhere else. <b>The smaller the lesion, the wider
+      the miss</b>, and because detection stays correct at every size an unstratified
+      benchmark never shows it.</p>
+  </div>
+  <aside class="panel">
+    <h2>Read with a reference</h2>
+    <p class="q">Every figure below is shown as a share of what the same model manages
+      on a <i>large</i> lesion.</p>
+    <div class="ref head"><span>Measure</span><span>Dice</span><span>% of lg</span></div>
+    <button class="ref bad pick" data-r="et" data-i="2" aria-pressed="false"><span><b>Enhancing, small</b></span><span>0.010</span><span class="pc">7%</span></button>
+    <button class="ref sub pick" data-r="et" data-i="1" aria-pressed="false"><span>medium</span><span>0.037</span><span class="pc">25%</span></button>
+    <button class="ref sub pick" data-r="et" data-i="0" aria-pressed="true"><span>large</span><span>0.149</span><span class="pc">100%</span></button>
+    <button class="ref bad pick" data-r="tc" data-i="2" aria-pressed="false"><span><b>Core, small</b></span><span>0.019</span><span class="pc">11%</span></button>
+    <button class="ref sub pick" data-r="tc" data-i="1" aria-pressed="false"><span>medium</span><span>0.059</span><span class="pc">34%</span></button>
+    <button class="ref bad pick" data-r="wt" data-i="2" aria-pressed="false"><span><b>Whole, small</b></span><span>0.057</span><span class="pc">20%</span></button>
+    <button class="ref sub pick" data-r="wt" data-i="1" aria-pressed="false"><span>medium</span><span>0.137</span><span class="pc">49%</span></button>
+    <div class="ref good"><span><b>Supervised control</b></span><span>&mdash;</span><span class="pc">83%</span></div>
+    <div class="ref good"><span><b>Detection</b></span><span>&mdash;</span><span class="pc">100%</span></div>
+    <p class="note"><b>Detection holds at 100% while localization falls to 7%.</b>
+      A single aggregate score cannot show that, which is how this survived two years
+      of reported benchmarks.</p>
+  </aside>
+</div>
 
-    <h1>
-      <span class="a">IT FINDS</span><span class="c">the</span><span class="d">LESION</span>
-      <span class="a">IT</span><span class="b">CAN'T</span><span class="d">PLACE</span><span class="c">IT</span>
-    </h1>
-    <p class="stand">Text-conditioned 3D medical models say <b>yes there's a tumour</b>
-      and then point at half the hemisphere. The smaller the lesion the wider they
-      miss. Nobody checked. For two years.</p>
+<div class="w body">
+  <div class="arg">
+    <p>Sorted by lesion volume into terciles, localization declines monotonically in
+      every region and never recovers. For enhancing tumour — the smallest and most
+      clinically specific region — performance falls <b>14.9&times;</b> from the
+      largest third to the smallest.</p>
 
-    <div class="cuts">
+    <figure>
+      <svg viewBox="0 0 860 330" role="img"
+           aria-label="Axial slice: a small solid outline marks the true lesion, a far larger dashed outline marks the model's predicted region, offset from it.">
+        <rect width="860" height="330" fill="#fff"/>
+        <g stroke="#c5c7c2" fill="none" stroke-width="1.3">
+          <ellipse cx="430" cy="165" rx="256" ry="134"/>
+          <ellipse cx="430" cy="165" rx="234" ry="112"/>
+          <path d="M430 31 V299"/>
+          <path d="M412 108 q-25 36 -16 80 q4 20 16 31 q2 -66 0 -111 z"/>
+          <path d="M448 108 q25 36 16 80 q-4 20 -16 31 q-2 -66 0 -111 z"/>
+          <path d="M258 118 q36 24 27 61"/><path d="M602 118 q-36 24 -27 61"/>
+        </g>
+        <ellipse cx="518" cy="196" rx="120" ry="80" fill="#c23616" fill-opacity=".07"
+                 stroke="#c23616" stroke-width="2.2" stroke-dasharray="8 6"/>
+        <circle id="gt" cx="558" cy="152" r="34" fill="#16181a" fill-opacity=".16"
+                stroke="#16181a" stroke-width="2.2"/>
+        <g stroke="#16181a" stroke-width=".9" fill="none"><path d="M570 143 L664 92 H702"/></g>
+        <g stroke="#c23616" stroke-width=".9" fill="none"><path d="M438 272 L330 300 H300"/></g>
+        <g font-family="IBM Plex Sans, sans-serif" font-size="13">
+          <text x="708" y="88" fill="#16181a">True lesion &#183; 1.9 cm&#179;</text>
+          <text x="24" y="304" fill="#c23616">Predicted &#183; 31.4 cm&#179;</text>
+          <text x="22" y="26" fill="#8b9296" font-size="12">slice 64/128 &#183; T1CE &#183; held out</text>
+        </g>
+      </svg>
+      <figcaption id="cap">One held-out patient. Pick any row in the panel above to
+        resize the true lesion to that tercile. The predicted region never moves.</figcaption>
+    </figure>
 
-      <div class="cut c1">
-        <h2>Exhibit A &mdash; the scene</h2>
-        <svg viewBox="0 0 640 280" role="img"
-             aria-label="Photocopied scan: a small ringed lesion against a far larger predicted region offset from it.">
-          <rect width="640" height="280" fill="#111"/>
-          <g stroke="#6a6a6a" fill="none" stroke-width="2">
-            <ellipse cx="320" cy="140" rx="196" ry="112"/>
-            <ellipse cx="320" cy="140" rx="176" ry="92"/>
-            <path d="M320 28 V252"/>
-            <path d="M305 92 q-20 30 -13 66 q4 18 13 26 q2 -54 0 -92 z"/>
-            <path d="M335 92 q20 30 13 66 q-4 18 -13 26 q-2 -54 0 -92 z"/>
-          </g>
-          <ellipse cx="398" cy="168" rx="98" ry="66" fill="#fff" fill-opacity=".12"
-                   stroke="#fff" stroke-width="3" stroke-dasharray="9 6"/>
-          <circle cx="434" cy="128" r="12" fill="#fff" stroke="#fff" stroke-width="3"/>
-          <g font-family="Courier Prime, monospace" font-size="15" font-weight="700" fill="#fff">
-            <text x="456" y="118">1.9 cm&#179;</text>
-            <text x="18" y="248">31.4 cm&#179; &#171; THE GUESS</text>
-            <text x="16" y="26" font-size="12" fill="#999">SLICE 64/128</text>
-          </g>
-        </svg>
-        <p style="margin-top:10px">Sixteen times the volume. Two centimetres off.
-          <b>Dice 0.037.</b> Detection: perfect. That's the whole scam.</p>
+    <h2>Four explanations. Three were ruled out.</h2>
+    <div class="hyp">
+      <div class="h">
+        <span class="n">01</span>
+        <div><h3>The lesions are unfindable</h3>
+          <p>A plain supervised U-Net, given the same lesions with no language anywhere
+            in the pipeline, barely degrades. <b>The data is not the problem.</b></p></div>
+        <p class="v">Ruled out<b>1.2&times;</b></p>
       </div>
-
-      <div class="cut c2">
-        <p class="huge">14.9<em>&times;</em></p>
-        <p><b>WORSE</b> on small lesions than large. Monotonic in every region. Never
-          recovers.</p>
-        <p class="scrawl">&larr; and the small ones are the ones that actually matter</p>
+      <div class="h">
+        <span class="n">02</span>
+        <div><h3>The text encoder is too weak</h3>
+          <p>Replacing PubMedBERT with <b>random vectors</b> changes almost nothing.
+            The query is an opaque class identifier that happens to be spelled in
+            English.</p></div>
+        <p class="v">Ruled out<b>&Delta; &asymp; 0</b></p>
       </div>
-
-      <div class="cut c3">
-        <h2>They said: the lesions are too small</h2>
-        <p>We gave the same lesions to a plain supervised U-Net. No language. No prompt.
-          It degraded <b>1.2&times;</b>.</p>
-        <p class="kill">LIE &mdash; 1.2 vs 14.9</p>
+      <div class="h">
+        <span class="n">03</span>
+        <div><h3>The model must be told the lesion is small</h3>
+          <p>Size-conditioned prompting, multi-scale ensembling and scale-matched
+            retraining each traded one failure for another.</p></div>
+        <p class="v">Ruled out<b>3 of 3</b></p>
       </div>
-
-      <div class="cut c4">
-        <h2>They said: the encoder is weak</h2>
-        <p>We ripped out PubMedBERT and shoved in <b>random vectors</b>. Noise. Nothing
-          changed. The query is an opaque class id that happens to be spelled in
-          English.</p>
-        <p class="kill">LIE &mdash; &Delta; &asymp; 0</p>
+      <div class="h keep">
+        <span class="n">04</span>
+        <div><h3>The sliding windows are merged badly</h3>
+          <p>Flat averaging smears a small lesion across everything near a window edge.
+            <b>Weight each window toward its own centre.</b></p></div>
+        <p class="v">Confirmed<b>+0.145</b></p>
       </div>
-
-      <div class="cut c5">
-        <h2>We tried the clever stuff</h2>
-        <p><s>Size-conditioned prompting.</s> <s>Multi-scale ensembling.</s>
-          <s>Scale-matched retraining.</s></p>
-        <p>Every one of them worked until we ran the control. <b>All three reversed.</b>
-          We printed it anyway.</p>
-        <p class="kill">WRONG 3 TIMES</p>
-      </div>
-
-      <div class="cut wide">
-        <h2>The numbers, uncut</h2>
-        <table>
-          <tr><th>REGION</th><th>LARGE</th><th>MEDIUM</th><th>SMALL</th><th>RATIO</th></tr>
-          <tr><td>Whole tumour</td><td>0.281</td><td>0.137</td><td>0.057</td><td>4.9&times;</td></tr>
-          <tr><td>Tumour core</td><td>0.176</td><td>0.059</td><td>0.019</td><td>9.3&times;</td></tr>
-          <tr class="x"><td>Enhancing tumour</td><td>0.149</td><td>0.037</td><td>0.010</td><td>14.9&times;</td></tr>
-          <tr><td>Supervised U-Net (control)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1.2&times;</td></tr>
-        </table>
-        <p class="scrawl" style="margin-top:12px">171 paired Wilcoxon tests. BH
-          corrected. 9 of 9 splits. Check it yourself.</p>
-      </div>
-
-      <div class="cut wide" style="transform:rotate(.5deg)">
-        <h2>It was the plumbing the whole time</h2>
-        <p>The volume gets walked in overlapping windows and the windows get averaged
-          <b>flat</b>, which smears a small lesion over everything it touches on the way
-          past. <b>Weight each window toward its own centre.</b> That's it.</p>
-        <p class="kill win">+0.145 DICE &mdash; NO RETRAINING &mdash; 0 &rarr; 7 OF 21</p>
-      </div>
-
-    </div>
-
-    <div class="manifesto">
-      <h2>A shared confound is <em>not</em> a cancelled confound</h2>
-      <p>Three results in here were reversed after the fact, every time by a control
-        that should have been run first. We left them on the page because deleting them
-        would have been the actual dishonesty.</p>
-      <p><b>Every stage of a pipeline is an instrument until somebody measures it.</b></p>
-      <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">READ THE PAPER</a>
-    </div>
-
-    <div class="colo">
-      <span>Raj Hansini Akara</span>
-      <span>MPCS 53113 &middot; University of Chicago</span>
-      <span>Held out n = 73 &middot; 128&sup3;</span>
     </div>
   </div>
 </div>
 
+<div class="fix">
+  <div class="w">
+    <p class="lab">The repair</p>
+    <h2>The fault was never in the model. It was in the <em>inference plumbing</em>.</h2>
+    <p>Three more elaborate interventions were tried first and each was reversed after
+      a control caught the error. <b>A shared confound is not a cancelled confound</b>:
+      every stage of a pipeline is an instrument until somebody measures it.</p>
+    <p><b>+0.145 Dice, no modified weights.</b> Small enhancing tumour recovered in
+      7 of 21 patients where the model previously found none.</p>
+    <a class="cta" href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">Read the paper</a>
+  </div>
+</div>
+
+<div class="w">
+  <footer>
+    <span>Raj Hansini Akara</span>
+    <span>MPCS 53113 · University of Chicago</span>
+    <span>171 paired Wilcoxon tests · BH corrected · 9 / 9 replicated</span>
+  </footer>
+</div>
+
+
+<script>
+/* The panel is the control. Nine measured cells, nothing interpolated — there is
+   no measurement between terciles and inventing one is the failure this paper is
+   about. Without JS the panel is a complete table and the figure shows the large
+   tercile, which is the state the markup ships in. */
+var R = [34, 21, 11],
+    NAME = {wt:"whole tumour", tc:"tumour core", et:"enhancing tumour"},
+    SIZE = ["large", "medium", "small"],
+    btns = document.querySelectorAll(".ref.pick"),
+    gt = document.getElementById("gt"), cap = document.getElementById("cap");
+function pick(b) {
+  var i = +b.dataset.i;
+  Array.prototype.forEach.call(btns, function (o) {
+    o.setAttribute("aria-pressed", String(o === b));
+  });
+  gt.setAttribute("r", R[i]);
+  cap.textContent = "True lesion at the " + SIZE[i] + " tercile, " + NAME[b.dataset.r]
+    + ". The predicted region never moves \u2014 only the target does.";
+}
+Array.prototype.forEach.call(btns, function (b) {
+  b.addEventListener("click", function () { pick(b); });
+});
+</script>
 </body>
 </html>
