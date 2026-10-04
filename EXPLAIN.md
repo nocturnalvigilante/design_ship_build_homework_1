@@ -13,8 +13,16 @@ small. Audience is researchers and graduate admissions readers — technical,
 skeptical, short on time. One job: understand the finding in fifteen seconds,
 then open the paper.
 
-**v01–v19, going wide.** Nineteen directions, deliberately including some that
-were never going to work:
+**The brief names three example directions. I built all three.**
+Brutalist manifesto is still live at **v06**. The magazine spread and the calm
+single-column page were both built, lived in the gallery, and were deliberately
+replaced when I pushed for louder directions — magazine spread at commit
+`29fd8a8`, calm single column at `5e38416`. Fifteen directions in total were
+built and retired; they are listed in the gallery under "Also built, then
+retired", each with the commit that replaced it.
+
+**v01–v19, going wide.** Nineteen directions that survived, deliberately
+including some that were never going to work:
 
 - **Interfaces** — PACS radiology workstation (v01), terminal transcript (v05),
   Windows 98 property sheet (v12)
@@ -54,8 +62,12 @@ it is 7% of what the same model manages on a large lesion.**
 | All the costumes | Each cost a beat of translation before the finding landed. The page has one job and fifteen seconds. |
 | Transit map (v16) | Best *structure* in the set, but it cannot hold nine numbers. |
 | Museum wall | Right restraint, too little information density. |
+| Magazine spread, long read | Prose-first buries the number. |
 | Scrollytelling, before/after slider | Conventional web patterns — likely to collide with 700 other sites. |
-| Long read | Prose-first buries the number. |
+| Calm single column | Too quiet to survive a skim; the finding needs a reference point, not more air. |
+
+The full retirement list with commits is in the gallery and recoverable from
+`git log --oneline --grep=replacing`.
 
 **The convergence, v20 → v25:**
 
