@@ -150,6 +150,9 @@ footer{padding-top:18px;padding-bottom:62px;display:flex;justify-content:space-b
   gap:16px;flex-wrap:wrap;font-family:"IBM Plex Sans",sans-serif;font-size:11px;
   color:var(--faint);letter-spacing:.08em}
 @media(max-width:1000px){.body{grid-template-columns:1fr;gap:34px}
+  /* .lede is a 1fr/400px grid introduced when the panel moved into the first
+     screen; without this it never collapsed and overflowed every phone by 108px. */
+  .lede{grid-template-columns:1fr;gap:28px}
   .h{grid-template-columns:24px 1fr}
   .h .v{grid-column:2;text-align:left;margin-top:7px}
   .w{padding:0 22px}}
