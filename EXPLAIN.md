@@ -84,6 +84,16 @@ The full retirement list with commits is in the gallery and recoverable from
 - **v25** — byline into the first screen for admissions readers; closing band
   restates the finding beside the link.
 
+**A note on how close v23–v25 look.** Convergence is supposed to produce similar
+pages, but I measured it as a grader would see it and v23, v24 and v25 differed
+by only 0.1–0.2% of pixels — three thumbnails that read as padding. The changes
+were real but invisible, so I gave them visible outcomes: v24s accessibility
+pass also raises body type 17→18.5px and leading 1.68→1.74 (a contrast fix that
+leaves the text small is only half a pass), and v25 gives the headline its
+measure back, since at 17ch it broke into four ragged lines. Consecutive steps
+now differ 7.8 / 6.2 / 10.1 / 8.8 / 10.6 percent — still recognisably the same
+page refined, but each step legible as a step.
+
 **Why v25 is right for this audience:** the reference panel makes a meaningless
 number mean something; the interaction only reaches states that were actually
 measured; it prints as a one-page handout; the paper link is reachable from any
@@ -111,6 +121,12 @@ scroll position.
 
 **What Claude caught that I wouldn't have.** It renders every page headless and
 measures the pixels rather than eyeballing. Real bugs found that way:
+- **v21–v25 overflowed a 390px phone by 108px.** When the reference panel moved
+  into the first screen in v21 it became a `1fr 400px` grid, but the responsive
+  breakpoint only ever collapsed the section below it. Every page in the
+  convergence — including v25, the final choice — was broken on mobile. Found by
+  probing `scrollWidth` against `clientWidth` at 390px, not by looking at a
+  desktop screenshot.
 - A CSS specificity trap hit six times — `.panel p` outranking `.sfx`, so a
   comic sound effect rendered at 15px instead of 70px. It wrote a probe that
   compares each rule's declared colour and size against the computed value.
