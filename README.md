@@ -22,6 +22,13 @@ v/v25.html      the final
 AGENTS.md       the brief: idea, audience, constraints, process
 ```
 
+## How it was made
+
+[`EXPLAIN.md`](EXPLAIN.md) walks through the design process, which directions were
+dropped and why, and where the agent was pushed back on. The gallery also lists the
+fifteen directions that were built and retired, each with the commit it can be
+recovered from.
+
 ## The process
 
 **v01–v13, going wide.** Thirteen genuinely different directions, including

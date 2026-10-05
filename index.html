@@ -87,6 +87,9 @@ h1{font-size:clamp(34px,5.2vw,64px);line-height:1;letter-spacing:-.035em;
 footer{border-top:1px solid var(--edge);margin-top:64px;padding:26px 0 60px;
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   font-size:12.5px;color:var(--faint)}
+.flinks{display:flex;gap:22px;flex-wrap:wrap}
+.flinks a{color:var(--dim)}
+.flinks a:hover{color:var(--accent)}
 @media(max-width:820px){.intro{grid-template-columns:1fr;gap:28px}
   .facts{border-left:0;border-top:1px solid var(--edge);padding:20px 0 0}
   .wrap{padding:0 20px}}
@@ -170,7 +173,11 @@ footer{border-top:1px solid var(--edge);margin-top:64px;padding:26px 0 60px;
 
 <footer class="wrap">
   <span>Plain HTML and CSS. No frameworks, no build step.</span>
-  <a href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">The research this page is for &rarr;</a>
+  <span class="flinks">
+    <a href="https://github.com/nocturnalvigilante/design_ship_build_homework_1">Source &amp; commit history &rarr;</a>
+    <a href="https://github.com/nocturnalvigilante/design_ship_build_homework_1/blob/main/EXPLAIN.md">How this was made &rarr;</a>
+    <a href="https://github.com/rajhansini/Diagnosing-Small-Lesion-Grounding-Failure-in-Text-Conditioned-3D-Medical-Localization">The research &rarr;</a>
+  </span>
 </footer>
 
 <script>
