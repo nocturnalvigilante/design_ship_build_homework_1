@@ -113,6 +113,11 @@ h1 em{font-style:normal;color:var(--alarm)}
 .byline b{color:var(--ink);font-weight:600;font-size:15px}
 .byline span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--faint);font-weight:600}
+/* The hero left column ended at the byline while the panel ran on for another
+   275px, so the first screen read as two unrelated columns. The opening paragraph
+   moves up to fill it. */
+.open{margin:26px 0 0;max-width:46ch;padding-top:22px;border-top:1px solid var(--hair)}
+.open b{font-weight:600}
 
 .lede{display:grid;grid-template-columns:1fr 400px;gap:52px;align-items:start;
   padding-bottom:26px}
@@ -246,6 +251,10 @@ footer{padding-top:18px;padding-bottom:62px;display:flex;justify-content:space-b
       benchmark never shows it.</p>
     <p class="byline"><b>Raj Hansini Akara</b>
       <span>University of Chicago · MPCS 53113</span></p>
+    <p class="open">Sorted by lesion volume into terciles, localization declines
+      monotonically in every region and never recovers. For enhancing tumour — the
+      smallest and most clinically specific region — performance falls <b>14.9&times;</b>
+      from the largest third to the smallest.</p>
   </div>
   <aside class="panel">
     <h2>Read with a reference</h2>
@@ -269,11 +278,6 @@ footer{padding-top:18px;padding-bottom:62px;display:flex;justify-content:space-b
 
 <div class="w body">
   <div class="arg">
-    <p>Sorted by lesion volume into terciles, localization declines monotonically in
-      every region and never recovers. For enhancing tumour — the smallest and most
-      clinically specific region — performance falls <b>14.9&times;</b> from the
-      largest third to the smallest.</p>
-
     <figure>
       <svg viewBox="0 0 860 330" role="img"
            aria-label="Axial slice: a small solid outline marks the true lesion, a far larger dashed outline marks the model's predicted region, offset from it.">
